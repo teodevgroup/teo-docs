@@ -1,0 +1,72 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Generator
+
+Developers use generated model entities if Teo schema language cannot provide
+that functionality. Query clients are generated for frontend access with
+auto-completion.
+
+## Model entity generator
+
+Declare a model entity generator in schema is deadly simple.
+
+```teo showLineNumbers
+entity {
+  provider: .rust,
+  dest: "./src/entities"
+}
+```
+
+In this example, a Rust entity generator is declared. Use the `generate entity`
+command to generate the files onto `dest` directory.
+
+```sh
+teo generate entity
+```
+
+Teo entity behaves just like a class in other ORM frameworks. Developers can
+`findMany`, `update` or `save` an object.
+
+## Query client generator
+
+Declare a query client generator in schema is deadly simple, too.
+
+```teo showLineNumbers
+client {
+  provider  .typeScript
+  dest      "../hello-teo-client"
+  host      "http://127.0.0.1:5300"
+  package   true
+  gitCommit true
+}
+```
+
+Run `generate client` to have a query client generated. Teo query client is
+type-safe and performant.
+
+```sh
+teo generate client
+```
+
+## Going next
+
+In the next article, server configuration is introduced.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/guard">Guard</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/server">Server</NextArticle>
+</PrevNext>

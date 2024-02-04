@@ -1,0 +1,543 @@
+import Image from 'next/image'
+import { PrevNext, PrevArticle, NextArticle } from '../../../../components/docs/PrevNext'
+import CodeResult from '../../../../components/docs/CodeResult'
+import {
+    TripleSelector, RustDoc, NodeJSDoc, PythonDoc, GoDoc, JavaDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../components/docs/Selector'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/getting-started">Getting started</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/getting-started/beginner-tutorial">Beginner tutorial</a>
+  </span>
+</div>
+
+# Write route handlers
+
+How could a web framework without programming ability be called framework?
+By the end of this tutorial, you'll learn how to write route handlers and 
+return different kind of responses to the frontend.
+
+## Create a project
+
+Let's create a new project for programming code.
+
+```sh
+cargo init hello-teo-handlers --bin
+cd hello-teo-handlers
+```
+
+Replace the file content of `Cargo.toml` with this.
+
+```toml
+[package]
+name = "hello-teo-handlers"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+teo = "0.1.0"
+tokio = { version = "1.0", features = ["full"] }
+```
+
+Replace the file content of `src/main.rs` with this.
+
+```rust showLineNumbers
+use tokio::main;
+use teo::prelude::{App, Result};
+
+#[main]
+async fn main() -> Result<()> {
+    let app = App::new()?;
+    app.run().await
+}
+```
+
+Now we've just created a barebone Teo server app. Don't forget to create a schema
+file like before. Create a file named `schema.teo` in the root directory of the 
+project with the following content.
+
+```teo showLineNumbers
+server {
+  bind: ("0.0.0.0", 5051)
+}
+```
+
+Run this command to start our server:
+
+```sh
+cargo run -- serve
+```
+
+This time we're not using Teo CLI because we want our custom code to be loaded and
+compiled. Now a barebone server is started with every routes lead to `NotFound` error
+with 404 code.
+
+Most of the times, the routes that we write are for API interactions. Frontend
+clients request these APIs for structured data. JSON is the most popular data
+format. Depending on business needs, some API routes return HTML documents, 
+images and files. These routes are not designed for frontend clients to 
+intercharge data with. And the response values are not structured data like JSON. 
+Teo will not include these routes in the generated frontend clients. That is,
+the routes that we write fall into two main categories: API interaction and 
+Non-API interaction.
+
+## Non-API interaction
+
+### HTML response
+
+Let's begin with create a home page for this server.
+
+Append this to the end of `schema.teo`.
+
+```teo showLineNumbers
+@map(.get, "/")
+declare nonapi handler hello(): Any
+```
+
+Replace the content with `src/main.rs` with this.
+
+```rust showLineNumbers
+use tokio::main;
+use teo::prelude::{App, Response, Result, path};
+
+#[main]
+async fn main() -> Result<()> {
+    let app = App::new()?;
+    app.main_namespace_mut().define_handler("hello", || async {
+        let response = Response::html(r#"
+            <html>
+                <head>
+                    <title>Hello, Teo handlers</title>
+                </head>
+                <body>
+                    <h1>Hello, Teo handlers!</h1>
+                </body>
+            </html>
+        "#)?;
+        Ok::<Response, path::Error>(response)
+    });
+    app.run().await
+}
+```
+
+With this updated code, we define a handler named `"hello"` to match what
+we've declared in our schema. Restart our server by compiling again.
+Navigate to `"http://localhost:5051"` in a browser, you will see the 
+new home page that we've just write in HTML.
+
+<Image alt="Browser screenshot" width={377} height={159} src="/images/docs/browserhtml.png" />
+
+In practice, any template engines can be used to generate the HTML content.
+But it's far beyond this scope.
+
+### Empty response
+
+Let's have a rest and write something simple.
+
+Add these to the schema and the source code file.
+
+```teo showLineNumbers
+@map(.get, "/empty")
+declare nonapi handler empty(): Any
+```
+
+```rust showLineNumbers
+app.main_namespace_mut().define_handler("empty", || async {
+    Ok::<Response, path::Error>(Response::empty())
+});
+```
+
+Restart our server and request to `/empty`.
+
+```sh
+curl http://localhost:5051/empty
+```
+
+The output is blank since this is an empty response.
+
+### Text response
+
+Let's write a text response which echos user's url segment input.
+
+Add these to our schema.
+
+```teo showLineNumbers
+entity {
+  provider: .rust,
+  dest: "./src/entities"
+}
+
+@map(.get, "/echo/:data", interface: "EchoPathArguments")
+declare nonapi handler echo(): Any
+```
+
+Run this command to generate interfaces.
+
+```sh
+cargo teo generate entity
+```
+
+Replace `src/main.rs` with the following content.
+
+```rust showLineNumbers {1,5,26-28}
+mod entities;
+
+use tokio::main;
+use teo::prelude::{App, Response, Result, path};
+use crate::entities::EchoPathArguments;
+
+#[main]
+async fn main() -> Result<()> {
+    let app = App::new()?;
+    app.main_namespace_mut().define_handler("hello", || async {
+        let response = Response::html(r#"
+            <html>
+                <head>
+                    <title>Hello, Teo handlers</title>
+                </head>
+                <body>
+                    <h1>Hello, Teo handlers!</h1>
+                </body>
+            </html>
+        "#)?;
+        Ok::<Response, path::Error>(response)
+    });
+    app.main_namespace_mut().define_handler("empty", || async {
+        Ok::<Response, path::Error>(Response::empty())
+    });
+    app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
+        Ok::<Response, path::Error>(Response::string(path_args.data(), "text/plain"))
+    });
+    app.run().await
+}
+```
+
+We've included the generated path arguments into our code and use
+it in our handler.
+
+Start our server again.
+
+```sh
+cargo run -- serve
+```
+
+Now navigate to `/echo/hello` in the browser. The path argument is printed out.
+
+<Image alt="Browser screenshot" width={336} height={131} src="/images/docs/browserhtml2.png" />
+
+### File response
+
+Let's server some static files from a directory.
+
+Create a file at `/static/images/girl.jpg` with the following image.
+
+<Image alt="Browser screenshot" width={426} height={569} src="/images/docs/girl.jpg" />
+
+Append this to the end of the schema.
+
+```teo showLineNumbers
+@map(.get, "/static/*path", interface: "StaticPathArguments")
+declare nonapi handler static(): Any
+```
+
+Repeat the code generation process.
+
+```sh
+cargo teo generate entity
+```
+
+Update `src/main.rs` to this.
+
+```rust showLineNumbers {4,5,29-31}
+mod entities;
+
+use tokio::main;
+use teo::prelude::{App, Response, Result, path, serve_static_files};
+use crate::entities::{EchoPathArguments, StaticPathArguments};
+
+#[main]
+async fn main() -> Result<()> {
+    let app = App::new()?;
+    app.main_namespace_mut().define_handler("hello", || async {
+        let response = Response::html(r#"
+            <html>
+                <head>
+                    <title>Hello, Teo handlers</title>
+                </head>
+                <body>
+                    <h1>Hello, Teo handlers!</h1>
+                </body>
+            </html>
+        "#)?;
+        Ok::<Response, path::Error>(response)
+    });
+    app.main_namespace_mut().define_handler("empty", || async {
+        Ok::<Response, path::Error>(Response::empty())
+    });
+    app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
+        Ok::<Response, path::Error>(Response::string(path_args.data(), "text/plain"))
+    });
+    app.main_namespace_mut().define_handler("static", |path_args: StaticPathArguments| async move {
+        serve_static_files("static", path_args.path())
+    });
+    app.run().await
+}
+```
+
+Start the server again.
+
+```sh
+cargo run -- serve
+```
+
+Now navigate to `/` in the browser, and you will see the image. Try typing a non-existing
+file path, 404 is responded.
+
+<Image alt="Browser screenshot" width={447} height={268} src="/images/docs/browsergirl.png" />
+
+## API interaction
+
+JSON is the only response data format that Teo supports. If you have requirements for
+other data types. Let us know by firing an [issue](https://github.com/teocloud/teo/issues).
+
+### JSON request
+
+Let's add some models and perform some model updates from JSON requests.
+
+Replace `schema.teo` with this.
+
+```teo showLineNumbers {5-8,27-42}
+server {
+  bind: ("0.0.0.0", 5051)
+}
+
+connector {
+  provider: .sqlite,
+  url: "sqlite::memory:"
+}
+
+entity {
+  provider: .rust,
+  dest: "./src/entities"
+}
+
+@map(.get, "/")
+declare nonapi handler hello(): Any
+
+@map(.get, "/empty")
+declare nonapi handler empty(): Any
+
+@map(.get, "/echo/:data", interface: "EchoPathArguments")
+declare nonapi handler echo(): Any
+
+@map(.get, "/static/*path", interface: "StaticPathArguments")
+declare nonapi handler static(): Any
+
+interface AlterCreatedAtInput {
+  id: Int
+  createdAt: DateTime
+}
+
+model Record {
+  @id @autoIncrement @readonly
+  id: Int
+  value: Int?
+  @onSave($when(.create, $now)) @readonly
+  createdAt: DateTime
+  @onSave($now) @readonly
+  updatedAt: DateTime
+
+  declare handler alterCreatedAt(AlterCreatedAtInput): Data<Result<Record>>
+}
+```
+
+And replace `src/main.rs` with this.
+
+```rust showLineNumbers {3,5,6,33-47}
+mod entities;
+
+use indexmap::indexmap;
+use tokio::main;
+use teo::prelude::{App, Response, Result, path, serve_static_files, teon, Value};
+use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo};
+
+#[main]
+async fn main() -> Result<()> {
+    let app = App::new()?;
+    app.main_namespace_mut().define_handler("hello", || async {
+        let response = Response::html(r#"
+            <html>
+                <head>
+                    <title>Hello, Teo handlers</title>
+                </head>
+                <body>
+                    <h1>Hello, Teo handlers!</h1>
+                </body>
+            </html>
+        "#)?;
+        Ok::<Response, path::Error>(response)
+    });
+    app.main_namespace_mut().define_handler("empty", || async {
+        Ok::<Response, path::Error>(Response::empty())
+    });
+    app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
+        Ok::<Response, path::Error>(Response::string(path_args.data(), "text/plain"))
+    });
+    app.main_namespace_mut().define_handler("static", |path_args: StaticPathArguments| async move {
+        serve_static_files("static", path_args.path())
+    });
+    app.main_namespace_mut().define_model_handler_group("Record", |group| {
+        group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
+            if let Some(record) = teo.record().find_unique(Value::Dictionary(indexmap!{
+                "where".to_owned() => Value::Dictionary(indexmap!{
+                    "id".to_owned() => Value::Int(*input.id())
+                })
+            })).await? {
+                record.set_created_at(*input.created_at());
+                record.save().await?;
+                Ok::<Response, path::Error>(Response::data(record.to_teon().await?))
+            } else {
+                Err(path::Error::not_found_message_only())?
+            }
+        });
+    });
+    app.run().await
+}
+```
+
+This way, Teo becames a normal ORM and developers can write any code to interact data
+with. The `createdAt` field is readonly, but through custom handlers, it becomes 
+modifiable.
+
+### Form request
+
+Let's try some file uploading. Upload an image to the static directory that we've
+created before.
+
+Append this to the schema.
+
+```teo showLineNumbers
+@map(path: "/upload")
+declare form handler upload(UploadInput): Data<UploadOutput>
+
+interface UploadInput {
+  file: File
+}
+
+interface UploadOutput {
+  path: String
+}
+```
+
+Generate interfaces.
+
+```sh
+cargo teo generate entity
+```
+
+Update `src/main.rs` to be like this.
+
+```rust showLineNumbers {3,4,8,50-72}
+mod entities;
+
+use std::path::PathBuf;
+use std::time::{SystemTime, UNIX_EPOCH};
+use indexmap::indexmap;
+use tokio::main;
+use teo::prelude::{App, Response, Result, path, serve_static_files, teon, Value};
+use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo, UploadInput, UploadInputTrait};
+
+#[main]
+async fn main() -> Result<()> {
+    let app = App::new()?;
+    app.main_namespace_mut().define_handler("hello", || async {
+        let response = Response::html(r#"
+            <html>
+                <head>
+                    <title>Hello, Teo handlers</title>
+                </head>
+                <body>
+                    <h1>Hello, Teo handlers!</h1>
+                </body>
+            </html>
+        "#)?;
+        Ok::<Response, path::Error>(response)
+    });
+    app.main_namespace_mut().define_handler("empty", || async {
+        Ok::<Response, path::Error>(Response::empty())
+    });
+    app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
+        Ok::<Response, path::Error>(Response::string(path_args.data(), "text/plain"))
+    });
+    app.main_namespace_mut().define_handler("static", |path_args: StaticPathArguments| async move {
+        serve_static_files("static", path_args.path())
+    });
+    app.main_namespace_mut().define_model_handler_group("Record", |group| {
+        group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
+            if let Some(record) = teo.record().find_unique(Value::Dictionary(indexmap!{
+                "where".to_owned() => Value::Dictionary(indexmap!{
+                    "id".to_owned() => Value::Int(*input.id())
+                })
+            })).await? {
+                record.set_created_at(*input.created_at());
+                record.save().await?;
+                Ok::<Response, path::Error>(Response::data(record.to_teon().await?))
+            } else {
+                Err(path::Error::not_found_message_only())?
+            }
+        });
+    });
+    app.main_namespace_mut().define_handler("upload", |input: UploadInput| async move {
+        let original_location = PathBuf::from(input.file().filepath.as_str());
+        let extension = if let Some(ext) = original_location.extension() {
+            ".".to_owned() + ext.to_str().unwrap()
+        } else {
+            "".to_owned()
+        };
+        let nanos = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().subsec_nanos();
+        let random_file_name = nanos.to_string();
+        let destination_string = format!("static/images/{}{}", random_file_name, extension);
+        let destination = PathBuf::from(destination_string.as_str());
+        let path = "/".to_owned() + destination_string.as_str();
+        match std::fs::rename(original_location, destination) {
+            Ok(_) => {
+                Ok::<Response, path::Error>(Response::data(Value::Dictionary(indexmap!{
+                    "path".to_owned() => Value::String(path)
+                })))
+            },
+            Err(err) => {
+                Err(path::Error::internal_server_error_message_only(err.to_string()))
+            }
+        }
+    });
+    app.run().await
+}
+```
+
+Start our server again.
+
+```sh
+cargo run -- serve
+```
+
+Now send a form request to `/upload`. And access the URL of the uploaded file. The uploaded
+file starts downloading.
+
+## Summary
+
+Teo is a great web framework for modeling data and writing route handlers. No matter which 
+programming language is used, Teo try it best to be type safe and reduce duplications. 
+This tutorial is much harder than the previous one. If you have any problems or find bugs 
+with it, let us know by joining our [Discord group](/discord) or 
+[firing an issue](https://github.com/teocloud/teo/issues).
+
+<PrevNext>
+  <PrevArticle href="/docs/getting-started/beginner-tutorial/write-a-schema-only-app">Write a schema only app</PrevArticle>
+  <div></div>
+</PrevNext>

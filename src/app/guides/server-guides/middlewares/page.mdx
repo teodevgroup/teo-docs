@@ -1,0 +1,34 @@
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/guides">Guides</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/guides/server-guides">Server guides</a>
+  </span>
+</div>
+
+# Middlewares
+
+Teo supports custom first-in-last-out middlewares.
+
+```teo
+declare middleware timing
+
+middlewares [timing]
+```
+
+Implement the middleware in code:
+
+```rust
+app.main_namespace_mut().define_middleware("timing", |arguments: Arguments| {
+    Ok(middleware_wrap_fn(move |ctx: Ctx, next: &'static dyn Next| async move {
+        let start = SystemTime::now();
+        let res = next.call(ctx).await?;
+        let end = SystemTime::now();
+        let duration = end.duration_since(start).unwrap();
+        println!("request duration: {:?}", duration);
+        return Ok(res);
+    }))
+});
+```

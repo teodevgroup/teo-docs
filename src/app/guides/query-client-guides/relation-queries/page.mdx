@@ -1,0 +1,65 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../components/docs/PrevNext'
+import CodeResult from '../../../../components/docs/CodeResult'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/guides">Guides</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/guides/query-client-guides">Query client guides</a>
+  </span>
+</div>
+
+# Relation queries
+
+By default, none related records are fetched for a query. With `include`,
+related records can be fetched into the result set together. The nested
+argument inside `include`, behaves like `findMany`'s argument or `findUnique`'s
+argument depending on whether the relation is single or many.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artists } = await teo.artist.findMany({
+  include: {
+    songs: {
+      where: {
+        name: { startsWith: 'Fairy' }
+      }
+    },
+  }
+})
+```
+```json showLineNumbers
+[
+  {
+    "id": 4,
+    "name": "Angela Peterson",
+    "age": 23,
+    "songs": [
+      {
+        "id": 2,
+        "name": "Fairy Tale",
+        "published": true
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Tony Justin",
+    "age": 27,
+    "songs": []
+  }
+]
+```
+</CodeResult>
+
+## Going next
+
+The next topic introduces aggregation, grouping and summarizing. These concepts
+are crucial for building dashboard and statistics.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-query-client/selecting-fields">Selecting fields</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-query-client/aggregation-grouping-summarizing">Aggregation, grouping and summarizing</NextArticle>
+</PrevNext>

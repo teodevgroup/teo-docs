@@ -1,0 +1,27 @@
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/guides">Guides</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/guides/server-guides">Server guides</a>
+  </span>
+</div>
+
+# Namespaces
+
+Namespaces are for code splitting, organizing and reusing. Teo supports multiple databases. 
+Each namespace can have its own connector. If a namespace doesn't have a connector, the 
+parent one is inherited.
+
+Write namespaces with the `namespace` block:
+
+```teo
+namespace user {
+    model User {
+        @id @autoIncrement @readonly
+        id: Int
+        name: String
+    }
+}
+```

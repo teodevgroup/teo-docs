@@ -1,0 +1,465 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../components/docs/PrevNext'
+import CodeResult from '../../../components/docs/CodeResult'
+import {
+    TripleSelector, RustDoc, NodeJSDoc, PythonDoc, GoDoc, JavaDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../components/docs/Selector'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/getting-started">Getting started</a>
+  </span>
+</div>
+
+# Quickstart
+
+In this Quickstart guide, you'll learn the typical workflow with Teo from
+creating an empty project, setting up a connection with a local database to
+sending HTTP requests with the generated query client.
+
+## Choose your stack
+
+Before getting started, pick and select your own technical stack. And this
+guide will just be tailored for you. Also, your preferences are saved locally.
+The next time you open any documentation in our site, your tech stack
+preferences are preserved and restored for you.
+
+<TripleSelector />
+
+## Prerequisites
+
+<RustDoc>
+You need Rust 1.67.0 or higher for this guide. If you don't have Rust
+installed, see this
+[installation guide](https://www.rust-lang.org/tools/install) from Rust.
+</RustDoc>
+<NodeJSDoc>
+You need Node.js 18.4.0 or higher for this guide. If you don't have Node.js
+installed, download it from [official Node.js website](https://nodejs.org/en/).
+</NodeJSDoc>
+<PythonDoc>
+You need Python 3.11.1 or higher for this guide. If you don't have Python
+installed, download it from
+[official download page](https://www.python.org/downloads/).
+</PythonDoc>
+
+## 1. Create a new project and set up Teo
+
+<RustDoc>
+As a first step, create a project with `cargo` and navigate into it:
+
+```sh
+cargo new hello-teo --bin
+cd hello-teo
+```
+
+Next, install Teo command line tool with this command:
+
+```sh
+cargo install teo
+```
+
+This installs Teo CLI into the cargo global path.
+
+{/* Next open `Cargo.toml` and append these two lines under `[dependencies]`
+section.
+
+```toml showLineNumbers title="Cargo.toml"
+teo = { version = "0.0.47" }
+tokio = { version = "1.25.0", features = ["macros"] }
+```
+
+If your IDE or editor doesn't automatically install the dependencies for you,
+run manual installation with this command:
+
+```sh
+cargo install --path .
+``` */}
+</RustDoc>
+<NodeJSDoc>
+As a first step, create a blank directory and setup a new Node.js project in
+it:
+
+```sh
+mkdir hello-teo
+cd hello-teo
+npm init
+```
+
+`npm init` prompts you for many inputs, just press `enter` all the way.
+
+Next, install the `@teocloud/teo` package with this command:
+
+```sh
+npm install @teocloud/teo
+```
+
+</NodeJSDoc>
+<PythonDoc>
+Python is not supported yet.
+</PythonDoc>
+<JavaDoc>
+Java is not supported yet.
+</JavaDoc>
+<GoDoc>
+Go is not supported yet.
+</GoDoc>
+
+## 2. Connect to database and set up server
+
+Create a file at project root directory named `schema.teo` with the following
+content:
+
+<MySQLDoc>
+```teo showLineNumbers title="schema.teo"
+connector {
+  provider: .mysql,
+  url: "mysql://127.0.0.1:3306/helloteo"
+}
+```
+</MySQLDoc>
+<PostgreSQLDoc>
+```teo showLineNumbers title="schema.teo"
+connector {
+  provider: .postgres,
+  url: "postgres://127.0.0.1:5432/helloteo"
+}
+```
+</PostgreSQLDoc>
+<SQLiteDoc>
+```teo showLineNumbers title="schema.teo"
+connector {
+  provider: .sqlite,
+  url: "sqlite:helloteo.sqlite"
+}
+```
+</SQLiteDoc>
+<MongoDBDoc>
+```teo showLineNumbers title="schema.teo"
+connector {
+  provider: .mongo,
+  url: "mongodb://127.0.0.1:27017/helloteo"
+}
+```
+</MongoDBDoc>
+
+Within this `connector` config block, we specified which database to use. Next,
+let's declare a `server` block to specify on which port this HTTP server should
+be listening.
+
+```teo showLineNumbers title="schema.teo"
+server {
+  bind: ("0.0.0.0", 5050)
+}
+```
+
+Our server will be listening on port 5050 after started.
+
+## 3. Model your data in the schema
+
+Now time for modeling data. Let's dive right in to declare some models.
+
+<SQLDatabaseDoc>
+```teo showLineNumbers title="schema.teo"
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail))
+  email: String
+  name: String?
+  @relation(fields: .id, references: .authorId)
+  posts: Post[]
+}
+
+model Post {
+  @id @autoIncrement @readonly
+  id: Int
+  title: String
+  content: String?
+  @default(false)
+  published: Bool
+  @foreignKey
+  authorId: Int
+  @relation(fields: .authorId, references: .id)
+  author: User
+}
+```
+</SQLDatabaseDoc>
+<MongoDBDoc>
+```teo showLineNumbers title="schema.teo"
+model User {
+  @id @auto @map("_id") @readonly
+  id: ObjectId
+  @unique @onSet($if($presents, $isEmail))
+  email: String
+  name: String?
+  @relation(fields: .id, references: .userId)
+  posts: Post[]
+}
+
+model Post {
+  @id @auto @map("_id") @readonly
+  id: ObjectId
+  title: String
+  content: String?
+  @default(false)
+  published: Bool
+  @foreignKey
+  authorId: ObjectId
+  @relation(fields: .authorId, references: .id)
+  author: User
+}
+```
+</MongoDBDoc>
+
+Models in the Teo schema have two main purposes:
+
+- Represent the tables or collections in the underlying database
+- Represent a group of API resource including handler actions like `findMany`,
+`findUnique`, `create`, etc.
+
+## 4. Generate query client
+
+If you start the server with `cargo teo serve`, you can already see server
+started and listening on the desired port. Instead of writing each HTTP
+request on the frontend, Teo can generate a client for you with great auto
+completion.
+
+Add this block into `schema.teo`:
+
+<TypeScriptDoc>
+```teo showLineNumbers title="schema.teo"
+client ts {
+  provider: .typeScript,
+  dest: "../hello-teo-client/",
+  package: true,
+  host: "http://127.0.0.1:5050",
+  gitCommit: true
+}
+```
+</TypeScriptDoc>
+<SwiftDoc>
+Swift is not currently supported.
+
+```teo showLineNumbers title="schema.teo"
+client swift {
+  provider: .swift,
+  dest: "../hello-teo-client/",
+  package: true,
+  host: "http://127.0.0.1:5050",
+  gitCommit: true
+}
+```
+</SwiftDoc>
+<KotlinDoc>
+Kotlin is not currently supported.
+
+```teo showLineNumbers title="schema.teo"
+client kotlin {
+  provider: .kotlin,
+  dest: "../hello-teo-client/",
+  package: true,
+  host: "http://127.0.0.1:5050",
+  gitCommit: true
+}
+```
+</KotlinDoc>
+<CSharpDoc>
+C# is not currently supported.
+
+```teo showLineNumbers title="schema.teo"
+client cs {
+  provider: .cSharp,
+  dest: "../hello-teo-client/",
+  package: true,
+  host: "http://127.0.0.1:5050",
+  gitCommit: true
+}
+```
+</CSharpDoc>
+<DartDoc>
+Dart is not currently supported.
+
+```teo showLineNumbers title="schema.teo"
+client dart {
+  provider: .dart,
+  dest: "../hello-teo-client/",
+  package: true,
+  host: "http://127.0.0.1:5050",
+  gitCommit: true
+}
+```
+</DartDoc>
+
+Now let's run this command to generate a brand new client.
+
+<RustDoc>
+```sh
+cargo teo generate client
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate client
+```
+</NodeJSDoc>
+
+## 5. Send HTTP requests with query client
+
+Start a development server with this command:
+<RustDoc>
+```sh
+cargo teo serve
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo serve
+```
+</NodeJSDoc>
+
+Now navigate to the generated client and write some code to perform HTTP
+requests.
+
+```sh
+cd ../hello-teo-client
+```
+
+<TypeScriptDoc>
+Create a file named `hello.ts` in the root directory of the generated client
+with the following content:
+
+```ts showLineNumbers
+import { teo } from './src/index.js'
+
+async function main() {
+  const results = await teo.user.create({
+    create: {
+      email: "ada@teocloud.io",
+      name: "Ada",
+      posts: {
+        create: [
+          {
+            title: "Framework TEO",
+            content: "This post introduces Teo."
+          },
+          {
+            title: "The next generation",
+            content: "Use the next generation technology."
+          }
+        ]
+      }
+    },
+    include: {
+      posts: true
+    }
+  })
+  console.log(results.data)
+}
+
+main()
+```
+
+Install `ts-node` and run this file.
+
+<CodeResult name="result" defaultOpen={true}>
+```sh
+npm install -D ts-node
+node --loader ts-node/esm hello.ts
+```
+```json showLineNumbers
+{
+  id: 1,
+  email: 'ada@teocloud.io',
+  name: 'Ada',
+  posts: [
+    {
+      id: 1,
+      title: 'Framework TEO',
+      content: 'This post introduces Teo.',
+      published: false,
+      authorId: 1
+    },
+    {
+      id: 2,
+      title: 'The next generation',
+      content: 'Use the next generation technology.',
+      published: false,
+      authorId: 1
+    }
+  ]
+}
+```
+</CodeResult>
+
+We've just created an object with nested relations. See how easy it is. We lift
+Teo to do a lot of heavy work for us.
+
+</TypeScriptDoc>
+
+## 6. Next steps
+
+In this Quickstart guide, you have a brief overview and understand how Teo works.
+To learn further, read our [Beginner tutorial](#).
+Feel free to explore the server & clients API a bit more on your own, e.g. by
+including filtering, sorting, and pagination options in the `findMany`
+requests or exploring more operations like update and delete objects.
+
+### Join the Teo community 💚
+
+Teo is great and needs your support. Join us on Slack or ask questions via
+GitHub Discussions.
+
+{/* - We've defined two models: `User` and `Post`. Each represents:
+  1. A database table or collection
+  2. A set of API resource
+- We've specified field definitions with the model block.
+  1. The data type of the field
+  2. Whether this field is required or optional
+  3. An optional default value
+  3. Is this field unique or indexed?
+  4. Any validators or transformers to run when setting values or on save
+  5. Other information like `column_name` or `description`
+- We've written relationships to hook these two models together.
+  1. A user has many posts.
+  2. A post belongs to a user. */}
+
+{/* The traditional HTTP server frameworks let you write your model definitions and
+your controllers routes separately. You need to double the workload at
+least. Working with Teo, we are different. We use functional declarative
+syntax. And we declare everything just once.
+
+Congratulations, you now have your model definitions ready. On server start,
+database migration is automatically performed. So just don't need to worry
+about it. Let's go and learn how you can send some HTTP requests to read and
+write data on server. */}
+
+{/*
+<PrevNext>
+  <PrevArticle href="a">Model definition</PrevArticle>
+  <NextArticle href="a">Model definition</NextArticle>
+</PrevNext> */}
+
+{/*
+The HTTP request URL has a convention of `/{resource}/action/{action}`. Let's
+say, to update a user, it's `/users/action/update`. To display a dashboard of
+user aggregated data, it's `/users/action/group-by`. The request body is a JSON
+contains data inputs or filters.
+
+To create a user, let's type this curl command into the command line.
+
+```sh
+curl -X POST http://0.0.0.0:5100/users/action/create -d
+'{"create": {"name": "John Doe", "email": "john.doe@example.com"}}'
+```
+
+To list all users, we post onto `find-many` action.
+
+```sh
+curl -X POST http://0.0.0.0:5100/users/action/find-many -d '{}'
+```
+
+If you use auto generated client, you don't need to handle these requests by
+yourself. Instead, the classes and interfaces are just well declared for you.
+Feel free to end this tutorial if you don't need generated clients. */}

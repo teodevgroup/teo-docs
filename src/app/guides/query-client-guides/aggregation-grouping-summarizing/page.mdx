@@ -1,0 +1,176 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../components/docs/PrevNext'
+import CodeResult from '../../../../components/docs/CodeResult'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/guides">Guides</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/guides/query-client-guides">Query client guides</a>
+  </span>
+</div>
+
+# Aggregation, grouping and summarizing
+
+Teo allows you to count records, aggregate number fields with or without
+grouping, and select distinct field values.
+
+## Count
+
+Use `count` to count the number of records. The following example returns the
+number of artists in the database:
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: count } = await teo.artist.count()
+```
+```json showLineNumbers
+2
+```
+</CodeResult>
+
+### Filtered count
+
+`count` can be filtered and paginated.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: count } = await teo.artist.count({
+  where: {
+    id: { lt: 50 }
+  },
+  take: 1
+})
+```
+```json showLineNumbers
+1
+```
+</CodeResult>
+
+## Aggregate
+
+Teo allows you to aggregate on the number fields of a model. The following
+query returns the average age of all artists:
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: aggregations } = await teo.artist.aggregate({
+  _avg: {
+    age: true,
+  },
+})
+```
+```json showLineNumbers
+{
+  "_avg": {
+    "age": 25
+  }
+}
+```
+</CodeResult>
+
+Aggregate uses non null values to calculate `avg` and `sum`. If all values from
+records on a field are null, the aggregated value is also null.
+
+## Group by
+
+Teo allows you to group aggregated values by some field values. The following
+example groups all artists by the name field and returns the average age for
+artists under each name:
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: groupByName } = await teo.artist.groupBy({
+  by: ['name'],
+  _avg: {
+    age: true,
+  },
+})
+```
+```json showLineNumbers
+[
+  {
+    "name": "Angela Peterson",
+    "_avg": {
+      "age": 23
+    }
+  },
+  {
+    "name": "Tony Justin",
+    "_avg": {
+      "age": 27
+    }
+  }
+]
+```
+</CodeResult>
+
+### Filter group results with `having`
+
+`groupBy` results can be filtered with `having`. `having` is different than
+`where`. `where` filters on records, while `having` filters on aggregation
+results.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript {3-7}
+const { data: groupByName } = await teo.artist.groupBy({
+  by: ['name'],
+  having: {
+    age: {
+      _avg: { gt: 25 }
+    }
+  }
+  _avg: {
+    age: true,
+  },
+})
+```
+```json showLineNumbers
+[
+  {
+    "name": "Tony Justin",
+    "_avg": {
+      "age": 27
+    }
+  }
+]
+```
+</CodeResult>
+
+## Distinct values
+
+Teo allows you to remove duplicate records on some fields. `distinct` is often
+used with `select` to identify certain unique combinations of values in the
+rows of your table.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript {3-7}
+const { data: ages } = await teo.artist.findMany({
+  distinct: ['age'],
+  select: {
+    age: true,
+  }
+})
+```
+```json showLineNumbers
+[
+  {
+    "age": 23
+  },
+  {
+    "age": 27
+  }
+]
+```
+</CodeResult>
+
+## Going next
+
+Thank you for reaching here with us. You've already learned the concepts of Teo
+client, feel free to start
+[Teo CLI concepts](/docs/concepts/components/teo-cli). ☕️
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-query-client/relation-queries">Relation queries</PrevArticle>
+</PrevNext>

@@ -1,0 +1,159 @@
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/overview">Overview</a>
+  </span>
+</div>
+
+# Why Teo?
+
+On this page, you'll learn about the motivation for Teo and how it compares to
+other server frameworks and database tools like ORMs and SQL query builders.
+
+With the traditional web frameworks, developers need to declare each route,
+write a lot of boilerplate code to just hook things up. Common required
+features such as filtering, sorting and paging are not provided. Developers
+need to figure out a way to implement it. The more functions developers write,
+the more duplications developers would found. Debugging SQL queries or MongoDB
+aggregations are cumbersome and error prone.
+
+In modern frontend development, implementing data types and interfaces from
+API response feels more like redeclare those model types with another language.
+These precious time can be saved.
+
+Teo makes it easy for developers to setup web server with a declarative
+schema language. It also generates clients for different frontend languages and
+frameworks.
+
+## TLDR
+Teo's main goal is to make application developers more productive when working
+with web servers and databases. Here are a few examples of how Teo achieves
+this:
+
+- **Effective schema language** to write readable data schemas and server files
+- **Powerful and readable logic** with **pipeline**
+- **Type safe query clients** are automatically generated
+- **Bug free** so saves debugging time
+- **Less boilerplate** so developers can focus on the unique logics of their app
+- **Auto completion** in both server code and client code
+
+The remaining parts of this page discuss how Teo compares to existing HTTP
+server frameworks, database tools and query languages.
+
+## Problems with other HTTP frameworks
+
+### Performance and development cost
+
+Frameworks written in Ruby, Python and Node.js are not performant, but faster
+to develop than framework with compiling languages. Frameworks written in Go
+and Java are more performant but it's slow to develop. There aren't great ORMs
+in the ecosystem due to the traits of the languages. C++ has better
+performance, but almost each company that uses it has it's own frameworks and
+implementations.
+
+Teo server core is written in Rust. It's performance excels those in Java and
+Go. Thanks to Teo schema language, developing a Teo app is even faster than
+scripting languages. This makes Teo almost a perfect choice for API
+development.
+
+### Low abstraction on the process
+
+When a HTTP request comes, developers find a matched route, validate arguments,
+perform some trasformations and set some default values. Then developers save
+the data into the database. After that, developers may send out an email or
+start some service through message queues. This is quite the way how an HTTP
+request are handled. This process can be abstracted and reused. However, even
+gigantic frameworks like Ruby on Rails and Django don't handle this for you.
+
+Teo abstract this into object modifications. Let's say, you want to send out an
+email when a new user is created. But how about creating users in a batch? With
+Teo, you write an `@afterSave` callback on the `User` model. When action
+`createMany` is triggered, this callback is called for each of them
+automatically. You don't even need to add another function handler or move
+those email sending code out.
+
+### Moderate learning curve
+
+The HTTP frameworks are easy just for declaring a single route. How to handle
+and read from each requests are depending on how each framework is implemented.
+Passing data from the requests to the underlying ORMs takes effort. Errors are
+hard to handle.
+
+Well, developers don't need to handle these cubersome stuffs with Teo. The
+convension of Teo HTTP requests are clean, neat and reasonable. With Teo,
+developers only care about the models, data and business logics. These models
+and logics are unique to each project.
+
+## Problems with other ORMs or query builders
+
+Simple CRUD actions are complicated with query builders. Aggregations are
+complicated with traditional ORMs. Developers still need to learn their APIs in
+order to get something simple done. When developers are typing, they provide
+some level of intellicense but they don't auto complete how to organize the
+function calls to get developers' things done. Developers need to search within
+their documentation.
+
+In conclusion, the problems are listed as:
+- Hard to use and understand
+- Slow development speed
+- Always search through their documentations to get things simple done
+- Limitations on complicated usage
+- Hard to maintain production code
+
+## Problems with other query languages
+
+The high level abstration of HTTP requests is query language. Instead of each
+server has it's own way, a query language defines standard on how to send
+requests and get responses. GraphQL is one of them and it's popular. We use
+GraphQL as an example of other query languages.
+
+### Hard to write server end code
+
+GraphQL doesn't implement the server. It's just a standard. Instead, developers
+need to follow it's standard to implement the server with community libraries.
+Community implemented libraries and plugins are differ in quality and
+maintainability. Developers need to select and organize them into their own
+projects.
+
+Teo implements the server for you. Therefore, you don't need to worry about
+how to organize and architect the server. You only declare the models in the
+schema file, fields and callbacks which are related to the core of your
+transactions and business.
+
+### Performance issue
+
+GraphQL has performance issue when a request nests too much levels. It fetches
+each relation to the database separately. GraphQL's field selection is not
+real field selection in most cases. The database query still has each field
+fetched.
+
+Teo managed to fetch the requested resources in a single query to the
+underlying database. It's ultra performant.
+
+### Hard to write frontend code
+
+With GraphQL, frontend developers need to create a lot of query files and
+strings in order to perform the requests. It's hard to write and hard to use.
+
+With Teo, you can select any fields and include any relationships just like
+GraphQL but with plain JSON requests. Frontend query builders are not needed.
+It's easy to write and easy to debug.
+
+## Does Teo have limitations?
+
+Teo is an web server, not an ORM mapper. With Teo, you can do input
+sanitization, validation and transformation. You can control which field can be
+seen or queried by which one. You can define permission rules on CRUD actions.
+Teo supports **pipeline**, custom URL prefix, action disabling and user
+sessions.
+
+Join our community and get connected with us. Let us know if existing features
+don't suit your needs.
+
+## Teo makes developer productive
+
+Teo makes developer productive by introduced innovative concepts. To learn
+them, head to [**Concepts**](/docs/concepts).

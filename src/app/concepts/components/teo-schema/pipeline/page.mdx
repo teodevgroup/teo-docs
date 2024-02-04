@@ -1,0 +1,93 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Pipeline
+
+Pipeline is an innovative and powerful tool and it provides data validation,
+transformation, and custom callbacks. Developers can attach pipelines both to
+models and to fields.
+
+## A simple pipeline
+
+Let's see a simple pipeline. This is field's `@onSet` pipeline. When a new
+value is set on this field, firstly, it trims leading and trailing whitespaces.
+Then validates its content against an email regular expression.
+
+```teo showLineNumbers
+model Demo {
+  @onSet($trim.isEmail)
+  email: String
+}
+```
+
+## Stages
+
+There are various stages to trigger pipelines, common stages include:
+
+* Model stages
+  * `beforeSave` before this object is saved into the database
+  * `afterSave` after this object is saved into the database
+  * `beforeDelete` before this object is deleted from the database
+  * `afterDelete` after this object is deleted from the database
+* Field stages
+  * `onSet` when a new value is set
+  * `onSave` when this object is being saved into the database
+  * `identityChecker` is for identity checker fields only
+  * `onOutput` when a value is being outputed into the result JSON
+
+## Items
+
+For a list of supported pipeline items, view
+[Pipeline](//docs/reference/api-reference/teo-schema-reference#pipeline)
+<span class="concept">REFERENCE</span>.
+
+## Custom functions
+
+A custom function can be provided to transform or validate values.
+
+## Logical modifiers
+
+A simple modifier is not enough sometimes when your logic goes complicated.
+There are a lot of builtin modifiers such as `if` and `any`.
+
+```teo showLineNumbers
+/// @name Password
+/// User's password.
+@writeonly @recordPrevious @identityChecker($bcryptVerify($self.get(.password)))
+@onSet($hasLength(8...16).isSecurePassword.bcryptSalt.when(.update, $validate($any(
+  $self.get(.oldPassword).exists.bcryptVerify($self.previous(.password)),
+  $self.get(.passwordResetToken).exists.eq($self.get(.passwordResetTokenFromUser).exists).self.set(.passwordResetToken, null)
+))))
+password: String
+```
+
+In this example, `$validate` restores context value after validation. `$any`
+is valid if one of its modifiers is valid.
+
+## Choose a modifier
+
+Teo provides a lot of builtin modifiers, use them when there is one that suits
+your need. Check server API documentation for a full list of modifiers.
+
+## Going next
+
+In the next article, [**identity**](/docs/concepts/components/teo-schema/identity)
+is introduced. Teo allows users of different models to sign in.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/action">Action</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/identity">Identty</NextArticle>
+</PrevNext>

@@ -1,0 +1,100 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Guard
+
+Guards are role based access control. Instead of defining roles, we
+describe it in places we need it. This is more flexible, readable and
+descriptive.
+
+Permissions include:
+- `canMutate` whether this person can create, update or delete
+- `canRead` whether this person can read
+
+## Model guard
+
+A model guard protects API on the model level.
+
+```teo showLineNumbers
+@canRead($identity($is($self)))
+@canMutate(
+  $when(.update, $identity($is($self)))
+  .when(.delete, $identity($is($self)))
+)
+@identity
+model Rider {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @identity
+  email: String
+  @writeonly @identityChecker($bcryptVerify($self.get(.password)))
+  @onSet($hasLength(8...16).isSecurePassword.bcryptSalt)
+  password: String
+  @relation(fields: .id, references: .riderId)
+  orders: Order[]
+}
+
+@canRead($identity($is($self, .rider)))
+@canMutate(
+  $when(.update, $identity($is($self, .rider)))
+  .when(.delete, $identity($is($self, .rider)))
+  .when(.create, $identity($isA(Rider)))
+)
+model Order {
+  @id @autoIncrement @readonly
+  id: Int
+  @foreignKey
+  riderId: Int
+  @relation(fields: .riderId, references: .id)
+  rider: Rider
+}
+```
+
+In this example, only rider can delete or update him/herself. Only order owner
+can update or delete his/her orders.
+
+## Field guard
+
+A field guard protects API on the field level.
+
+A field has permissions, too. Field value is removed from the output if a user
+has model read permission but doesn't have field read permission. `delete`
+action is not triggered on fields.
+
+```teo showLineNumbers
+model Order {
+  @id @autoIncrement @readonly
+  id: Int
+  @canMutate($identity($is($self, .rider)))
+  amount: Int
+  @foreignKey
+  riderId: Int
+  @relation(fields: .riderId, references: .id)
+  rider: Rider
+}
+```
+
+In this example, only order's owner can change the amount.
+
+## Going next
+
+Teo read and parse schemas, generate model entities and query clients. See
+[**generator**](/docs/concepts/components/teo-schema/generator).
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/identity">Identity</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/generator">Generator</NextArticle>
+</PrevNext>

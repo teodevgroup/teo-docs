@@ -1,0 +1,124 @@
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/guides">Guides</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/guides/server-guides">Server guides</a>
+  </span>
+</div>
+
+# Route handlers
+
+When builtin handlers cannot satisfy business need, custom route handlers come to the rescue.
+The custom route handler requires entity generation and programming.
+
+## Model route handler
+
+Let's start with a custom model with a custom route handler.
+
+```teo
+entity rust {
+    provider: .rust,
+    dest: "./src/entities"
+}
+
+model User {
+    @id @autoIncrement @readonly
+    id: Int
+
+    declare handler myHandler(CreateArgs<User>): Result<User>
+}
+```
+
+Run entity generation:
+
+```sh
+cargo teo generate entity
+```
+
+Write logics for the handler:
+
+```rust
+app.main_namespace_mut().define_model_handler_group("User", |group| {
+    group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx, create_args: UserCreateArgs| async move {
+        let user = teo.user().new(create_args.create()).await?;
+        Ok::<Response, path::Error>(Response::data(user.to_teon().await?))
+    });
+});
+```
+
+## Custom route handler group
+
+Some handlers may not belong to a model. In these cases, use a custom handler group instead.
+
+```teo
+entity rust {
+    provider .rust
+    dest "./src/entities"
+}
+
+model User {
+    @id @autoIncrement @readonly
+    id: Int
+
+    declare handler myHandler(CreateArgs<User>): Result<User>
+}
+
+declare handler group MyHandlerGroup {
+    declare handler myHandler(CreateArgs<User>): Result<User>
+}
+```
+
+In the programming side, alter `define_model_handler_group` with `define_handler_group`.
+
+```rust
+app.main_namespace_mut().define_handler_group("MyHandler", |group| {
+    group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx, create_args: UserCreateArgs| async move {
+        let user = teo.user().new(create_args.create()).await?;
+        Ok::<Response, path::Error>(Response::data(user.to_teon().await?))
+    });
+});
+```
+
+## Custom HTTP method
+
+Teo supports custom HTTP methods.
+
+```teo
+declare handler group MyHandlerGroup {
+    @method(.get)
+    declare handler myHandler(Any): Result<User>
+}
+```
+
+## Path parameters
+
+Teo supports path parameters.
+
+```teo
+declare handler group MyHandlerGroup {
+    @method(.get) @path("/my-route/:id", ignorePrefix: true)
+    declare handler myHandler(Any): Result<User>
+}
+```
+
+To retrieve path parameters, access it from the context.
+
+```rust
+app.main_namespace_mut().define_handler_group("MyHandlerGroup", |group| {
+    group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
+        let captures = ctx.handler_match().captures();
+        Ok::<Response, path::Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+    });
+});
+```
+
+If a parameter contains `/`, use `*` instead of `:`.
+
+```teo
+declare handler group MyHandlerGroup {
+    @method(.get) @path("/my-route/*path", ignorePrefix: true)
+    declare handler myHandler(Any): Result<User>
+}
+```

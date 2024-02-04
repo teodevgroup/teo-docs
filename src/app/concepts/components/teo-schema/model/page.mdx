@@ -1,0 +1,82 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Model
+
+> This guide introduces the concept of model used in Teo server implementation.
+> To understand how to define a model to suit your business requirements, read
+> our guide article [Data modeling](/docs/guides/server-guides/data-modeling).
+> To get a list of model APIs, check our API documentation.
+
+A model is mapped into a table or collection in the underlying database, with
+each of its fields mapped to a table column. This is similar to the ORM
+concepts. Besides, a model has a list of handlers which is equivalent to HTTP
+endpoints in traditional HTTP frameworks.
+
+## Declare a model
+
+A model is defined in Teo schema language like this.
+
+```teo showLineNumbers
+/// @name Platform User
+///
+/// Users on our platform.
+model User {
+  @id
+  id: Int
+  @unique
+  email: String
+  name: String
+  @default(18)
+  age: Int
+}
+```
+
+A model has a primary index, at least a primary field. It optionally has a
+documented `@name`. It can have any number of [indexes](/docs/concepts/components/teo-schema/index-concept) <span class="concept">CONCEPT</span>.
+
+## Virtual Model
+
+A virtual model is a model which don't have a database table. It only supports
+`create` and `createMany` action. If it has identity defined, `signIn` and
+`identity` are also supported. To understand actions, check
+[Action](/docs/concepts/components/teo-schema/action)
+<span class="concept">CONCEPT</span> topic.
+
+A virtual model cannot have relationships since it's not existing in the
+database. A virtual model also doesn't need a primary key.
+
+```teo showLineNumbers
+@virtual @beforeSave($self.validate("custom-programming-validator"))
+model User {
+  email: String
+  password: String
+}
+```
+
+In this example, the virtual users are created with custom code, and
+authenticated with custom code, too.
+
+## Going next
+
+The next topic in this episode introduces
+[**field**](/docs/concepts/components/teo-schema/field), which represents database
+table column.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/connector">Connector</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/field">Field</NextArticle>
+</PrevNext>

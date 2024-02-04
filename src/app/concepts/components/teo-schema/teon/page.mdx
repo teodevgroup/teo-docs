@@ -1,0 +1,53 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Tson
+
+Tson is Teo extended Json for working with Teo. Teo has data types such as
+`ObjectId`, `Date` and `DateTime` which Json cannot express. The usage is
+almost the same as rust's famous
+[`serde_json`](https://github.com/serde-rs/json). Most of the times, developers
+don't need to interact with Tson APIs. But if custom callbacks are provided,
+developers need to call object methods and tson APIs are exposed.
+
+## Usages
+
+A tson hashmap is declared with `tson!({})`.
+
+```rust
+tson!({"key": 1, "value": 1})
+```
+
+A tson vec is declared with `tson!([])`.
+
+```rust
+tson!([true, false])
+```
+
+A tson null is declared with `tson!(null)`.
+
+```rust
+tson!(null)
+```
+
+## Going next
+
+The next topic in this episode is plugin.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/permissions">Permissions</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/plugin">Plugin</NextArticle>
+</PrevNext>

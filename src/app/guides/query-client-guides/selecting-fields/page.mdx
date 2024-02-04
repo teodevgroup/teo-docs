@@ -1,0 +1,71 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../components/docs/PrevNext'
+import CodeResult from '../../../../components/docs/CodeResult'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/guides">Guides</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/guides/query-client-guides">Query client guides</a>
+  </span>
+</div>
+
+# Selecting fields
+
+By default, a query returns all readable scalar fields. Selecting only the
+fields that you require rather than relying on the default selection set can
+reduce the size of the response and improve query speed.
+
+> Teo's frontend API design is slightly different from
+> [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/select-fields).
+> To including relations, see
+> [Relation queries](/docs/concepts/components/teo-query-client/relation-queries).
+
+The selection can be nested inside related relations, too. The following query
+returns only artist name and song name.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artists } = await teo.artist.findMany({
+  select: {
+    name: true
+  },
+  include: {
+    songs: {
+      select: {
+        name: true
+      }
+    },
+  }
+})
+```
+```json showLineNumbers
+[
+  {
+    "name": "Angela Peterson",
+    "songs": [
+      {
+        "name": "Forever in Safe"
+      },
+      {
+        "name": "Fairy Tale"
+      }
+    ]
+  },
+  {
+    "name": "Tony Justin",
+    "songs": []
+  }
+]
+```
+</CodeResult>
+
+## Going next
+
+The next topic introduces relation queries.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-query-client/pagination">Pagination</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-query-client/relation-queries">Relation queries</NextArticle>
+</PrevNext>

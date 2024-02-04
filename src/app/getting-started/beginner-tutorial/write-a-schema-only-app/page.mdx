@@ -1,0 +1,541 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../components/docs/PrevNext'
+import CodeResult from '../../../../components/docs/CodeResult'
+import {
+    TripleSelector, RustDoc, NodeJSDoc, PythonDoc, GoDoc, JavaDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../components/docs/Selector'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/getting-started">Getting started</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/getting-started/beginner-tutorial">Beginner tutorial</a>
+  </span>
+</div>
+
+# Write a schema only app
+
+Let's start with the simplest use case: Install Teo and start a schema only app.
+By the end of this tutorial, you gain understanding of how Teo schema composites
+and how to write them.
+
+## Installation
+
+Install Rust if it hasn't been installed. This bash command is copied from its 
+[official site](https://www.rust-lang.org/tools/install). This is the easiest 
+and recommended way to install Rust.
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+When rust is installed, the package manager `cargo` is in the execution path. 
+Install Teo command line tool with it into the global space. 
+
+```sh
+cargo install teo
+```
+
+Wait for a while and have a rest, cargo is compiling and building Teo. Run 
+this command to verify its installation:
+
+<CodeResult name="output" defaultOpen={true}>
+```sh
+cargo teo --version
+```
+```txt
+teo Teo 0.1.0 (Rust 1.75.0) [CLI]
+```
+</CodeResult>
+
+If you see the output which prints the version number, nice job, Teo is 
+successfully installed. If Teo isn't installed successfully and you cannot
+figure it out, leave us an [issue on GitHub](https://github.com/teocloud/teo/issues).
+We'll investigate and handle it for you.
+
+## Editor plugin
+
+We highly recommand you to use [VSCode](https://code.visualstudio.com) as we created 
+a plugin for syntax highlight, code diagnostics, auto completion and jump to definition.
+Download our plugin from [VSCode marketplace](https://marketplace.visualstudio.com/items?itemName=yeannylam.teo-vscode).
+
+## Write your first schema
+
+Create an empty directory and create a file named `schema.teo`.
+
+```sh
+mkdir hello-teo
+cd hello-teo
+touch schema.teo
+```
+
+Paste these content into the file.
+
+```teo showLineNumbers
+connector {
+  provider: .sqlite,
+  url: "sqlite::memory:"
+}
+
+server {
+  bind: ("0.0.0.0", 5050)
+}
+
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail))
+  email: String
+  name: String?
+  @relation(fields: .id, references: .authorId)
+  posts: Post[]
+}
+ 
+model Post {
+  @id @autoIncrement @readonly
+  id: Int
+  title: String
+  content: String?
+  @default(false)
+  published: Bool
+  @foreignKey
+  authorId: Int
+  @relation(fields: .authorId, references: .id)
+  author: User
+}
+```
+
+Let's explain what this schema describes.
+
+* The `connector` block defines to which database this server connects. The
+content of the block is just a plain object literal with some predefined key
+value pairs. The expression starts with a `.` is enum variant literal in Teo
+schema. It's inspired by Apple's Swift programming language and is widely used
+in schema. The benefits of prefixing with a dot is that it's easy to write and 
+complete. Obviously, this server app connects to an in-memory SQLite database.
+
+* The `server` block defines how the server behaves. The syntax is the same with
+`connector`. These blocks are for configuration, and they are called config blocks
+in Teo. Guess what it does? The answer is that the server will listen at port 
+`5050`. The thing wrapped by a pair of parenthesis is tuple type. Teo supports a
+bunch of builtin types including ranges and tuples. Anyway, there are mostly used
+in config blocks. 
+
+* The `model` keyword defines models. A model represents a database table and a
+set of auto synthesized HTTP requests to interact with it. The things start with a 
+`@` is called decorator. In Teo schema, plenty of things can be decorated including 
+models, model fields, model relations. A decorator modifies the behavior of the 
+decorated item. The thing start with a `$` is called pipeline. There are one or more
+pipeline items in a pipeline. A pipeline validates and transforms its input value
+into its output value, or throw errors if value is invalid. Look at this part:
+`$if($presents, $isEmail)`. It means when an email value is set, if the value is not
+null, which is presented, validate the value against `$isEmail`. If the value passed
+in is not a valid email address, revoke this value and throw an error to the 
+frontend requester. The `@relation` decorator defines a model relation. In this case,
+a user has many posts and a post has an author. The `fields` argument and `references`
+argument takes 1 or more primitive fields on the model. These argument describes by
+which fields the models are connected. The trailing `?` in a type expression indicates
+the value is optional.
+
+In Teo schema, trailing comma is allowed wherever comma is used. The whole schema 
+langauge is inspired by a lot of languages like TypeScript, Swift, GraphQL and Prisma.
+When we design this, we want developers to feel familiar. We take advantages from 
+different programming languages, combine them with our descriptive declarations.
+Teo schema is quite easy and not something to learn with. If you have trouble with
+understanding Teo schema, take it easy, join our [Discord group](/discord), there 
+are people available to help you.
+
+## Add models with many-to-many relations
+
+Append these code to the schema file.
+
+```teo showLineNumbers
+model Artist {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  @relation(through: Perform, local: .artist, foreign: .song)
+  songs: Song[]
+}
+
+model Song {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  @relation(through: Perform, local: .song, foreign: .artist)
+  artists: Artist[]
+}
+
+@id([.songId, .artistId])
+model Perform {
+  @foreignKey
+  artistId: Int
+  @foreignKey
+  songId: Int
+  @relation(fields: .songId, references: .id)
+  song: Song
+  @relation(fields: .artistId, references: .id)
+  artist: Artist
+}
+```
+
+In Teo, unlike Ruby on Rails or Prisma, join table of a many-to-many relation 
+is declared explicitly. In a many-to-many relation, `@relation` takes a join
+model and two direct relations defined on join model. It's quite clear to 
+write everything out in such a short lines of code. Join tables sometimes is
+meaningful on their own. With it explicitly declared, database migration won't
+be hard when you are adding fields and contents to it. Notice the id of the 
+model `Perform` is declared at the level of model. This is a compound primary 
+key.
+
+## Run the server
+
+Now run this command to start the server.
+
+<CodeResult name="output" defaultOpen={true}>
+```sh
+cargo teo serve
+```
+```txt
+[2023-12-20 04:58:40] mysql connector connected for `main` at "mysql://127.0.0.1:3306/helloteo"
+[2023-12-20 04:58:40] Teo 0.0.63 (Rust 1.75.0, CLI)
+[2023-12-20 04:58:40] listening on port 5050
+```
+</CodeResult>
+
+If you see the output likt above, congratulation, it starts successfully.
+If it cannot start successfully, most of the times, the reason is the 
+database setup and configuration.
+
+Now our server is ready to listen and handle requests.
+
+## Create request
+
+Send this request body to `/User/create`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "create": {
+    "email": "ada@teocloud.io",
+    "name": "Ada",
+    "posts": {
+      "create": [
+        {
+          "title": "Introducing Teo",
+          "content": "This post introduces Teo."
+        },
+        {
+          "title": "The next generation framework",
+          "content": "Use the next generation technology."
+        }
+      ]
+    }
+  },
+  "include": {
+    "posts": true
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "ada@teocloud.io",
+    "name": "Ada",
+    "posts": [
+      {
+        "id": 1,
+        "title": "Introducing Teo",
+        "content": "This post introduces Teo.",
+        "published": false,
+        "authorId": 1
+      },
+      {
+        "id": 2,
+        "title": "The next generation framework",
+        "content": "Use the next generation technology.",
+        "published": false,
+        "authorId": 1
+      }
+    ]
+  }
+}
+```
+</CodeResult>
+
+In this request, we've created a user with two related posts. If you request this again,
+you will get a unique constraint violation error. This is the designated behavior as 
+we've declared `email` field of user to be `@unique`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```text
+send again...
+```
+```json
+{
+  "error": {
+    "type": "ValueError",
+    "message": "value is invalid",
+    "fields": {
+      "create": "unique value duplicated: email"
+    }
+  }
+}
+```
+</CodeResult>
+
+Send this request to `/Artist/createMany`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "create": [
+    {
+      "name": "Ed Sheeran",
+      "songs": {
+        "create": [
+          {
+            "name": "Perfect"
+          },
+          {
+            "name": "Eyes Closed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Taylor Swift",
+      "songs": {
+        "create": [
+          {
+            "name": "Love Story"
+          },
+          {
+            "name": "Red"
+          }
+        ]
+      }
+    }
+  ],
+  "include": {
+    "songs": true
+  }
+}
+```
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Ed Sheeran",
+      "songs": [
+        {
+          "id": 1,
+          "name": "Perfect"
+        },
+        {
+          "id": 2,
+          "name": "Eyes Closed"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Taylor Swift",
+      "songs": [
+        {
+          "id": 3,
+          "name": "Love Story"
+        },
+        {
+          "id": 4,
+          "name": "Red"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "count": 2
+  }
+}
+```
+</CodeResult>
+
+We created two artists with two songs each. In this request, instead of using `create`
+handler, we use `createMany`. With `createMany`, the arguments become an array of inputs.
+We can create many database records in a single batch. If any record creation failed, 
+the transaction mechanism is triggered.
+
+## Find many request
+
+Let's query what we've created before. Send this request body to `/Song/findMany`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "include": {
+    "artists": {
+      "select": {
+        "name": true
+      }
+    }
+  }
+}
+```
+```json  
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Perfect",
+      "artists": [
+        {
+          "name": "Ed Sheeran"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Eyes Closed",
+      "artists": [
+        {
+          "name": "Ed Sheeran"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Love Story",
+      "artists": [
+        {
+          "name": "Taylor Swift"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Red",
+      "artists": [
+        {
+          "name": "Taylor Swift"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "count": 4
+  }
+}
+```
+</CodeResult>
+
+We limited the returned value with `select`. Only selected fields are returned.
+We can query further by specify some `where` conditions.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "where": {
+    "name": {
+      "startsWith": "Perfect"
+    }
+  },
+  "include": {
+    "artists": {
+      "where": {
+        "name": "Not exist"
+      },
+      "select": {
+        "name": true
+      }
+    }
+  }
+}
+```
+```json     
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Perfect",
+      "artists": []
+    }
+  ],
+  "meta": {
+    "count": 1
+  }
+}
+```
+</CodeResult>
+
+In this request, only 1 song is returned. Although we include the artists in the 
+response, the only artist that is related to the song is filtered out by a where condition.
+
+## Update requests
+
+To perform a update request, combine `where` and `update` together in the 
+request body and send it to `/Song/update`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "where": {
+    "id": 1
+  },
+  "update": {
+    "name": "Perfect Symphony",
+    "artists": {
+      "update": {
+        "where": {
+          "id": 1
+        },
+        "update": {
+          "name": "Richard Clayderman"
+        }
+      }
+    }
+  },
+  "include": {
+    "artists": true
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "Perfect Symphony",
+    "artists": [
+      {
+        "id": 1,
+        "name": "Richard Clayderman"
+      }
+    ]
+  }
+}
+```
+</CodeResult>
+
+We can nested update related records with Teo. If any update is invalid, 
+it rollbacks.
+
+## Summary
+
+There are a lot of builtin model route handlers including `delete`, `upsert`, 
+`copy`, `createMany`, `findFirst`, `findUnique` and so on. Relation queries
+are supported except `delete` and `deleteMany`.
+
+Hope it's not hard to catch up with us. Teo is quite easy and simple to use.
+Find us in [our Discord group](/discord) if you have any troubles.
+
+In the next tutorial in this series, you'll learn how to write route handlers
+with Teo. Programming code is necessary to write custom business logics.
+
+<PrevNext>
+  <div></div>
+  <NextArticle href="/docs/getting-started/beginner-tutorial/write-route-handlers">Write route handlers</NextArticle>
+</PrevNext>

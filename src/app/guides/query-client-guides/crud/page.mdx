@@ -1,0 +1,516 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../components/docs/PrevNext'
+import CodeResult from '../../../../components/docs/CodeResult'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/guides">Guides</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/guides/query-client-guides">Query client guides</a>
+  </span>
+</div>
+
+# CRUD
+
+This topic describes how to perform CRUD operations with your generated Teo
+frontend client. CRUD is an acronym that stands for:
+
+- [Create](#create)
+- [Read](#read)
+- [Update](#update)
+- [Delete](#delete)
+
+Refer to the Teo Client API reference documentation for detailed explanations
+of each method.
+
+## Example server
+
+All examples are based on the following server schema definition:
+
+```teo showLineNumbers title="schema.teo"
+connector {
+  provider: .sqlite,
+  url: "sqlite::memory:"
+}
+
+server {
+  bind: ("0.0.0.0", 5100)
+}
+
+client ts {
+  provider: .typeScript,
+  dest: "../hello-client/",
+  package: true,
+  host: "http://127.0.0.1:5001",
+  gitCommit: true
+}
+
+model Artist {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  age: Int?
+  @relation(through: ArtistAndSong, local: .artist, foreign: .song)
+  songs: Song[]
+}
+
+model Song {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  @default(false)
+  published: Bool
+  @relation(through: ArtistAndSong, local: .song, foreign: .artist)
+  artists: Artist[]
+}
+
+@id([.artistId, .songId])
+model ArtistAndSong {
+  @foreignKey
+  artistId: Int
+  @foreignKey
+  songId: Int
+  @relation(fields: .artistId, references: .id)
+  artist: Artist
+  @relation(fields: .songId, references: .id)
+  song: Song
+}
+```
+
+Use the `teo generate client` command to generate the TypeScript library and
+navigate to it.
+
+## Create
+
+### Create a single record
+
+The following query creates a single artist with two fields:
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artist } = await teo.artist.create({
+  create: {
+    name: 'Michael Ong',
+    age: 20,
+  },
+})
+```
+```json showLineNumbers
+{
+  "id": 1,
+  "name": "Michael Ong",
+  "age": 20
+}
+```
+</CodeResult>
+
+### Create multiple records
+
+The following `createMany` query creates multiple artists.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artists } = await teo.artist.createMany({
+  create: [
+    {
+      name: 'Charlene Ong',
+      age: 20,
+    },
+    {
+      name: 'Charlie Law',
+      age: 24,
+    },
+  ],
+})
+```
+```json showLineNumbers
+[
+  {
+    "id": 2,
+    "name": "Charlene Ong",
+    "age": 20
+  },
+  {
+    "id": 3,
+    "name": "Charlie Law",
+    "age": 24
+  }
+]
+```
+</CodeResult>
+
+### Create nested records
+
+The following `createMany` query create an artist with related songs.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artist } = await teo.artist.create({
+  create: {
+    name: 'Angela Peterson',
+    age: 23,
+    songs: {
+      create: [
+        {
+          name: 'Forever in Safe',
+          published: true,
+        },
+        {
+          name: 'Fairy Tale',
+          published: true,
+        }
+      ]
+    }
+  },
+  include: {
+    songs: true,
+  }
+})
+```
+```json showLineNumbers
+{
+  "id": 4,
+  "name": "Angela Peterson",
+  "age": 23,
+  "songs": [
+    {
+      "id": 1,
+      "name": "Forever in Safe",
+      "published": true
+    },
+    {
+      "id": 2,
+      "name": "Fairy Tale",
+      "published": true
+    }
+  ]
+}
+```
+</CodeResult>
+
+## Read
+
+### Get record by ID or unique identifier
+
+The following queries return a single record by unique identifier or ID:
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+// by unique identifier
+const { data: artist } = await teo.artist.findUnique({
+  where: {
+    name: 'Michael Ong',
+  }
+})
+// by id
+const { data: artist } = await teo.artist.findUnique({
+  where: {
+    id: 1,
+  }
+})
+```
+```json showLineNumbers
+{
+  "id": 1,
+  "name": "Michael Ong",
+  "age": 20
+}
+```
+</CodeResult>
+
+### Get matched records
+
+The following query return filtered records. Without filtering and pagination
+arguments, `findMany` returns all records.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const result = await teo.artist.findMany({
+  where: {
+    age: { lte: 20 }
+  }
+})
+```
+```json showLineNumbers
+{
+  "meta": {
+    "count": 2
+  },
+  "data": [
+    {
+      "id": 1,
+      "name": "Michael Ong",
+      "age": 20
+    },
+    {
+      "id": 2,
+      "name": "Charlene Ong",
+      "age": 20
+    }
+  ]
+}
+```
+</CodeResult>
+
+### Get the first matched record
+
+The following query returns the first matched record.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artist } = await teo.artist.findFirst({
+  where: {
+    age: { lte: 20 }
+  }
+})
+```
+```json showLineNumbers
+{
+  "id": 1,
+  "name": "Michael Ong",
+  "age": 20
+}
+```
+</CodeResult>
+
+## Update
+
+### Update a single record
+
+The following query updates a matched record.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artist } = await teo.artist.update({
+  where: {
+    id: 1
+  },
+  update: {
+    age: 21
+  }
+})
+```
+```json showLineNumbers
+{
+  "id": 1,
+  "name": "Michael Ong",
+  "age": 21
+}
+```
+</CodeResult>
+
+### Update multiple records
+
+The following query updates 0 or more matched records.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artists } = await teo.artist.updateMany({
+  where: {
+    age: { lte: 21 }
+  },
+  update: {
+    age: 20
+  }
+})
+```
+```json showLineNumbers
+[
+  {
+    "id": 1,
+    "name": "Michael Ong",
+    "age": 20
+  },
+  {
+    "id": 2,
+    "name": "Charlene Ong",
+    "age": 20
+  }
+]
+```
+</CodeResult>
+
+### Update or create a record
+
+The following query updates matched unique record if it exists otherwise create
+a new one.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+// you can run this more than once and the result is the same
+const { data: artist } = await teo.artist.upsert({
+  where: {
+    name: "Tony Justin"
+  },
+  update: {
+    name: "Tony Justin",
+    age: 26
+  },
+  create: {
+    name: "Tony Justin",
+    age: 26
+  }
+})
+```
+```json showLineNumbers
+{
+  "id": 5,
+  "name": "Tony Justin",
+  "age": 26
+}
+```
+</CodeResult>
+
+### Atomic updation
+
+A number field can be updated with atomic updator.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artist } = await teo.artist.update({
+  where: {
+    name: "Tony Justin"
+  },
+  update: {
+    age: { increment: 1 }
+  },
+})
+```
+```json showLineNumbers
+{
+  "id": 5,
+  "name": "Tony Justin",
+  "age": 27
+}
+```
+</CodeResult>
+
+### Connect and disconnect records
+
+The following query connects records.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artist } = await teo.artist.update({
+  where: {
+    name: "Tony Justin"
+  },
+  update: {
+    songs: {
+      connect: {
+        id: 1
+      }
+    }
+  },
+  include: {
+    songs: true
+  }
+})
+```
+```json showLineNumbers
+{
+  "id": 5,
+  "name": "Tony Justin",
+  "age": 27,
+  "songs": [
+    {
+      "id": 1,
+      "name": "Forever in Safe",
+      "published": true
+    }
+  ]
+}
+```
+</CodeResult>
+
+The following query disconnects records.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artist } = await teo.artist.update({
+  where: {
+    name: "Tony Justin"
+  },
+  update: {
+    songs: {
+      disconnect: {
+        id: 1
+      }
+    }
+  },
+  include: {
+    songs: true
+  }
+})
+```
+```json showLineNumbers
+{
+  "id": 5,
+  "name": "Tony Justin",
+  "age": 27,
+  "songs": []
+}
+```
+</CodeResult>
+
+## Delete
+
+### Delete a single record
+
+This query deletes a single record.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artist } = await teo.artist.delete({
+  where: {
+    id: 3
+  }
+})
+```
+```json showLineNumbers
+{
+  "id": 3,
+  "name": "Charlie Law",
+  "age": 24
+}
+```
+</CodeResult>
+
+### Delete multiple records
+
+This query deletes matched records. Without filtering and pagination arguments,
+`deleteMany` deletes all records.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript showLineNumbers
+const { data: artists } = await teo.artist.deleteMany({
+  where: {
+    id: { lte: 2 }
+  }
+})
+```
+```json showLineNumbers
+[
+  {
+    "id": 1,
+    "name": "Michael Ong",
+    "age": 20
+  },
+  {
+    "id": 2,
+    "name": "Charlene Ong",
+    "age": 20
+  }
+]
+```
+</CodeResult>
+
+## Going next
+
+The next topic introduces filtering and sorting, which is crutial for querying.
+
+<PrevNext>
+  <div></div>
+  <NextArticle href="/docs/concepts/components/teo-query-client/filtering-and-sorting">Filtering and sorting</NextArticle>
+</PrevNext>

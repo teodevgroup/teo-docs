@@ -1,0 +1,98 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Action
+
+Traditional HTTP frameworks expose endpoints. Actions are Teo's HTTP endpoints.
+Action can be nested, too. For example, to fetch a user with his posts, nested
+`findMany` on post is also triggered. In the future, other types of
+communications may be supported.
+
+## HTTP request handlers
+
+When working with HTTP requests, the requests are mapped into handler actions
+with predefined rules.
+
+When Teo's frontend packages are building a request url, they use a form of
+`/{prefix}/{model-name}/action/{actionAame}`. For example, to access
+`findMany` on `users`, we request this url: `/users/action/findMany`.
+
+The actions supported by Teo are:
+
+* `findUnique` find a unique object
+* `findMany` find many objects
+* `findFirst` find one object
+* `create` create a new object
+* `update` update an existing object
+* `upsert` create an existing object if it doesn't exist
+* `copy` copy an existing object into a new one
+* `delete` delete an existing object
+* `createMany` create many objects
+* `updateMany` update many objects
+* `copyMany` create many objects by copying
+* `deleteMany` delete many objects
+* `count` count matched objects
+* `aggregate` view statistics data on this model
+* `groupBy` view grouped statistics data on this model
+* `signIn` create a new session of this identity
+* `identity` get the identity which is represented by the auth token
+
+> `copy` and `copyMany` are not supported yet.
+
+## Disabling
+
+Some of the actions exposed by Teo may not be needed for your business
+requirements. You can disable some of them with `@disable` decorator.
+
+```teo showLineNumbers
+@disable(.update | .delete)
+model Demo {
+
+}
+```
+
+In this example, objects of this model cannot be updated or deleted. Once
+created, it is what it is.
+
+## Action transformer
+
+Developers can modify action's passed in parameter with a pipeline.
+
+```teo showLineNumbers /@action/
+@action($when(.delete, $set("update", { "deletedAt": $now }).redirect(.update))
+        .when(.find, $set(["where", "deletedAt"], null))
+        .when(.find | .single, $redirect(.find | .first)))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  deletedAt: DateTime?
+}
+```
+
+In this example, soft delete is implemented with Teo's powerful action
+transformer.
+
+## Going next
+
+The next topic introduces
+[**pipeline**](/docs/concepts/components/teo-server/pipeline),
+which brings business logic support for our model definitions and actions.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/index-concept">Index</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/pipeline">Pipeline</NextArticle>
+</PrevNext>

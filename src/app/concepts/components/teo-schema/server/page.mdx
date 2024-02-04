@@ -1,0 +1,60 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Server
+
+Teo provides a unified way to specify server configurations.
+
+## Server IP and port
+
+Teo server's IP and port are binded through `server.bind` config item.
+
+```rust showLineNumbers
+server {
+  bind: ("0.0.0.0", 5100)
+}
+```
+
+## Url prefix
+
+Teo server can have a url path prefix. All urls are prefixed with this prefix.
+
+```teo showLineNumbers
+server {
+  pathPrefix "/v1"
+}
+```
+
+## JWT secret
+
+Teo uses JWT for authentication. If identities and guards are used, developer
+need to provide a secure and unguessable secret inside server config block.
+
+```teo showLineNumbers
+server {
+  jwtSecret ENV["JWT_SECRET"] ?? "top-secret"
+}
+```
+
+## Going next
+
+Thank you for reaching here with us. You've already learned the concepts of Teo
+schema, feel free to start
+[Teo client concepts](/docs/concepts/components/teo-client). ☕️
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/generator">Generator</PrevArticle>
+</PrevNext>

@@ -1,0 +1,83 @@
+import Image from 'next/image'
+import { PrevNext, PrevArticle, NextArticle } from '../../../../components/docs/PrevNext'
+import CodeResult from '../../../../components/docs/CodeResult'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/guides">Guides</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/guides/query-client-guides">Query client guides</a>
+  </span>
+</div>
+
+# Pagination
+
+Teo supports offset pagination, page size based pagination and cursor based
+pagination.
+
+## Offset pagination
+
+Offset pagination uses `skip` and `take` to skip a certain number of results
+and select a limited range. The following query skips the first 2 records
+and returns records 3 - 5:
+
+<Image alt="Graph" width={373} height={147} src="/images/docs/skip.svg" />
+
+```typescript showLineNumbers
+const results = await teo.song.findMany({
+  skip: 2,
+  take: 3,
+})
+```
+
+### Take from opposite direction
+
+If a negative take is provided, it takes from the other side.
+
+<Image alt="Graph" width={373} height={147} src="/images/docs/take.svg" />
+
+```typescript showLineNumbers
+const results = await teo.song.findMany({
+  skip: 2,
+  take: -3,
+})
+```
+
+## Pagination with `pageNumber` and `pageSize`
+
+This query takes records on the 2nd page. `numberOfPages` is also returned in
+`meta` section of the results.
+
+```typescript showLineNumbers
+const result = await teo.song.findMany({
+  pageSize: 10,
+  pageNumber: 2,
+})
+```
+
+## Cursor based pagination
+
+Cursor based pagination uses `cursor` and `take` to return a limited set of
+results before or after a given cursor. A cursor bookmarks your location in a
+result set and must be a unique, sequential column.
+
+<Image alt="Graph" width={399} height={147} src="/images/docs/cursor.svg" />
+
+```typescript showLineNumbers
+const result = await teo.song.findMany({
+  cursor: {
+    id: 85
+  }
+})
+```
+
+## Going next
+
+The next topic introduces selecting fields.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-query-client/filtering-and-sorting">Filtering and sorting</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-query-client/selecting-fields">Selecting fields</NextArticle>
+</PrevNext>

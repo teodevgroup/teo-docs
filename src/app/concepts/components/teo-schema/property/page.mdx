@@ -1,0 +1,97 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Property
+
+Similar to the concepts of calculated property of programming languages,
+properties in Teo represents data inputs and outputs which has a calculated
+nature. It's saved into the database if it's cached.
+
+## Property getter
+
+A readable property has a getter. The getter is a modifier pipeline which
+returns a value of declared data type. Field dependencies should be declared,
+too.
+
+```teo showLineNumbers {6-8}
+model Student {
+  @id @readonly @autoIncrement
+  id: Int
+  firstName: String
+  lastName: String
+  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+  @dependencies([.firstName, .lastName])
+  name: String
+}
+```
+
+In this example, `name` is calculated with `firstName` and `lastName`. Since
+it depends on `firstName` and `lastName`, the `dependencies` list is also
+declared.
+
+## Property setter
+
+A writable property has a setter. The value is finally set to other fields of
+the object.
+
+Let's add a setter to the readonly property in the previous section.
+
+```teo showLineNumbers {7}
+model Student {
+  @id @readonly @autoIncrement
+  id: Int
+  firstName: String
+  lastName: String
+  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $itemAt(0)).assign(.lastName, $itemAt(1)))
+  @dependencies([.firstName, .lastName])
+  name: String
+}
+```
+
+Now, this property is readwrite. You can read from it and write to it.
+
+## Cached property
+
+If the calculation is heavy loading, why not just save the value in memory and
+database? Cached property cames to the rescue.
+
+```teo showLineNumbers /\@cached/
+model Student {
+  @id @readonly @autoIncrement
+  id: Int
+  firstName: String
+  lastName: String
+  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $itemAt(0)).assign(.lastName, $itemAt(1)))
+  @dependencies([.firstName, .lastName]) @cached
+  name: String
+}
+```
+
+When a property is cached, there is a table column for it. Unless any value of
+its dependency fields are updated, this value won't be recalculated.
+
+## Going next
+
+The next topic introduces
+[**index**](/docs/concepts/components/teo-server/index-concept), which represents
+database index.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/relation">Relation</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/index-concept">Index</NextArticle>
+</PrevNext>

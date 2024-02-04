@@ -1,0 +1,74 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+import CodeResult from '../../../../../components/docs/CodeResult'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Identity
+
+With traditional web frameworks, implementing user sessions and signing in are
+bothering and annoying. It may not be that complicated but developers need to
+do once for each of projects. Teo introduces a new way of implementing user
+session.
+
+## Declare an identity model with checker fields
+
+```teo showLineNumbers
+@identity
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @identity @unique @onSet($isEmail)
+  email: String
+  @identityChecker($bcryptVerify($self.get(.password)))
+  @onSet($isSecurePassword.bcryptSalt) @writeonly
+  password: String
+}
+```
+
+In this example, user can sign in with email and password. To sign in, use the
+`signIn` handler action.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```typescript
+const result = await teo.user.signIn({
+  credentials: {
+    email: 'ada@teocloud.io',
+    password: 'AdaTeo_2023',
+  },
+})
+```
+```json
+{
+  "meta": {
+    "token": "..."
+  },
+  "data": {
+    "id": 1,
+    "email": "ada@teocloud.io"
+  }
+}
+```
+</CodeResult>
+
+## Going next
+
+Identity is always used to perform permission checks. The mechanism to protect
+API safety is [**guard**](/docs/concepts/components/teo-schema/guard). Guard
+protect API from being accessed by an undesired person.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/pipeline">Pipeline</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/guard">Guard</NextArticle>
+</PrevNext>

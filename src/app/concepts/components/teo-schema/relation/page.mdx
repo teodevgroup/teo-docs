@@ -1,0 +1,212 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Relation
+
+> This topic introduces the concept of relation. To learn how to write relation
+> input through frontend clients or raw HTTP requests, head over to client API
+> documentation.
+
+A relation connects two models by foreign keys or join table. Relations are
+categorized into 1-to-1, 1-to-many and many-to-many depending on the nature of
+how the relationship is implemented. They also fall in two main categories:
+intrinsic relation and coincidence relation, depending on whether a foreign key
+is declared.
+
+Fields which has a primary index or unique index can be used as foreign key
+reference. If a compound unique index is used, multiple keys should be
+specified in order. Let's see code examples.
+
+## One-to-one relation
+
+An object from model A has exact 0 or 1 referenced object from model B, and
+vice versa.
+
+```teo showLineNumbers
+model Profile {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+}
+
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  email: String
+  @relation(fields: .id, references: .userId)
+  profile: Profile
+}
+```
+
+In this example, a user has a profile, and a profile has a user. The foreign
+key is `userId` on `Profile` model.
+
+## One-to-many relation
+
+An object from model A has any number of referenced objects from model B. While
+an object from model B has exact 0 or 1 referenced object from model A.
+
+```teo showLineNumbers
+model Dog {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+}
+
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  email: String
+  @relation(fields: .id, references: .userId)
+  dogs: Dog[]
+}
+```
+
+In this example, a dog has an owner, and a user has many dogs. The foreign
+key is `userId` on `Dog` model.
+
+## Many-to-many relation
+
+An object from model A has any number of referenced objects from model B and
+vice versa. A many-to-many relationship is defined with join table.
+
+```teo showLineNumbers
+model Artist {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  @relation(through: ArtistAndSong, local: .artist, foreign: .song)
+  songs: Song[]
+}
+
+model Song {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  @relation(through: ArtistAndSong, local: .song, foreign: .artist)
+  artists: Artist[]
+}
+
+@id([.artistId, .songId])
+model ArtistAndSong {
+  @foreignKey
+  artistId: Int
+  @foreignKey
+  songId: Int
+  @relation(fields: .artistId, references: .id)
+  artist: Artist
+  @relation(fields: .songId, references: .id)
+  song: Song
+}
+```
+
+In this example, an artist has many songs, and a song is sang by one or more
+artists. The foreign keys are defined on the join table instead of any of the
+related models.
+
+## Intrinsic relation
+
+A relation is intrinsic when a `foreignKey` is marked on some field. These
+relations can trigger actions if one of the objects is being deleted or
+updated. The objects indeed have relationships. They are tightly coupled. All
+the examples above have intrinsic relations.
+
+## Coincidence relation
+
+A relation is coincidence relation if no `foreignKey` is marked. These
+relations won't trigger actions if one of the objects is being deleted or
+updated. If some value matches, they have a relationship. If some value
+changes, the relationship is broken. They have a relation due to coincidence.
+They are not belonging to each other. At some point, their data matches due to
+some field value.
+
+```teo showLineNumbers
+model City {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @relation(fields: .name, references: .cityName)
+  views: View[]
+}
+
+model View {
+  @id @autoIncrement @readonly
+  id: Int
+  cityName: String
+  number: Int
+  @relation(fields: cityName, references: .name)
+  city: City
+}
+```
+
+A city has views, but the person who is typing this may type wrongly. If he
+modify the `cityName` with an updation, the related city will not be updated.
+
+{/* ## Update rule
+
+> Update rule is not implemented. We plan to implement this after the Teo
+> schema feature.
+
+## Delete rule
+
+Delete rule is the action which is triggered when an object in a relation is
+being deleted.
+
+### Default
+
+The delete rule of a relationship is `default` by defualt. No action is taken
+if relation object is deleted. Leave the data in the database in a broken
+state.
+
+### Nullify
+
+Set the value of foreign key to `null` on related object deletion. If this
+field is not optional, denies the deletion.
+
+### Cascade
+
+Delete this object when related object is deleted.
+
+### Deny
+
+Prevent related objects from being deleted.
+
+In this example, a user cannot be deleted unless he has no posts. */}
+
+## Going next
+
+The next topic introduces
+[**property**](/docs/concepts/components/teo-server/property). Like field and
+relation, it can be used as input or output. Property is not primitive fields,
+they are calculated.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/field">Field</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/property">Property</NextArticle>
+</PrevNext>

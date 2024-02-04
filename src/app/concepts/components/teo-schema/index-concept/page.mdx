@@ -1,0 +1,69 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Index
+
+Indexes are database indexes. With Teo, you can define primary index, normal
+index and unique index on both model level and field level.
+
+## Index types
+
+- `primary` this index is used as primary key
+- `unique` this index is unique
+- `index` a normal index
+
+Both `primary` and `unique` are unique.
+
+## Field index
+
+Field index is defined directly on the field.
+
+```teo showLineNumbers /index/ /unique/ /primary/
+model Demo {
+  @index
+  createdAt: DateTime
+
+  @unique
+  email: String?
+
+  @id
+  id: Int
+}
+```
+
+## Model index
+
+Any field index can be defined on model, too. If an index is compound and it
+consists of multiple fields, it can only be defined on model.
+
+```teo showLineNumbers /@id/ /@unique/
+@id([.userId, .productId])
+@unique([.singer, .year])
+model Demo {
+  // ...
+}
+```
+
+## Going next
+
+The next topic introduces
+[**action**](/docs/concepts/components/teo-server/action), which represents
+HTTP endpoints.
+
+<PrevNext>
+  <PrevArticle href="/docs/concepts/components/teo-schema/property">Property</PrevArticle>
+  <NextArticle href="/docs/concepts/components/teo-schema/action">Action</NextArticle>
+</PrevNext>

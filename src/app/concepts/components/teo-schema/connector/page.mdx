@@ -1,0 +1,44 @@
+import { PrevNext, PrevArticle, NextArticle } from '../../../../../components/docs/PrevNext'
+
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/docs/concepts">Concepts</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components">Components</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+  </span>
+</div>
+
+# Connector
+
+The connector specifies which database to connect. A Teo app can have only
+one connector. Teo currently supports MySQL, PostgreSQL, SQLite and MongoDB.
+
+## Example
+
+To connect to a database, specify a
+[provider](/docs/reference/api-reference/teo-schema-reference#types) <span class="concept">REFERENCE</span>
+value and a connection URL.
+
+```teo
+connector {
+  provider: .mysql,
+  url: "mysql://127.0.0.1:3306/helloteo"
+}
+```
+
+## Going next
+
+The next topic introduces
+[**Model**](/docs/concepts/components/teo-server/model), the foundation and
+core which represents database table and request resource.
+
+<PrevNext>
+  <div></div>
+  <NextArticle href="/docs/concepts/components/teo-schema/model">Model</NextArticle>
+</PrevNext>
