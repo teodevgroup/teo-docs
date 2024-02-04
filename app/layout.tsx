@@ -8,7 +8,7 @@ export default function RootLayout({
   }) {
     return (
       <html lang="en">
-        <body className={css`background-color: green;`}>{children}</body>
+        <body className={css`background-color: #dedede;`}>{children}</body>
       </html>
     )
   }

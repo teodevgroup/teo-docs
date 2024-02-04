@@ -1,8 +1,12 @@
-// next.config.js
-const withLinaria = require('next-with-linaria');
+const withLinaria = require('next-with-linaria')
+const withMDX = require('@next/mdx')()
 
 /** @type {import('next-with-linaria').LinariaConfig} */
 const config = {
-  // ...your next.js config
-};
-module.exports = withLinaria(config);
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  experimental: {
+    mdxRs: true,
+  },
+}
+
+module.exports = withMDX(withLinaria(config))

@@ -1,0 +1,1663 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Teo",
+  "scopeName": "source.teo",
+  "fileTypes": [
+    "teo"
+  ],
+  "patterns": [
+    {
+      "include": "#docComment"
+    },
+    {
+      "include": "#codeComment"
+    },
+    {
+      "include": "#importStatement"
+    },
+    {
+      "include": "#constantStatement"
+    },
+    {
+      "include": "#namespaceStatement"
+    },
+    {
+      "include": "#configStatement"
+    },
+    {
+      "include": "#dataSetStatement"
+    },
+    {
+      "include": "#modelDeclaration"
+    },
+    {
+      "include": "#enumDeclaration"
+    },
+    {
+      "include": "#interfaceDeclaration"
+    },
+    {
+      "include": "#structDeclaration"
+    },
+    {
+      "include": "#configDeclaration"
+    },
+    {
+      "include": "#middlewareDeclaration"
+    },
+    {
+      "include": "#handlerGroupDeclaration"
+    },
+    {
+      "include": "#handlerDeclaration"
+    },
+    {
+      "include": "#blockedDecoratorDeclaration"
+    },
+    {
+      "include": "#linedDecoratorDeclaration"
+    },
+    {
+      "include": "#blockedPipelineDeclaration"
+    },
+    {
+      "include": "#linedPipelineDeclaration"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#expression"
+    },
+    {
+      "include": "#decoratorWithArguments"
+    },
+    {
+      "include": "#decorator"
+    },
+    {
+      "include": "#availabilityFlags"
+    }
+  ],
+  "repository": {
+    "docComment": {
+      "name": "comment.teo.doc",
+      "begin": "///{{startOfIdentifier}}",
+      "end": "$\\n?"
+    },
+    "codeComment": {
+      "name": "comment.teo.normal",
+      "begin": "//",
+      "end": "$\\n?"
+    },
+    "comma": {
+      "name": "punctuation.separator.comma.teo",
+      "match": ","
+    },
+    "colon": {
+      "name": "punctuation.terminator.statement.teo",
+      "match": ":"
+    },
+    "semicolon": {
+      "name": "punctuation.terminator.statement.teo",
+      "match": ";"
+    },
+    "accessor": {
+      "name": "punctuation.terminator.accessor.teo",
+      "match": "(?:(\\.)|(\\?\\.(?!\\s*[[:digit:]])))",
+      "captures": {
+        "1": {
+          "name": "punctuation.accessor.teo"
+        },
+        "2": {
+          "name": "punctuation.accessor.optional.teo"
+        }
+      }
+    },
+    "parenOpen": {
+      "name": "punctuation.definition.tag.teo",
+      "match": "\\("
+    },
+    "parenClose": {
+      "name": "punctuation.definition.tag.teo",
+      "match": "\\)"
+    },
+    "arrow": {
+      "name": "punctuation.definition.arrow.teo",
+      "match": "->"
+    },
+    "expressionPunctuations": {
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#accessor"
+        }
+      ]
+    },
+    "keywords": {
+      "name": "storage.modifier.keyword.teo",
+      "match": "(let|declare|model|enum|interface|middlewares?|form|json|handler|group|import|connector|client|entity|server|autoseed dataset|autoseed|dataset|group|record)"
+    },
+    "nullLiteral": {
+      "name": "constant.language.null.teo",
+      "match": "\\b(null)\\b"
+    },
+    "boolLiteral": {
+      "name": "constant.language.boolean.teo",
+      "match": "\\b(true|false)\\b"
+    },
+    "numberLiteral": {
+      "name": "constant.numeric.teo",
+      "match": "((0(x|X)[0-9a-fA-F]*)|(\\+|-)?\\b(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?)([LlFfUuDdg]|UL|ul)?\\b"
+    },
+    "stringLiteral": {
+      "name": "string.quoted.double.teo",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.teo",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "regexLiteral": {
+      "name": "string.regexp.teo",
+      "begin": "/(?!/)",
+      "end": "/",
+      "patterns": [
+        {
+          "name": "constant.character.escape.teo",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "enumVariantLiteral": {
+      "name": "variable.other.enummember.teo",
+      "match": "\\.[^\\d\\W]\\w*"
+    },
+    "primitiveLiteral": {
+      "name": "source.teo.literal",
+      "patterns": [
+        {
+          "include": "#stringLiteral"
+        },
+        {
+          "include": "#nullLiteral"
+        },
+        {
+          "include": "#boolLiteral"
+        },
+        {
+          "include": "#numberLiteral"
+        },
+        {
+          "include": "#regexLiteral"
+        },
+        {
+          "include": "#enumVariantLiteral"
+        }
+      ]
+    },
+    "dictionaryLiteral": {
+      "name": "source.teo.dictionary",
+      "begin": "\\{",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#colon"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#availabilityFlags"
+        }
+      ]
+    },
+    "arrayLiteral": {
+      "name": "source.teo.array",
+      "begin": "\\[",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\]",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        }
+      ]
+    },
+    "tupleLiteral": {
+      "name": "source.teo.tuple\"",
+      "begin": "\\(",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        }
+      ]
+    },
+    "pipelineLiteral": {
+      "name": "source.teo.pipelineLiteral",
+      "patterns": [
+        {
+          "include": "#pipelineChainedFunctionCall"
+        },
+        {
+          "include": "#pipelineChainedIdentifier"
+        },
+        {
+          "include": "#functionCall"
+        },
+        {
+          "include": "#functionIdentifier"
+        }
+      ]
+    },
+    "pipelineChainedIdentifier": {
+      "name": "source.teo.pipelineChainedIdentifier",
+      "patterns": [
+        {
+          "match": "(\\$)([A-Za-z_][A-Za-z0-9_]*)(\\.)?",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.attribute.teo"
+            },
+            "2": {
+              "name": "entity.name.function.attribute.teo"
+            },
+            "3": {
+              "name": "punctuation.definition.tag.teo"
+            }
+          }
+        }
+      ]
+    },
+    "pipelineChainedFunctionCall": {
+      "name": "source.teo.pipelineChainedFunctionCall",
+      "begin": "(\\$)([A-Za-z_][A-Za-z0-9_]*)(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function.attribute.teo"
+        },
+        "2": {
+          "name": "entity.name.function.attribute.teo"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "(\\))(\\.)?",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        },
+        "2": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#namedArgument"
+        },
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#comma"
+        }
+      ]
+    },
+    "functionIdentifier": {
+      "name": "source.teo.functionIdentifier",
+      "match": "([A-Za-z_][A-Za-z0-9_]*)(\\.)?",
+      "captures": {
+        "1": {
+          "name": "entity.name.function.attribute.teo"
+        },
+        "2": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      }
+    },
+    "functionCall": {
+      "name": "source.teo.functionCall",
+      "begin": "([A-Za-z_][A-Za-z0-9_]*)(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function.attribute.teo"
+        },
+        "2": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "(\\))(\\.)?",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        },
+        "2": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#namedArgument"
+        },
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#comma"
+        }
+      ]
+    },
+    "expression": {
+      "name": "source.teo.expression",
+      "patterns": [
+        {
+          "include": "#primitiveLiteral"
+        },
+        {
+          "include": "#dictionaryLiteral"
+        },
+        {
+          "include": "#arrayLiteral"
+        },
+        {
+          "include": "#tupleLiteral"
+        },
+        {
+          "include": "#enumVariantLiteral"
+        },
+        {
+          "include": "#pipelineLiteral"
+        }
+      ]
+    },
+    "importStatement": {
+      "name": "storage.modifier.import.teo",
+      "patterns": [
+        {
+          "match": "(import)\\s+",
+          "captures": {
+            "1": {
+              "name": "keyword.control.teo"
+            }
+          }
+        },
+        {
+          "include": "#stringLiteral"
+        }
+      ]
+    },
+    "namespaceStatement": {
+      "name": "source.teo.embedded.namespace",
+      "begin": "^\\s*(namespace)\\s+([A-Za-z][\\w]*)\\s+({)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.config.teo"
+        },
+        "2": {
+          "name": "entity.name.type.config.teo"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\s*\\}",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#constantStatement"
+        },
+        {
+          "include": "#namespaceStatement"
+        },
+        {
+          "include": "#configStatement"
+        },
+        {
+          "include": "#dataSetStatement"
+        },
+        {
+          "include": "#modelDeclaration"
+        },
+        {
+          "include": "#enumDeclaration"
+        },
+        {
+          "include": "#interfaceDeclaration"
+        },
+        {
+          "include": "#structDeclaration"
+        },
+        {
+          "include": "#configDeclaration"
+        },
+        {
+          "include": "#middlewareDeclaration"
+        },
+        {
+          "include": "#handlerGroupDeclaration"
+        },
+        {
+          "include": "#handlerDeclaration"
+        },
+        {
+          "include": "#blockedDecoratorDeclaration"
+        },
+        {
+          "include": "#linedDecoratorDeclaration"
+        },
+        {
+          "include": "#blockedPipelineDeclaration"
+        },
+        {
+          "include": "#linedPipelineDeclaration"
+        },
+        {
+          "include": "#keywords"
+        },
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#decorator"
+        },
+        {
+          "include": "#decoratorWithArguments"
+        },
+        {
+          "include": "#availabilityFlags"
+        }
+      ]
+    },
+    "constantStatement": {
+      "name": "source.teo.constantStatement",
+      "match": "(let)\\s+(\\w+)\\s*(=)\\s*",
+      "captures": {
+        "1": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "2": {
+          "name": "variable.other.constant.object.teo"
+        },
+        "3": {
+          "name": "keyword.operator.assignment.teo"
+        }
+      }
+    },
+    "configStatement": {
+      "name": "source.teo.embedded.config",
+      "begin": "^\\s*(entity|client|connector|server|debug|test)(\\s+([_A-Za-z][_A-Za-z0-9]*))?\\s+({)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.config.teo"
+        },
+        "3": {
+          "name": "entity.name.type.config.teo"
+        },
+        "4": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\s*\\}",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#colon"
+        }
+      ]
+    },
+    "dataSetStatement": {
+      "name": "source.teo.embedded.dataSet",
+      "begin": "^\\s*(autoseed dataset|autoseed|dataset)\\s+([A-Za-z][\\w]*)\\s+({)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.config.teo"
+        },
+        "2": {
+          "name": "entity.name.type.config.teo"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\s*\\}",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#dataSetGroupStatement"
+        }
+      ]
+    },
+    "dataSetGroupStatement": {
+      "name": "source.teo.embedded.dataSetGroup",
+      "begin": "^\\s*(group)\\s+([A-Za-z][\\w]*)((\\.)([A-Za-z][\\w]*))*+\\s+({)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.config.teo"
+        },
+        "2": {
+          "name": "entity.name.type.config.teo"
+        },
+        "4": {
+          "name": "punctuation.definition.dot.teo"
+        },
+        "5": {
+          "name": "entity.name.type.config.teo"
+        },
+        "6": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\s*\\}",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#dataSetRecordStatement"
+        }
+      ]
+    },
+    "dataSetRecordStatement": {
+      "name": "source.teo.embedded.config",
+      "begin": "^\\s*(record)\\s+([A-Za-z][\\w]*)\\s+({)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.config.teo"
+        },
+        "2": {
+          "name": "entity.name.type.config.teo"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\s*\\}",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#colon"
+        }
+      ]
+    },
+    "modelDeclaration": {
+      "name": "source.teo.embedded.model",
+      "begin": "^\\s*(model)\\s+([A-Z][A-Za-z]*[\\w]*)\\s*({)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.model.teo"
+        },
+        "2": {
+          "name": "entity.name.type.model.teo"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\s*\\}",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#availabilityFlags"
+        },
+        {
+          "include": "#fieldDeclaration"
+        },
+        {
+          "include": "#handlerDeclaration"
+        }
+      ]
+    },
+    "fieldDeclaration": {
+      "name": "source.teo.embedded.scalar.field",
+      "patterns": [
+        {
+          "include": "#decoratorWithArguments"
+        },
+        {
+          "include": "#decorator"
+        },
+        {
+          "include": "#typeExpression"
+        }
+      ]
+    },
+    "interfaceDeclaration": {
+      "name": "meta.interface.teo",
+      "begin": "(interface)\\s+(\\w+)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.teo"
+        },
+        "2": {
+          "name": "entity.name.type.interface.teo"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#interfaceHeritage"
+        },
+        {
+          "match": "([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "entity.name.type.interface.teo"
+            }
+          }
+        },
+        {
+          "include": "#typeParameters"
+        },
+        {
+          "include": "#interfaceBody"
+        }
+      ]
+    },
+    "interfaceBody": {
+      "begin": "\\{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#availabilityFlags"
+        },
+        {
+          "include": "#fieldDeclaration"
+        }
+      ]
+    },
+    "typeParameters": {
+      "name": "meta.type.parameters.teo",
+      "begin": "(<)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.teo"
+        }
+      },
+      "end": "(>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.end.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#comma"
+        },
+        {
+          "match": "[A-Za-z_][A-Za-z0-9_]*",
+          "captures": {
+            "0": {
+              "name": "entity.name.type.interface.teo"
+            }
+          }
+        }
+      ]
+    },
+    "interfaceHeritage": {
+      "name": "meta.interfaceHeritage.teo",
+      "begin": "\\s*(extends)\\s*",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.teo"
+        }
+      },
+      "end": "(?=\\{)",
+      "patterns": [
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "match": "[A-Za-z_][A-Za-z0-9_]*",
+          "captures": {
+            "0": {
+              "name": "entity.other.inherited-class.teo"
+            }
+          }
+        },
+        {
+          "include": "#interfaceHeritage"
+        },
+        {
+          "include": "#typeParameters"
+        },
+        {
+          "include": "#expressionPunctuations"
+        }
+      ]
+    },
+    "enumDeclaration": {
+      "name": "source.teo.embedded.source",
+      "begin": "^\\s*(interface)?\\s*(option)?\\s*(enum)\\s+([_A-Z][_A-Za-z]*[\\w]*)\\s*({)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.modifier.teo"
+        },
+        "2": {
+          "name": "storage.type.option.teo"
+        },
+        "3": {
+          "name": "storage.type.enum.teo"
+        },
+        "4": {
+          "name": "entity.name.type.enum.teo"
+        },
+        "5": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "(\\s*\\})",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#enumMemberDeclaration"
+        }
+      ]
+    },
+    "enumMemberDeclaration": {
+      "patterns": [
+        {
+          "include": "#decoratorWithArguments"
+        },
+        {
+          "include": "#decorator"
+        },
+        {
+          "match": "^\\s*(\\w+)\\s*",
+          "captures": {
+            "1": {
+              "name": "variable.other.assignment.teo"
+            }
+          }
+        },
+        {
+          "include": "#argumentListDeclaration"
+        },
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "structDeclaration": {
+      "name": "source.teo.structDeclaration",
+      "begin": "(declare)\\s+(struct)\\s+(\\w+)\\s*",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "2": {
+          "name": "storage.modifier.struct.teo"
+        },
+        "3": {
+          "name": "entity.name.class.teo"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#typeParameters"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#structBody"
+        }
+      ]
+    },
+    "structBody": {
+      "begin": "{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#functionDeclaration"
+        }
+      ]
+    },
+    "functionDeclaration": {
+      "begin": "(declare)(\\s+(static))?\\s+(function)\\s+(\\w+)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.declare.teo"
+        },
+        "3": {
+          "name": "storage.type.static.teo"
+        },
+        "4": {
+          "name": "storage.type.function.teo"
+        },
+        "5": {
+          "name": "entity.name.function.teo"
+        }
+      },
+      "end": "(?<=\\n)",
+      "patterns": [
+        {
+          "include": "#argumentListDeclaration"
+        },
+        {
+          "include": "#colon"
+        },
+        {
+          "include": "#genericsConstraint"
+        },
+        {
+          "include": "#typeExpression"
+        },
+        {
+          "include": "#argumentDeclaration"
+        }
+      ]
+    },
+    "configDeclaration": {
+      "name": "teo.source.configDeclaration",
+      "begin": "(declare)\\s+(config)\\s+(\\w+)\\s*(\\{)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "2": {
+          "name": "storage.modifier.config.teo"
+        },
+        "3": {
+          "name": "entity.name.class.teo"
+        },
+        "4": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "end": "\\}",
+      "patterns": [
+        {
+          "include": "#fieldDeclaration"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        }
+      ]
+    },
+    "middlewareDeclaration": {
+      "name": "meta.middlewareDeclaration.teo",
+      "match": "(declare)\\s+(middleware)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "2": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "3": {
+          "name": "entity.name.type.model.teo"
+        }
+      }
+    },
+    "handlerGroupDeclaration": {
+      "name": "meta.actionGroupDeclaration.teo",
+      "begin": "(declare)\\s+(handler)\\s+(group)\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*({)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "2": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "3": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "4": {
+          "name": "entity.name.type.model.teo"
+        },
+        "5": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "end": "(})",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#decoratorWithArguments"
+        },
+        {
+          "include": "#decorator"
+        },
+        {
+          "include": "#handlerDeclaration"
+        }
+      ]
+    },
+    "handlerDeclaration": {
+      "name": "meta.actionDeclaration.teo",
+      "begin": "(declare)(\\s+(nonapi))?(\\s+(json|form))?\\s+(handler)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "3": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "5": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "6": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "7": {
+          "name": "entity.name.type.model.teo"
+        }
+      },
+      "end": "\\n",
+      "patterns": [
+        {
+          "include": "#expressionPunctuations"
+        },
+        {
+          "include": "#colon"
+        },
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#parenOpen"
+        },
+        {
+          "include": "#parenClose"
+        },
+        {
+          "include": "#typeParameters"
+        },
+        {
+          "match": "[A-Za-z_][A-Za-z0-9_]*",
+          "captures": {
+            "0": {
+              "name": "entity.other.inherited-class.teo"
+            }
+          }
+        }
+      ]
+    },
+    "decorator": {
+      "name": "source.teo.attribute",
+      "match": "(@[\\w_\\.]+)",
+      "captures": {
+        "1": {
+          "name": "entity.name.function.attribute.teo"
+        }
+      }
+    },
+    "decoratorWithArguments": {
+      "name": "source.teo.attribute.withWrguments",
+      "begin": "(@[\\w_\\.]+)(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function.attribute.teo"
+        },
+        "2": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "(\\))",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#namedArgument"
+        }
+      ]
+    },
+    "namedArgument": {
+      "name": "source.teo.namedArgument",
+      "patterns": [
+        {
+          "include": "#expression"
+        },
+        {
+          "include": "#mapKey"
+        }
+      ]
+    },
+    "argumentDeclaration": {
+      "name": "source.teo.argumentDeclaration",
+      "patterns": [
+        {
+          "match": "(\\w+)(\\?)?(\\s*:)\\s*([\\w<>,?\\[\\]\\|]*)",
+          "captures": {
+            "1": {
+              "name": "variable.other.assignment.teo"
+            },
+            "2": {
+              "name": "punctuation.definition.colon.teo"
+            },
+            "3": {
+              "name": "punctuation.definition.colon.teo"
+            },
+            "4": {
+              "patterns": [
+                {
+                  "include": "#typeExpression"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "typeExpression": {
+      "name": "source.teo.typeExpression",
+      "patterns": [
+        {
+          "match": "^\\s*(\\w+)(\\s*:)\\s*((?!(?:Int64|Int32|Int|String|DateTime|Date|Bytes|Decimal|Float64|Float32|Float|Bool|ObjectId|Any)\\b)\\b[\\w]+)?*(Int64|Int32|Int|String|DateTime|Date|Bytes|Decimal|Float64|Float32|Float|Bool|ObjectId|Any)?((\\.)(\\w+))*(\\[\\])?(\\?)?(\\!)?",
+          "captures": {
+            "1": {
+              "name": "variable.other.assignment.teo"
+            },
+            "2": {
+              "name": "punctuation.definition.colon.teo"
+            },
+            "3": {
+              "name": "support.type.primitive.teo"
+            },
+            "4": {
+              "name": "variable.language.relations.teo"
+            },
+            "6": {
+              "name": "punctuation.definition.dot.teo"
+            },
+            "7": {
+              "name": "variable.language.relations.teo"
+            },
+            "8": {
+              "name": "keyword.operator.list_type.teo"
+            },
+            "9": {
+              "name": "keyword.operator.optional_type.teo"
+            },
+            "10": {
+              "name": "invalid.illegal.required_type.teo"
+            }
+          }
+        },
+        {
+          "include": "#typeExpressionNesting"
+        },
+        {
+          "include": "#typeIdentifier"
+        },
+        {
+          "include": "#tupleTypeExpression"
+        }
+      ]
+    },
+    "typeIdentifier": {
+      "name": "source.teo.typeIdentifier",
+      "match": "([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": {
+          "name": "entity.name.type.model.teo"
+        }
+      }
+    },
+    "tupleTypeExpression": {
+      "name": "source.teo.TupleTypeExpression",
+      "begin": "\\(",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#typeExpression"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        }
+      ]
+    },
+    "namedArgumentDeclaration": {
+      "name": "source.teo.namedArgumentDeclaration",
+      "patterns": [
+        {
+          "include": "#mapKey"
+        },
+        {
+          "include": "#typeExpression"
+        }
+      ]
+    },
+    "mapKey": {
+      "name": "source.teo.mapKey",
+      "patterns": [
+        {
+          "match": "(\\w+)\\s*(:)\\s*",
+          "captures": {
+            "1": {
+              "name": "variable.parameter.key.teo"
+            },
+            "2": {
+              "name": "punctuation.definition.separator.key-value.teo"
+            }
+          }
+        }
+      ]
+    },
+    "typeExpressionNesting": {
+      "name": "meta.type.expression.nesting.teo",
+      "begin": "(<)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.typeparameters.begin.teo"
+        }
+      },
+      "end": "(>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.typeparameters.end.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#typeExpression"
+        },
+        {
+          "match": "[A-Za-z_][A-Za-z0-9_]*",
+          "captures": {
+            "0": {
+              "name": "entity.name.type.interface.teo"
+            }
+          }
+        }
+      ]
+    },
+    "argumentListDeclaration": {
+      "name": "teo.source.argumentListDeclaration",
+      "begin": "(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "end": "(\\))",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#argumentDeclaration"
+        },
+        {
+          "include": "#typeExpression"
+        }
+      ]
+    },
+    "linedDecoratorDeclaration": {
+      "name": "teo.source.linedDecoratorDeclaration",
+      "begin": "(declare)\\s*(unique|exclusive)?\\s*(model|interface|enum|handler)?\\s*(field|member|property|relation)?\\s*(decorator)\\s+(\\w+)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "2": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "3": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "4": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "5": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "6": {
+          "name": "entity.name.function.teo"
+        }
+      },
+      "end": "(?<=\\\n)",
+      "patterns": [
+        {
+          "include": "#typeParameters"
+        },
+        {
+          "include": "#argumentListDeclaration"
+        }
+      ]
+    },
+    "blockedDecoratorDeclaration": {
+      "name": "teo.source.blockedDecoratorDeclaration",
+      "begin": "(declare)\\s*(unique|exclusive)?\\s*(model|interface|enum)?\\s*(field|member|property|relation)?\\s*(decorator)\\s+(\\w+)\\s*(?={)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "2": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "3": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "4": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "5": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "6": {
+          "name": "entity.name.function.teo"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#decoratorVariantBlock"
+        }
+      ]
+    },
+    "decoratorVariantBlock": {
+      "name": "source.teo.decoratorVariantBlock",
+      "begin": "{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#decoratorVariantDeclaration"
+        }
+      ]
+    },
+    "decoratorVariantDeclaration": {
+      "name": "source.teo.decoratorVariantDeclaration",
+      "begin": "(variant)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.declare.teo"
+        }
+      },
+      "end": "\n|(?=})",
+      "patterns": [
+        {
+          "include": "#typeParameters"
+        },
+        {
+          "include": "#argumentListDeclaration"
+        },
+        {
+          "include": "#colon"
+        },
+        {
+          "include": "#genericsConstraint"
+        },
+        {
+          "include": "#typeExpression"
+        },
+        {
+          "include": "#arrow"
+        }
+      ]
+    },
+    "linedPipelineDeclaration": {
+      "name": "source.teo.linedPipelineDeclaration",
+      "begin": "(declare)\\s+(pipeline)\\s+(item)\\s+(\\w+)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "2": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "3": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "4": {
+          "name": "entity.name.function.teo"
+        }
+      },
+      "end": "(?<=\\\n)",
+      "patterns": [
+        {
+          "include": "#typeParameters"
+        },
+        {
+          "include": "#argumentListDeclaration"
+        },
+        {
+          "include": "#colon"
+        },
+        {
+          "include": "#typeExpression"
+        },
+        {
+          "include": "#arrow"
+        }
+      ]
+    },
+    "blockedPipelineDeclaration": {
+      "name": "source.teo.blockedPipelineDeclaration",
+      "begin": "(declare)\\s+(pipeline)\\s+(item)\\s+(\\w+)\\s*(?={)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "2": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "3": {
+          "name": "storage.modifier.declare.teo"
+        },
+        "4": {
+          "name": "entity.name.function.teo"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#pipelineItemVariantBlock"
+        }
+      ]
+    },
+    "pipelineItemVariantBlock": {
+      "name": "source.teo.pipelineItemVariantBlock",
+      "begin": "{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.teo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#docComment"
+        },
+        {
+          "include": "#codeComment"
+        },
+        {
+          "include": "#pipelineItemVariantDeclaration"
+        }
+      ]
+    },
+    "pipelineItemVariantDeclaration": {
+      "name": "source.teo.pipelineItemVariantDeclaration",
+      "begin": "(variant)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.declare.teo"
+        }
+      },
+      "end": "\n",
+      "patterns": [
+        {
+          "include": "#typeParameters"
+        },
+        {
+          "include": "#argumentListDeclaration"
+        },
+        {
+          "include": "#colon"
+        },
+        {
+          "include": "#genericsConstraint"
+        },
+        {
+          "include": "#typeExpression"
+        }
+      ]
+    },
+    "availabilityFlags": {
+      "name": "entity.name.function.teo",
+      "begin": "#",
+      "end": "\n"
+    },
+    "genericsConstraint": {
+      "name": "source.teo.genericsConstraint",
+      "begin": "(where)\\s+",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.declare.teo"
+        }
+      },
+      "end": "\n",
+      "patterns": [
+        {
+          "include": "#colon"
+        },
+        {
+          "include": "#typeExpression"
+        }
+      ]
+    }
+  }
+}
