@@ -1,3 +1,4 @@
+import { css } from '@linaria/core'
 import React from 'react'
 
 export default function RootLayout({
@@ -7,7 +8,7 @@ export default function RootLayout({
   }) {
     return (
       <html lang="en">
-        <body>{children}</body>
+        <body className={css`background-color: green;`}>{children}</body>
       </html>
     )
   }
