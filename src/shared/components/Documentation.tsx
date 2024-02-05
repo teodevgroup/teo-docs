@@ -10,6 +10,7 @@ import Row from './Row'
 import { MDXProvider } from '@mdx-js/react'
 import { MDXComponents } from 'mdx/types'
 import { Clipboard, File, Hash } from 'react-feather'
+import Image from 'next/image'
 
 export const DocumentationContainer = styled.div`
   color: #40404c;

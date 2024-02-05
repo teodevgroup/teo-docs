@@ -1,3 +1,5 @@
+'use client'
+
 import React, { ReactElement, ReactNode } from 'react'
 import { styled } from '@linaria/react'
 

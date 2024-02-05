@@ -2,7 +2,7 @@
 
 import Head from 'next/head'
 import React from 'react'
-import { DocumentationLayout } from '../shared/components/Documentation'
+import { DocumentationContent, DocumentationLayout } from '../shared/components/Documentation'
 import { DocumentationSidebar } from '../shared/components/DocumentationSidebar'
 import { usePathname } from 'next/navigation'
 import { css } from '@linaria/core'
@@ -45,7 +45,11 @@ export default function RootLayout({
           <title>TEO Docs</title>
         </Head>
         <DocumentationSidebar path={pathname} />
-        {children}        
+          <DocumentationContent>
+            <article>
+              {children}
+            </article>
+          </DocumentationContent>
       </DocumentationLayout>
       </body>
     </html>
