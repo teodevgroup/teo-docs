@@ -419,7 +419,7 @@ export const DocumentationContent = styled.div`
         background-color: rgb(237, 242, 247);
       }
       &[data-language="sh"] {
-        background-color: rgb(26, 32, 44);
+        background-color: rgb(26, 32, 44) !important;
         --shiki-color-text: #edf2f7;
         button {
           background-color: #2d3748;

@@ -87,7 +87,7 @@ export const reversedContentColor = "#ffffff"
 
 export const splashContentColor = "#424242"
 
-export const tintFontStack = 'Inter,sans-serif'
+export const tintFontStack = 'Inter, sans-serif'
 
 export const windowBackgroundColor = '#f7fafc'
 

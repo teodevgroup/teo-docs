@@ -44,6 +44,14 @@ const DocSidebarItemTitleContainer = styled.div`
   }
 `
 
+const docSidebarItemTitleLinkClassName = css`
+  display: flex;
+  flex-grow: 1;
+  align-items: stretch;
+  justify-content: stretch;
+  width: 100%;
+`
+
 const DocSidebarItemTitleLine = styled.div`
   position: relative;
   width: 100%;
@@ -111,7 +119,7 @@ const DocSidebarItem: (props: DocSidebarItemProps) => ReactElement = ({ link, ch
   }
   return <>
     <DocSidebarItemTitleContainer>
-      <Link href={link}>
+      <Link href={link} className={docSidebarItemTitleLinkClassName}>
         <DocSidebarItemTitleLine className={selected ? css`
           color: ${docTextSelectedColor};
           font-weight: 600;
