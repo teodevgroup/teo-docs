@@ -1,0 +1,805 @@
+<div className="breadcrumbs">
+  <span className="breadcrumb">
+    <a href="/reference">Reference</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/reference/api-reference">API reference</a>
+  </span>
+  <span> / </span>
+  <span className="breadcrumb">
+    <a href="/reference/api-reference/server-api-reference">Server API reference</a>
+  </span>
+</div>
+
+# Rust API reference
+
+## `App`
+
+The `App` struct represents a Teo server app.
+
+### `new`
+
+Create an app.
+
+#### Examples
+
+##### Create an app
+
+```rust showLineNumbers
+let app = App::new();
+```
+
+### `main_namespace`
+
+Retrieve the main namespace from the app. Namespace is where models, handlers, 
+decorators and pipeline items are defined. See [`Namespace`](#namespace).
+
+#### Examples
+
+##### Retrieve the main namespace
+
+```rust showLineNumbers
+let main_namespace = app.main_namespace();
+```
+
+### `main_namespace_mut`
+
+Retrieve the main namespace from the app. This is the mutable version.
+
+#### Examples
+
+##### Retrieve the mutable main namespace
+
+```rust
+let main_namespace_mut = app.main_namespace_mut();
+```
+
+### `setup`
+
+Attach some code to run after the database is connected.
+
+#### Examples
+
+##### Run custom setup code
+
+```rust
+app.setup(|teo: Teo| async move {
+    // list all users
+    println!("{:?}", teo.user().find_many().await?);
+    Ok(())
+});
+```
+
+### `program`
+
+Define a custom program to run with Teo CLI.
+
+#### Examples
+
+##### Define a custom program
+
+```rust
+app.program("listAllUsers", |teo: Teo| async move {
+    // list all users
+    println!("{:?}", teo.user().find_many().await?);
+    Ok(())
+});
+```
+
+### `run`
+
+Start the Teo server app.
+
+#### Example
+
+##### Run an server app
+
+```rust showLineNumbers
+app.run().await
+```
+
+## `Namespace`
+
+Namespace is where things are defined and organized.
+
+### `is_main`
+
+Whether the namespace is the main namespace.
+
+### `is_std`
+
+Whether the namespace is the builtin standard namespace.
+
+### `path`
+
+Get the namespace's path.
+
+#### Example
+
+#### Namespace's path
+
+```rust showLineNumbers
+let namespace_path: Vec<&str> = namespace.path();
+```
+
+### `namespace`
+
+Get the namespace's child namespace by name or `None`.
+
+### `namespace_mut`
+
+Get the namespace's mutable child namespace by name or `None`.
+
+### `namespace_mut_or_create`
+
+Get the namespace's mutable child namespace. If not present, create and return.
+
+### `namespace_at_path`
+
+Get the namespace's child namespace at path.
+
+### `namespace_mut_or_create_at_path`
+
+The the namespace's child namespace at path. If not present, create and return.
+
+### `define_model_decorator`
+
+Define a new model decorator on a namespace.
+
+#### Example
+
+##### Define a custom model decorator
+
+```rust showLineNumbers
+namespace.define_model_decorator("myDecorator", |arguments: Arguments, model: &mut Model| {
+    model.data.insert("customDataKey".to_owned(), "customDataValue".into());
+});
+```
+
+### `define_model_field_decorator`
+
+Define a new model field decorator on a namespace.
+
+#### Example
+
+##### Define a custom model field decorator
+
+```rust showLineNumbers
+namespace.define_model_field_decorator("myDecorator", |arguments: Arguments, field: &mut Field| {
+    field.data.insert("customDataKey".to_owned(), "customDataValue".into());
+});
+```
+
+### `define_model_relation_decorator`
+
+Define a new model relation decorator on a namespace.
+
+#### Example
+
+##### Define a custom model relation decorator
+
+```rust showLineNumbers
+namespace.define_model_relation_decorator("myDecorator", |arguments: Arguments, relation: &mut Relation| {
+    relation.data.insert("customDataKey".to_owned(), "customDataValue".into());
+});
+```
+
+### `define_model_property_decorator`
+
+Define a new model property decorator on a namespace.
+
+#### Example
+
+##### Define a custom model property decorator
+
+```rust showLineNumbers
+namespace.define_model_relation_decorator("myDecorator", |arguments: Arguments, relation: &mut Property| {
+    property.data.insert("customDataKey".to_owned(), "customDataValue".into());
+});
+```
+
+### `define_pipeline_item`
+
+Define a custom pipeline item on a namespace.
+
+#### Example
+
+##### Define a custom pipeline item
+
+```rust showLineNumbers
+namespace.define_pipeline_item("today", |args: Arguments, ctx: Ctx| async move {
+    Ok(Object::from(Utc::now().date_naive()))
+});
+```
+
+### `define_transform_pipeline_item`
+
+Define a transformer pipeline item. This is a shortcut to `define_pipeline_item`.
+
+#### Example
+
+##### Define a custom transformer
+
+```rust showLineNumbers
+app.main_namespace_mut().define_transform_pipeline_item("append0", |string: String| async {
+    string + "0"
+});
+```
+
+##### Define a custom transformer which errors
+
+```rust showLineNumbers
+app.main_namespace_mut().define_transform_pipeline_item("abs", |i: i32| async {
+    if i < 0 {
+        Ok(i.abs())
+    } else {
+        Err(Error::new("cannot calculate"))
+    }
+});
+```
+
+### `define_validator_pipeline_item`
+
+Define a validator pipeline item. This is a shortcut to `define_pipeline_item`.
+
+#### Example
+
+##### Define a custom validator pipeline item with bool return value
+
+```rust showLineNumbers
+app.main_namespace_mut().define_validator_pipeline_item("numberIsEven", |n: i32| async move {
+    n % 2 == 0
+});
+```
+
+
+##### Define a custom validator pipeline item with string return value
+
+```rust showLineNumbers
+app.main_namespace_mut().define_validator_pipeline_item("numberIsEven", |n: i32| async move {
+    if n % 2 == 0 {
+        None
+    } else {
+        Some("value is not even")
+    }
+});
+```
+
+##### Define a custom validator pipeline item which errors
+
+```rust showLineNumbers
+app.main_namespace_mut().define_validator_pipeline_item("largerThan15", |i: i32| async move {
+    if i < 0 {
+        Err(Error::new("value is negative"))
+    } else if i <= 15 {
+        Ok(Some("value should be larger than 15".to_owned()))
+    } else {
+        Ok(None)
+    }
+});
+```
+
+### `define_callback_pipeline_item`
+
+Define a callback pipeline item. This is a shortcut to `define_pipeline_item`.
+
+#### Example
+
+##### Define a custom callback pipeline item
+
+```rust showLineNumbers
+app.main_namespace_mut().define_callback_pipeline_item("customCallback", |user: User| async {
+    // do something with the value
+    Ok(())
+});
+```
+
+##### Define a custom callback pipeline item which errors
+
+```rust showLineNumbers
+app.main_namespace_mut().define_callback_pipeline_item("customCallback", |user: User| async {
+    if do_something() {
+        Err(Error::new("error occurred"))
+    } else {
+        Ok(())
+    }
+});
+```
+
+### `define_compare_pipeline_item`
+
+Define a compare pipeline item. This is a shortcut to `define_pipeline_item`.
+
+#### Example
+
+#### Define a custom compare pipeline item
+
+```rust showLineNumbers
+app.main_namespace_mut().define_compare_pipeline_item("compare", |old: String, new: String| async {
+    // do some callback with the old value and the new value
+    // return a validation result if the new value is invalid
+    Ok::<(), Error>(())
+});
+```
+
+### `define_middleware`
+
+Define a middleware on a namespace.
+
+#### Example
+
+##### Define a custom middleware
+
+```rust showLineNumbers
+app.main_namespace_mut().define_middleware("timing", |arguments: Arguments| {
+    Ok(middleware_wrap_fn(move |ctx: Ctx, next: &'static dyn Next| async move {
+        let start = SystemTime::now();
+        let res = next.call(ctx).await?;
+        let end = SystemTime::now();
+        let duration = end.duration_since(start).unwrap();
+        println!("duration: {:?}", duration);
+        return Ok(res);
+    }))
+});
+```
+
+### `define_handler_group`
+
+Define a handler group on a namespace.
+
+#### Example
+
+##### Define a custom handler group
+
+```rust showLineNumbers
+app.main_namespace_mut().define_handler_group("MyHandlerGroup", |group| {
+    group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
+        let captures = ctx.handler_match().captures();
+        Ok::<Response, path::Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+    });
+});
+```
+
+### `define_model_handler_group`
+
+Define model handlers on a namespace.
+
+#### Example
+
+##### Define a custom model handler group
+
+```rust
+app.main_namespace_mut().define_model_handler_group("User", |group| {
+    group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
+        let captures = ctx.handler_match().captures();
+        Ok::<Response, path::Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+    });
+});
+```
+
+## `handler::Group`
+
+A handler group is a container for defining custom route handlers.
+
+### `define_handler`
+
+Define a custom route handler on a handler group.
+
+#### Example
+
+##### Define a custom route handler
+
+```rust showLineNumbers
+app.main_namespace_mut().define_handler_group("MyHandlerGroup", |group| {
+    group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
+        let captures = ctx.handler_match().captures();
+        Ok::<Response, path::Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+    });
+});
+```
+
+## `Request`
+
+A request represents an HTTP request.
+
+### `method`
+
+Retrieve the request's method.
+
+### `path`
+
+Retrieve the request's path.
+
+### `query_string`
+
+Retrieve the request's query string.
+
+### `content_type`
+
+Retrieve the request's content type.
+
+### `headers`
+
+Retrieve the request's headers.
+
+## `readonly::HeaderMap`
+
+The `HeaderMap` struct represents readonly headers on a request.
+
+### `keys`
+
+Retrieve the header map's keys.
+
+### `len`
+
+Retrieve the length of the header map.
+
+### `contains_key`
+
+Whether the headers contain a specific key.
+
+### `get`
+
+Retrieve the value of a header entry by `key`.
+
+## `Response`
+
+The `Response` struct represents an HTTP response.
+
+### `empty`
+
+Create an empty response.
+
+#### Example
+
+##### Create an empty response
+
+```rust showLineNumbers
+Response::empty()
+```
+
+### `json`
+
+Create a JSON response.
+
+### `data`
+
+Create a JSON response which contains a `data` field.
+
+### `data_meta`
+
+Create a JSON response which contains a `data` field and a `meta` field.
+
+### `error`
+
+Create an error response.
+
+### `set_code`
+
+Set the response code.
+
+### `code`
+
+Retrieve the response code.
+
+### `headers`
+
+Retrieve the response headers.
+
+## `readwrite::HeaderMap`
+
+The `HeaderMap` struct represents readwrite headers on a response.
+
+### `keys`
+
+Retrieve the header map's keys.
+
+### `len`
+
+Retrieve the length of the header map.
+
+### `contains_key`
+
+Whether the headers contain a specific key.
+
+### `get`
+
+Retrieve the value of a header entry by `key`.
+
+### `set`
+
+Set a new value of a header entry at `key`.
+
+## `teon!`
+
+Declare a Teo extended JSON object.
+
+#### Examples
+
+##### Declare a Teon object
+
+```rust
+teon!({
+    "name": "My name",
+    "age": 12,
+    "sex": Sex::MALE,
+    "position": null,
+})
+```
+
+## Entity
+
+API documentation for generated model entities.
+
+### `find_many`
+
+Find many objects with params same as `find_many` handler.
+
+#### Signature
+
+```rust
+pub async fn find_many(finder: &Value) -> Result<Vec<Self>>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | &Value | The finder  |
+
+#### Examples
+
+##### Find all users
+
+```rust showLineNumbers
+let users = teo.user().find_many(&teon!({})).await?;
+```
+
+##### Find users filtered by `name`
+
+```rust showLineNumbers
+let users = teo.user().find_many(&teon!({
+    "where": {
+        "name": "John"
+    }
+}))
+```
+
+##### Find users ordered by `createdAt`
+
+```rust showLineNumbers
+let users = teo.user().find_many(&teon!({
+    "orderBy": {
+        "createdAt": "desc"
+    }
+}))
+```
+
+##### Find users with posts
+
+```rust showLineNumbers
+let users = teo.user().find_many(&teon!({
+    "include": {
+        "posts": true
+    }
+}))
+```
+
+### `find_unique`
+
+Find a unique object with params same as `find_unique` handler.
+
+#### Signature
+
+```rust
+pub async fn find_unique(finder: &Value) -> Result<Self>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | &Value | The finder  |
+
+#### Examples
+
+##### Find a unique user
+
+```rust showLineNumbers
+let user = teo.user().find_unique(&teon!({
+    "where": {
+        "id": 1
+    }
+})).await?;
+```
+
+### `find_first`
+
+Find an object with params same as `find_first` handler.
+
+#### Signature
+
+```rust
+pub async fn find_first(finder: &Value) -> Result<Self>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | &Value | The finder  |
+
+#### Examples
+
+##### Find a user
+
+```rust showLineNumbers
+let user = teo.user().find_first(&teon!({
+    "where": {
+        "age": 20
+    }
+})).await?;
+```
+
+### `new`
+
+Create a new entity.
+
+#### Signature
+
+```rust
+pub async fn new(values: impl AsRef<Value>) -> Self
+```
+
+#### Arguments
+
+| Name   | Required | Type                      | Description     |
+| :----- | :------- | :------------------------ | :-------------- |
+| values | **Yes**  | impl AsRef&#60;Value&#62; | The create data |
+
+#### Examples
+
+##### Create a new Post
+
+```rust showLineNumbers
+let post = Post::new(teon!({ "title": "Post 1" })).await;
+```
+
+### `default`
+
+Create an empty entity.
+
+#### Signature
+
+```rust
+pub async fn default() -> Self
+```
+
+#### Examples
+
+##### Create a default empty post
+
+```rust showLineNumbers
+let post = Post::default().await;
+```
+
+### `is_new`
+
+Returns true if object is new.
+
+#### Signature
+
+```rust
+pub async fn is_new(&self) -> bool
+```
+
+#### Examples
+
+##### Check if a post is new
+
+```rust showLineNumbers
+let is_new = post.is_new();
+```
+
+### `is_modified`
+
+Returns true if object is modified.
+
+#### Signature
+
+```rust
+pub async fn is_modified(&self) -> bool
+```
+
+#### Examples
+
+##### Check if a post is modified
+
+```rust showLineNumbers
+let is_modified = post.is_modified();
+```
+
+### `set`
+
+Set values to an object. `onSet` pipelines are triggered.
+
+#### Signature
+
+```rust
+pub async fn set(&self, values: impl AsRef<Value>) -> Result<()>
+```
+
+#### Arguments
+
+| Name   | Required | Type                      | Description  |
+| :----- | :------- | :------------------------ | :----------- |
+| values | **Yes**  | impl AsRef&#60;Value&#62; | The set data |
+
+#### Examples
+
+##### Set values to a user
+
+```rust showLineNumbers
+user.set(teon!({ "name": "Peter", "age": 15 })).await?;
+```
+
+### `update`
+
+Update values on an object.
+
+#### Signature
+
+```rust
+pub async fn update(&self, values: impl AsRef<Value>) -> Result<()>
+```
+
+#### Arguments
+
+| Name   | Required | Type                      | Description     |
+| :----- | :------- | :------------------------ | :-------------- |
+| values | **Yes**  | impl AsRef&#60;Value&#62; | The update data |
+
+#### Examples
+
+##### Update values on a user
+
+```rust showLineNumbers
+user.update(teon!({ "name": "Peter", "age": 15 })).await?;
+```
+
+### `save`
+
+Save an object.
+
+#### Signature
+
+```rust
+pub async fn save(&self) -> Result<()>
+```
+
+#### Examples
+
+##### Save a post
+
+```rust showLineNumbers
+post.save().await?;
+```
+
+### `delete`
+
+Delete an object.
+
+#### Signature
+
+```rust
+pub async fn delete(&self) -> Result<()>
+```
+
+#### Examples
+
+##### Delete a post
+
+```rust showLineNumbers
+post.delete().await?;
+```

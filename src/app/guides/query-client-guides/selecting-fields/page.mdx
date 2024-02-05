@@ -3,11 +3,11 @@ import CodeResult from '../../../../shared/components/CodeResult'
 
 <div className="breadcrumbs">
   <span className="breadcrumb">
-    <a href="/docs/guides">Guides</a>
+    <a href="/guides">Guides</a>
   </span>
   <span> / </span>
   <span className="breadcrumb">
-    <a href="/docs/guides/query-client-guides">Query client guides</a>
+    <a href="/guides/query-client-guides">Query client guides</a>
   </span>
 </div>
 
@@ -18,9 +18,9 @@ fields that you require rather than relying on the default selection set can
 reduce the size of the response and improve query speed.
 
 > Teo's frontend API design is slightly different from
-> [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/select-fields).
+> [Prisma](https://www.prisma.io/concepts/components/prisma-client/select-fields).
 > To including relations, see
-> [Relation queries](/docs/concepts/components/teo-query-client/relation-queries).
+> [Relation queries](/concepts/components/teo-query-client/relation-queries).
 
 The selection can be nested inside related relations, too. The following query
 returns only artist name and song name.
@@ -66,6 +66,6 @@ const { data: artists } = await teo.artist.findMany({
 The next topic introduces relation queries.
 
 <PrevNext>
-  <PrevArticle href="/docs/concepts/components/teo-query-client/pagination">Pagination</PrevArticle>
-  <NextArticle href="/docs/concepts/components/teo-query-client/relation-queries">Relation queries</NextArticle>
+  <PrevArticle href="/concepts/components/teo-query-client/pagination">Pagination</PrevArticle>
+  <NextArticle href="/concepts/components/teo-query-client/relation-queries">Relation queries</NextArticle>
 </PrevNext>

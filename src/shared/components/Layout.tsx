@@ -1,10 +1,6 @@
 import React, { ReactElement, ReactNode } from 'react'
-import Head from 'next/head'
 import { styled } from '@linaria/react'
-import {
-  contentFontStack,
-  dark, darkBackground, darkContent, light, lightBackground, lightContent
-} from '../styles/theme'
+
 
 const LayoutContainer = styled.div`
 :global {
@@ -33,19 +29,6 @@ const LayoutContainer = styled.div`
   }
   * {
     box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    scroll-behavior: smooth;
-    ${light} {
-      background-color: ${lightBackground};
-      color: ${lightContent};
-    }
-    /* ${dark} {
-      background-color: ${darkBackground};
-      color: ${darkContent};
-    } */
-    font-family: ${contentFontStack};
   }
   a {
     color: inherit;

@@ -194,7 +194,7 @@ const DocHome: NextPage = () => {
   return <DocHomeContainer>
     <Title>TEO Documentation</Title>
     <Subtitle>Welcome to Teo documentation center! Choose a topic to get started with. Join our thriving community on Slack and GitHub for help and ideas.</Subtitle>
-    <GetStartedButton href="/docs/getting-started"><Book />Getting started</GetStartedButton>
+    <GetStartedButton href="/getting-started"><Book />Getting started</GetStartedButton>
     <OverviewContainer>
       <OverviewSection>
         <OverviewSectionIconContainer color="rgb(255, 235, 248)" content='rgb(248, 62, 183)'>
@@ -202,8 +202,8 @@ const DocHome: NextPage = () => {
         </OverviewSectionIconContainer>
         <OverviewSectionTitle>OVERVIEW</OverviewSectionTitle>
         <OverviewSectionItems>
-          <OverviewSectionItem href="/docs/concepts/overview/what-is-teo">What is Teo?</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/concepts/overview/why-teo">Why Teo?</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/overview/what-is-teo">What is Teo?</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/overview/why-teo">Why Teo?</OverviewSectionItem>
         </OverviewSectionItems>
       </OverviewSection>
       <OverviewSection>
@@ -212,12 +212,12 @@ const DocHome: NextPage = () => {
         </OverviewSectionIconContainer>
         <OverviewSectionTitle>SCHEMA</OverviewSectionTitle>
         <OverviewSectionItems>
-          <OverviewSectionItem href="/docs/concepts/components/teo-schema/connector">Connector</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/concepts/components/teo-schema/model">Model</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/concepts/components/teo-schema/field">Field</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/concepts/components/teo-schema/relation">Relation</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/concepts/components/teo-schema/property">Property</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/concepts/components/teo-schema/action">Action</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/connector">Connector</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/model">Model</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/field">Field</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/relation">Relation</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/property">Property</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/action">Action</OverviewSectionItem>
         </OverviewSectionItems>
       </OverviewSection>
       <OverviewSection>
@@ -226,28 +226,28 @@ const DocHome: NextPage = () => {
         </OverviewSectionIconContainer>
         <OverviewSectionTitle>QUERY CLIENT</OverviewSectionTitle>
         <OverviewSectionItems>
-          <OverviewSectionItem href="/docs/guides/query-client-guides/crud">CRUD</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/guides/query-client-guides/filtering-and-sorting">Filtering and sorting</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/guides/query-client-guides/pagination">Pagination</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/guides/query-client-guides/relation-queries">Relation queries</OverviewSectionItem>
-          <OverviewSectionItem href="/docs/guides/query-client-guides/aggregation-grouping-summarizing">Aggregation, grouping and summarizing</OverviewSectionItem>
+          <OverviewSectionItem href="/guides/query-client-guides/crud">CRUD</OverviewSectionItem>
+          <OverviewSectionItem href="/guides/query-client-guides/filtering-and-sorting">Filtering and sorting</OverviewSectionItem>
+          <OverviewSectionItem href="/guides/query-client-guides/pagination">Pagination</OverviewSectionItem>
+          <OverviewSectionItem href="/guides/query-client-guides/relation-queries">Relation queries</OverviewSectionItem>
+          <OverviewSectionItem href="/guides/query-client-guides/aggregation-grouping-summarizing">Aggregation, grouping and summarizing</OverviewSectionItem>
         </OverviewSectionItems>
       </OverviewSection>
     </OverviewContainer>
     <LargeTitle>Guides</LargeTitle>
     <Subtitle>Get things done with Teo.</Subtitle>
     <GuideItems>
-      <GuideItem href='/docs/guides/server-guides/data-modeling'>
+      <GuideItem href='/guides/server-guides/data-modeling'>
         <GuideItemHeading color='#fda335' />
         <GuideItemTitle>Data modeling</GuideItemTitle>
         <GuideItemText>Teo provides a lot of builtin descriptive decorators and pipeline items. Model your data with Teo.</GuideItemText>
       </GuideItem>
-      <GuideItem href='/docs/guides/server-guides/route-handlers'>
+      <GuideItem href='/guides/server-guides/route-handlers'>
         <GuideItemHeading color='#f86be3' />
         <GuideItemTitle>Route handlers</GuideItemTitle>
         <GuideItemText>Define custom route handlers with Teo just like any other web frameworks.</GuideItemText>
       </GuideItem>
-      <GuideItem href='/docs/guides/server-guides/middlewares'>
+      <GuideItem href='/guides/server-guides/middlewares'>
         <GuideItemHeading color='#4eb5ff' />
         <GuideItemTitle>Middlewares</GuideItemTitle>
         <GuideItemText>Use custom middlewares to perform common actions and abstract things out.</GuideItemText>
@@ -256,12 +256,12 @@ const DocHome: NextPage = () => {
     <LargeTitle>Reference</LargeTitle>
     <Subtitle>API reference and database reference.</Subtitle>
     <GuideItems>
-      <GuideItem href='/docs/reference/api-reference'>
+      <GuideItem href='/reference/api-reference'>
         <GuideItemHeading color='#33d41a' />
         <GuideItemTitle>API reference</GuideItemTitle>
         <GuideItemText>Reference for Teo schema, Teo server side library and generated query clients.</GuideItemText>
       </GuideItem>
-      <GuideItem href='/docs/reference/cli-reference'>
+      <GuideItem href='/reference/cli-reference'>
         <GuideItemHeading color='#c467fe' />
         <GuideItemTitle>CLI reference</GuideItemTitle>
         <GuideItemText>Reference for Teo CLI tool.</GuideItemText>

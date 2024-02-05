@@ -5,15 +5,15 @@ import {
     TripleSelector, RustDoc, NodeJSDoc, PythonDoc, GoDoc, JavaDoc, MySQLDoc,
     PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
     SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
-} from '../../../../components/docs/Selector'
+} from '../../../../components/Selector'
 
 <div className="breadcrumbs">
   <span className="breadcrumb">
-    <a href="/docs/getting-started">Getting started</a>
+    <a href="/getting-started">Getting started</a>
   </span>
   <span> / </span>
   <span className="breadcrumb">
-    <a href="/docs/getting-started/beginner-tutorial">Beginner tutorial</a>
+    <a href="/getting-started/beginner-tutorial">Beginner tutorial</a>
   </span>
 </div>
 
@@ -131,7 +131,7 @@ we've declared in our schema. Restart our server by compiling again.
 Navigate to `"http://localhost:5051"` in a browser, you will see the 
 new home page that we've just write in HTML.
 
-<Image alt="Browser screenshot" width={377} height={159} src="/images/docs/browserhtml.png" />
+<Image alt="Browser screenshot" width={377} height={159} src="/images/browserhtml.png" />
 
 In practice, any template engines can be used to generate the HTML content.
 But it's far beyond this scope.
@@ -229,7 +229,7 @@ cargo run -- serve
 
 Now navigate to `/echo/hello` in the browser. The path argument is printed out.
 
-<Image alt="Browser screenshot" width={336} height={131} src="/images/docs/browserhtml2.png" />
+<Image alt="Browser screenshot" width={336} height={131} src="/images/browserhtml2.png" />
 
 ### File response
 
@@ -237,7 +237,7 @@ Let's server some static files from a directory.
 
 Create a file at `/static/images/girl.jpg` with the following image.
 
-<Image alt="Browser screenshot" width={426} height={569} src="/images/docs/girl.jpg" />
+<Image alt="Browser screenshot" width={426} height={569} src="/images/girl.jpg" />
 
 Append this to the end of the schema.
 
@@ -299,7 +299,7 @@ cargo run -- serve
 Now navigate to `/` in the browser, and you will see the image. Try typing a non-existing
 file path, 404 is responded.
 
-<Image alt="Browser screenshot" width={447} height={268} src="/images/docs/browsergirl.png" />
+<Image alt="Browser screenshot" width={447} height={268} src="/images/browsergirl.png" />
 
 ## API interaction
 
@@ -538,6 +538,6 @@ with it, let us know by joining our [Discord group](/discord) or
 [firing an issue](https://github.com/teocloud/teo/issues).
 
 <PrevNext>
-  <PrevArticle href="/docs/getting-started/beginner-tutorial/write-a-schema-only-app">Write a schema only app</PrevArticle>
+  <PrevArticle href="/getting-started/beginner-tutorial/write-a-schema-only-app">Write a schema only app</PrevArticle>
   <div></div>
 </PrevNext>

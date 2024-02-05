@@ -2,15 +2,15 @@ import { PrevNext, PrevArticle, NextArticle } from '../../../../../shared/compon
 
 <div className="breadcrumbs">
   <span className="breadcrumb">
-    <a href="/docs/concepts">Concepts</a>
+    <a href="/concepts">Concepts</a>
   </span>
   <span> / </span>
   <span className="breadcrumb">
-    <a href="/docs/concepts/components">Components</a>
+    <a href="/concepts/components">Components</a>
   </span>
   <span> / </span>
   <span className="breadcrumb">
-    <a href="/docs/concepts/components/teo-schema">Teo Schema</a>
+    <a href="/concepts/components/teo-schema">Teo Schema</a>
   </span>
 </div>
 
@@ -18,7 +18,7 @@ import { PrevNext, PrevArticle, NextArticle } from '../../../../../shared/compon
 
 > This guide introduces the concept of model used in Teo server implementation.
 > To understand how to define a model to suit your business requirements, read
-> our guide article [Data modeling](/docs/guides/server-guides/data-modeling).
+> our guide article [Data modeling](/guides/server-guides/data-modeling).
 > To get a list of model APIs, check our API documentation.
 
 A model is mapped into a table or collection in the underlying database, with
@@ -46,14 +46,14 @@ model User {
 ```
 
 A model has a primary index, at least a primary field. It optionally has a
-documented `@name`. It can have any number of [indexes](/docs/concepts/components/teo-schema/index-concept) <span class="concept">CONCEPT</span>.
+documented `@name`. It can have any number of [indexes](/concepts/components/teo-schema/index-concept) <span class="concept">CONCEPT</span>.
 
 ## Virtual Model
 
 A virtual model is a model which don't have a database table. It only supports
 `create` and `createMany` action. If it has identity defined, `signIn` and
 `identity` are also supported. To understand actions, check
-[Action](/docs/concepts/components/teo-schema/action)
+[Action](/concepts/components/teo-schema/action)
 <span class="concept">CONCEPT</span> topic.
 
 A virtual model cannot have relationships since it's not existing in the
@@ -73,10 +73,10 @@ authenticated with custom code, too.
 ## Going next
 
 The next topic in this episode introduces
-[**field**](/docs/concepts/components/teo-schema/field), which represents database
+[**field**](/concepts/components/teo-schema/field), which represents database
 table column.
 
 <PrevNext>
-  <PrevArticle href="/docs/concepts/components/teo-schema/connector">Connector</PrevArticle>
-  <NextArticle href="/docs/concepts/components/teo-schema/field">Field</NextArticle>
+  <PrevArticle href="/concepts/components/teo-schema/connector">Connector</PrevArticle>
+  <NextArticle href="/concepts/components/teo-schema/field">Field</NextArticle>
 </PrevNext>

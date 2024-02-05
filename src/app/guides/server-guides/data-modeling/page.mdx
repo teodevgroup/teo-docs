@@ -1,10 +1,10 @@
 <div className="breadcrumbs">
   <span className="breadcrumb">
-    <a href="/docs/guides">Guides</a>
+    <a href="/guides">Guides</a>
   </span>
   <span> / </span>
   <span className="breadcrumb">
-    <a href="/docs/guides/server-guides">Server guides</a>
+    <a href="/guides/server-guides">Server guides</a>
   </span>
 </div>
 
@@ -15,7 +15,7 @@ This guide introduces the best practices on data modeling.
 ## Design model ID
 
 Teo has a flexible schema language for modeling data. So does defining model ID. 
-Teo supports integer ID, string ID, [object id](/docs/concepts/components/teo-server/enum)
+Teo supports integer ID, string ID, [object id](/concepts/components/teo-server/enum)
 <span class="concept">MongoDB Only</span>, and compound ID. To specify a model's ID, use 
 the `@id` decorator.
 
@@ -123,13 +123,13 @@ model MyModel {
 
 A model represents a table or collection in the underlying database. Teo models are shaped models 
 which means developer need to define fields on a model with field types and other information 
-related to a field. To understand the concepts, see [Model](/docs/concepts/components/teo-schema/model), 
-[Field](/docs/concepts/components/teo-schema/field) and 
-[Property](/docs/concepts/components/teo-schema/property).
+related to a field. To understand the concepts, see [Model](/concepts/components/teo-schema/model), 
+[Field](/concepts/components/teo-schema/field) and 
+[Property](/concepts/components/teo-schema/property).
 
 ### Field or property
 
-A [field](/docs/concepts/components/teo-schema/field) represents a normal "table column". While a property
+A [field](/concepts/components/teo-schema/field) represents a normal "table column". While a property
 with a setter is a shortcut for setting values of fields. A property with a getter represents calculated result.
 
 ```teo

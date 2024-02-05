@@ -673,38 +673,38 @@ export const DocumentationLayout = (props: DocumentationLayoutProps) => {
   return <Layout>
     <Heading />
     <DocumentationContainer>
-      <DocumentationNav>
+      {/* <DocumentationNav>
         <DocumentationNavConstraint>
           <Row>
-            <DocumentationNavItem selected={props.path.startsWith("/docs/getting-started")}>
-              <DocumentationNavItemA href="/docs/getting-started">
+            <DocumentationNavItem selected={props.path.startsWith("/getting-started")}>
+              <DocumentationNavItemA href="/getting-started">
                 Get Started
               </DocumentationNavItemA>
             </DocumentationNavItem>
-            <DocumentationNavItem selected={props.path.startsWith("/docs/concepts")}>
-              <DocumentationNavItemA href="/docs/concepts">
+            <DocumentationNavItem selected={props.path.startsWith("/concepts")}>
+              <DocumentationNavItemA href="/concepts">
                 Concepts
               </DocumentationNavItemA>
             </DocumentationNavItem>
-            <DocumentationNavItem selected={props.path.startsWith("/docs/guides")}>
-              <DocumentationNavItemA href="/docs/guides">
+            <DocumentationNavItem selected={props.path.startsWith("/guides")}>
+              <DocumentationNavItemA href="/guides">
                 Guides
               </DocumentationNavItemA>
             </DocumentationNavItem>
-            <DocumentationNavItem selected={props.path.startsWith("/docs/reference")}>
-              <DocumentationNavItemA href="/docs/reference">
+            <DocumentationNavItem selected={props.path.startsWith("/reference")}>
+              <DocumentationNavItemA href="/reference">
                 Reference
               </DocumentationNavItemA>
             </DocumentationNavItem>
-            {/* <DocumentationNavItem selected={props.path.startsWith("/docs/cookbook")}>
-              <DocumentationNavItemA href="/docs/cookbook">
+            {/* <DocumentationNavItem selected={props.path.startsWith("/cookbook")}>
+              <DocumentationNavItemA href="/cookbook">
                 Cookbook
               </DocumentationNavItemA>
-            </DocumentationNavItem> */}
+            </DocumentationNavItem>
           </Row>
           <DocumentationSearch placeholder='Search...' />
         </DocumentationNavConstraint>
-      </DocumentationNav>
+      </DocumentationNav> */}
       <DocumentationConstraint>
         <DocumentationContent>
           <MDXProvider components={components as any}>

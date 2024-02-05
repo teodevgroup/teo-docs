@@ -20,12 +20,15 @@ const HeadingMenuButton = styled.button`
   height: 40px;
   margin-right: -10px;
   display: none;
+  
   ${phoneAndTablet} {
     display: block;
   }
 `
 
-const HeadingContainer = styled.div``
+const HeadingContainer = styled.div`
+  border-bottom: 1px solid #e2e8f0;
+`
 
 const HeadingBorderLine = styled.div`
   background-color: #0052ff;
@@ -144,19 +147,16 @@ export const HeadingLogo = () => <HeadingLogoContainer>
 const HeadingNavItemsReused = () => {
   return <HeadingNavItems>
     <HeadingNavItem>
-      <HeadingNavItemA href='/developer-tools'>Developer Tools</HeadingNavItemA>
+      <HeadingNavItemA href='/getting-started'>Get Started</HeadingNavItemA>
     </HeadingNavItem>
     <HeadingNavItem>
-      <HeadingNavItemA href='/community'>Community</HeadingNavItemA>
+      <HeadingNavItemA href='/concepts'>Concepts</HeadingNavItemA>
     </HeadingNavItem>
     <HeadingNavItem>
-      <HeadingNavItemA href='/docs'>Docs</HeadingNavItemA>
+      <HeadingNavItemA href='/guides'>Guides</HeadingNavItemA>
     </HeadingNavItem>
     <HeadingNavItem>
-      <HeadingNavItemA href='/blog'>Blog</HeadingNavItemA>
-    </HeadingNavItem>
-    <HeadingNavItem>
-      <HeadingNavItemA href='/company'>Company</HeadingNavItemA>
+      <HeadingNavItemA href='/reference'>Reference</HeadingNavItemA>
     </HeadingNavItem>
   </HeadingNavItems>
 }
