@@ -4,7 +4,6 @@ import remarkToc from 'remark-toc'
 import rehypeSlug from 'rehype-slug'
 import onThisPage from './plugins/onThisPage.mjs'
 import dataCopy from './plugins/dataCopy.mjs'
-import wrapInArticle from './plugins/wrapInArticle.mjs'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeMdxTitle from 'rehype-mdx-title'
 import recmaNextjsStaticProps from 'recma-nextjs-static-props'
@@ -19,7 +18,6 @@ let withMDX = mdx({
       remarkToc, remarkGfm, remarkFrontmatter
     ],
     rehypePlugins: [
-      //wrapInArticle,
       rehypeMdxTitle,
       rehypeSlug,
       [rehypePrettyCode, {

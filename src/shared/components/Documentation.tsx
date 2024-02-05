@@ -257,6 +257,7 @@ export const DocumentationContent = styled.div`
         width: 8px;
         height: 100%;
         left: 0px;
+        top: 0;
         border-radius: 5px;
         background: rgb(251, 211, 141) !important;
       }
@@ -378,7 +379,7 @@ export const DocumentationContent = styled.div`
       background: rgb(237, 242, 247);
       border-radius: 5px;
     }
-    div[data-rehype-pretty-code-fragment] {
+    [data-rehype-pretty-code-figure] {
       margin: 16px 0;
     }
     div[data-rehype-pretty-code-title] {
@@ -390,14 +391,14 @@ export const DocumentationContent = styled.div`
     }
     [data-use-dark] {
       pre {
-        background-color: rgb(26, 32, 44);
+        background-color: rgb(26, 32, 44) !important;
         --shiki-color-text: #edf2f7;
         button {
           background-color: #2d3748;
         }
         code {
           --shiki-color-text: #edf2f7;
-          .line::before {
+          [data-line]::before {
             color: #4a5568 !important;
           }
         }
@@ -437,7 +438,7 @@ export const DocumentationContent = styled.div`
         [data-language="sh"] {
           --shiki-color-text: #edf2f7;
         }
-        .line {
+        [data-line] {
           padding: 0 48px 0 16px;
         }
         .highlighted {
@@ -466,7 +467,7 @@ export const DocumentationContent = styled.div`
       font-variant-ligatures: none;
     }
 
-    code[data-line-numbers] > .line::before {
+    code[data-line-numbers] > [data-line]::before {
       counter-increment: line;
       content: counter(line);
 
@@ -478,7 +479,7 @@ export const DocumentationContent = styled.div`
       color: rgb(203, 213, 224);
     }
 
-    code[data-language="sh"] > .line::before {
+    code[data-language="sh"] > [data-line]::before {
       content: "$ ";
       color: #4a5568;
     }

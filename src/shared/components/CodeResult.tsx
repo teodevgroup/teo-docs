@@ -17,7 +17,7 @@ const CodeResultContainer = styled.div`
   pre {
     border-radius: 0 !important;
   }
-  div[data-rehype-pretty-code-fragment] {
+  [data-rehype-pretty-code-figure] {
     margin: 0 !important;
   }
 `
