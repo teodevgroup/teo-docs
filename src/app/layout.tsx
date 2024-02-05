@@ -46,9 +46,7 @@ export default function RootLayout({
         </Head>
         <DocumentationSidebar path={pathname} />
           <DocumentationContent>
-            <article>
-              {children}
-            </article>
+            {children}
           </DocumentationContent>
       </DocumentationLayout>
       </body>

@@ -16,7 +16,6 @@
     "@linaria/babel-preset": "^5.0.4",
     "@linaria/core": "^6.0.0",
     "@linaria/react": "^6.0.0",
-    "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^14.1.0",
     "next": "^14.1.0",
@@ -34,10 +33,12 @@
     "shiki": "^0.11.1"
   },
   "devDependencies": {
+    "@mdx-js/loader": "^3.0.0",
     "@types/mdx": "^2.0.11",
     "@types/node": "20.11.16",
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "unist-builder": "^4.0.0"
   }
 }

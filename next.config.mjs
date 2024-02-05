@@ -4,6 +4,7 @@ import remarkToc from 'remark-toc'
 import rehypeSlug from 'rehype-slug'
 import onThisPage from './plugins/onThisPage.mjs'
 import dataCopy from './plugins/dataCopy.mjs'
+import wrapInArticle from './plugins/wrapInArticle.mjs'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeMdxTitle from 'rehype-mdx-title'
 import recmaNextjsStaticProps from 'recma-nextjs-static-props'
@@ -18,6 +19,7 @@ let withMDX = mdx({
       remarkToc, remarkGfm, remarkFrontmatter
     ],
     rehypePlugins: [
+      //wrapInArticle,
       rehypeMdxTitle,
       rehypeSlug,
       [rehypePrettyCode, {
@@ -26,15 +28,19 @@ let withMDX = mdx({
           // Prevent lines from collapsing in `display: grid` mode, and
           // allow empty lines to be copy/pasted
           if (node.children.length === 0) {
-            node.children = [{type: 'text', value: ' '}];
+            node.children = [{type: 'text', value: ' '}]
           }
         },
         // Feel free to add classNames that suit your docs
         onVisitHighlightedLine(node) {
-          node.properties.className.push('highlighted');
+          if (node.properties.className) {
+            node.properties.className.push('highlighted')
+          } else {
+            node.properties.className = ['highlighted']
+          }
         },
         onVisitHighlightedWord(node) {
-          node.properties.className = ['word'];
+          node.properties.className = ['word']
         },
         getHighlighter: (options) => getHighlighter({
           ...options,
@@ -58,9 +64,6 @@ let withMDX = mdx({
 /** @type {import('next-with-linaria').LinariaConfig} */
 const config = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
-  experimental: {
-    mdxRs: true,
-  },
 }
 
 export default withMDX(withLinaria(config))

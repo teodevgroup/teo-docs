@@ -131,7 +131,7 @@ we've declared in our schema. Restart our server by compiling again.
 Navigate to `"http://localhost:5051"` in a browser, you will see the 
 new home page that we've just write in HTML.
 
-<Image alt="Browser screenshot" width={377} height={159} src="/images/browserhtml.png" />
+<Image alt="Browser screenshot" width={377} height={159} src="/images/docs/browserhtml.png" />
 
 In practice, any template engines can be used to generate the HTML content.
 But it's far beyond this scope.
@@ -229,7 +229,7 @@ cargo run -- serve
 
 Now navigate to `/echo/hello` in the browser. The path argument is printed out.
 
-<Image alt="Browser screenshot" width={336} height={131} src="/images/browserhtml2.png" />
+<Image alt="Browser screenshot" width={336} height={131} src="/images/docs/browserhtml2.png" />
 
 ### File response
 
@@ -237,7 +237,7 @@ Let's server some static files from a directory.
 
 Create a file at `/static/images/girl.jpg` with the following image.
 
-<Image alt="Browser screenshot" width={426} height={569} src="/images/girl.jpg" />
+<Image alt="Browser screenshot" width={426} height={569} src="/images/docs/girl.jpg" />
 
 Append this to the end of the schema.
 
@@ -299,7 +299,7 @@ cargo run -- serve
 Now navigate to `/` in the browser, and you will see the image. Try typing a non-existing
 file path, 404 is responded.
 
-<Image alt="Browser screenshot" width={447} height={268} src="/images/browsergirl.png" />
+<Image alt="Browser screenshot" width={447} height={268} src="/images/docs/browsergirl.png" />
 
 ## API interaction
 
