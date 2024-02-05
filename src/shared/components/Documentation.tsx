@@ -1,3 +1,5 @@
+'use client'
+
 import React, { ReactElement, ReactNode, Children, cloneElement, useState, useEffect } from 'react'
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
@@ -7,7 +9,6 @@ import Layout from './Layout'
 import Footer from './Footer'
 import Heading from './Heading'
 import Row from './Row'
-import { MDXProvider } from '@mdx-js/react'
 import { MDXComponents } from 'mdx/types'
 import { Clipboard, File, Hash } from 'react-feather'
 import Image from 'next/image'
@@ -522,14 +523,14 @@ const CopyButton = (props: CopyButtonProps) => {
   </button>
 }
 
-const Pre = (props: PreProps) => {
+export const Pre = (props: PreProps) => {
   return <pre {...props}>
     {props.children}
     <CopyButton data-copy={props['data-copy']} />
   </pre>
 }
 
-const Aside = (props: AsideProps) => {
+export const Aside = (props: AsideProps) => {
   const [hash, setHash] = useState('')
   useEffect(() => {
     const headings = Array.prototype.slice.call(document.querySelectorAll('h2[id],h3[id]'))
@@ -586,7 +587,7 @@ const CodeTitle = (props: DivProps) => {
   </CodeTitleContainer>
 }
 
-const Div = (props: DivProps) => {
+export const Div = (props: DivProps) => {
   if ((props as any)['data-rehype-pretty-code-title'] === '') {
     return <CodeTitle {...props}>
       {props.children}
@@ -615,7 +616,7 @@ const HeadingButton = styled.button`
 
 type HeadingProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>
 
-const H2 = (props: HeadingProps) => {
+export const H2 = (props: HeadingProps) => {
   return <h2 {...props}>
     <HeadingButton onClick={() => window.location.hash = `#${props.id}`}>
       <Hash size={24} />
@@ -624,7 +625,7 @@ const H2 = (props: HeadingProps) => {
   </h2>
 }
 
-const H3 = (props: HeadingProps) => {
+export const H3 = (props: HeadingProps) => {
   return <h3 {...props}>
     <HeadingButton onClick={() => window.location.hash = `#${props.id}`}>
       <Hash size={18} />
@@ -633,7 +634,7 @@ const H3 = (props: HeadingProps) => {
   </h3>
 }
 
-const H4 = (props: HeadingProps) => {
+export const H4 = (props: HeadingProps) => {
   return <h4 {...props}>
     <HeadingButton onClick={() => window.location.hash = `#${props.id}`}>
       <Hash size={16} />
@@ -642,7 +643,7 @@ const H4 = (props: HeadingProps) => {
   </h4>
 }
 
-const H5 = (props: HeadingProps) => {
+export const H5 = (props: HeadingProps) => {
   return <h5 {...props}>
     <HeadingButton onClick={() => window.location.hash = `#${props.id}`}>
       <Hash size={14} />
@@ -651,7 +652,7 @@ const H5 = (props: HeadingProps) => {
   </h5>
 }
 
-const H6 = (props: HeadingProps) => {
+export const H6 = (props: HeadingProps) => {
   return <h6 {...props}>
     <HeadingButton onClick={() => window.location.hash = `#${props.id}`}>
       <Hash size={12} />
@@ -660,58 +661,13 @@ const H6 = (props: HeadingProps) => {
   </h6>
 }
 
-const components: MDXComponents = {
-  aside: Aside as any,
-  pre: Pre as any,
-  div: Div,
-  h2: H2,
-  h3: H3,
-  h4: H4,
-  h5: H5,
-  h6: H6,
-}
-
 export const DocumentationLayout = (props: DocumentationLayoutProps) => {
   return <Layout>
     <Heading />
     <DocumentationContainer>
-      {/* <DocumentationNav>
-        <DocumentationNavConstraint>
-          <Row>
-            <DocumentationNavItem selected={props.path.startsWith("/getting-started")}>
-              <DocumentationNavItemA href="/getting-started">
-                Get Started
-              </DocumentationNavItemA>
-            </DocumentationNavItem>
-            <DocumentationNavItem selected={props.path.startsWith("/concepts")}>
-              <DocumentationNavItemA href="/concepts">
-                Concepts
-              </DocumentationNavItemA>
-            </DocumentationNavItem>
-            <DocumentationNavItem selected={props.path.startsWith("/guides")}>
-              <DocumentationNavItemA href="/guides">
-                Guides
-              </DocumentationNavItemA>
-            </DocumentationNavItem>
-            <DocumentationNavItem selected={props.path.startsWith("/reference")}>
-              <DocumentationNavItemA href="/reference">
-                Reference
-              </DocumentationNavItemA>
-            </DocumentationNavItem>
-            {/* <DocumentationNavItem selected={props.path.startsWith("/cookbook")}>
-              <DocumentationNavItemA href="/cookbook">
-                Cookbook
-              </DocumentationNavItemA>
-            </DocumentationNavItem>
-          </Row>
-          <DocumentationSearch placeholder='Search...' />
-        </DocumentationNavConstraint>
-      </DocumentationNav> */}
       <DocumentationConstraint>
         <DocumentationContent>
-          <MDXProvider components={components as any}>
-            {props.children}
-          </MDXProvider>
+          {props.children}
         </DocumentationContent>
       </DocumentationConstraint>
     </DocumentationContainer>
