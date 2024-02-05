@@ -29,7 +29,7 @@ const PrevNextA = styled.a`
   padding: 11px 14px;
   color: #40404c !important;
   border-radius: 8px;
-  :not(:last-child) {
+  &:not(:last-child) {
     margin-right: 20px;
   }
 `

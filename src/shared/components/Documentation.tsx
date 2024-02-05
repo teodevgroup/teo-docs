@@ -53,7 +53,7 @@ export const DocumentationNavItemBase = styled.li`
   font-size: 16px;
   font-weight: 500;
   color: ${tagContentColor};
-  :not(:last-child) {
+  &:not(:last-child) {
     margin-right: ${spacing * 3}px;
   }
 `
@@ -241,7 +241,7 @@ export const DocumentationContent = styled.div`
         a {
           color: rgb(113, 128, 150);
           text-decoration: none;
-          :hover {
+          &:hover {
             color: #4A5568;
             text-decoration: underline;
           }
@@ -252,7 +252,7 @@ export const DocumentationContent = styled.div`
       margin: 0;
       padding-left: 20px;
       position: relative;
-      ::before {
+      &::before {
         content: "";
         position: absolute;
         width: 8px;
@@ -272,7 +272,7 @@ export const DocumentationContent = styled.div`
       font-weight: bold;
       font-family: ${docTitleFontFamily};
       line-height: 1.2;
-      :first-child {
+      &:first-child {
         margin-top: 8px;
       }
     }
@@ -284,7 +284,7 @@ export const DocumentationContent = styled.div`
       margin-top: 24px;
       font-weight: 600;
       font-family: ${docTitleFontFamily};
-      :hover {
+      &:hover {
         button {
           display: flex;
         }
@@ -297,7 +297,7 @@ export const DocumentationContent = styled.div`
       font-size: 18px;
       font-weight: 600;
       font-family: ${docTitleFontFamily};
-      :hover {
+      &:hover {
         button {
           display: flex;
         }
@@ -309,7 +309,7 @@ export const DocumentationContent = styled.div`
       position: relative;
       font-family: ${docTitleFontFamily};
       font-weight: 600;
-      :hover {
+      &:hover {
         button {
           display: flex;
         }
@@ -321,7 +321,7 @@ export const DocumentationContent = styled.div`
       position: relative;
       font-family: ${docTitleFontFamily};
       font-weight: 600;
-      :hover {
+      &:hover {
         button {
           display: flex;
         }
@@ -331,7 +331,7 @@ export const DocumentationContent = styled.div`
       display: block;
       overflow: visible;
       position: relative;
-      :hover {
+      &:hover {
         button {
           display: flex;
         }

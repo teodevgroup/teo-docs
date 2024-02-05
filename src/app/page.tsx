@@ -52,7 +52,7 @@ const GetStartedButton = styled.a`
   display: flex;
   align-items: center;
   gap: 8px;
-  :hover {
+  &:hover {
     background-color: rgb(43, 143, 85);
   }
 `
@@ -119,10 +119,10 @@ const OverviewSectionItem = styled.a`
   margin-top: 4px;
   position: relative;
   padding-left: 16px;
-  :hover {
+  &:hover {
     color: #0052ff;
   }
-  ::before {
+  &::before {
     content: " ";
     display: block;
     width: 6px;
@@ -162,7 +162,7 @@ const GuideItem = styled.a`
   flex: 1 1 0;
   background-color: rgb(250,250,254);
   transition: all 0.2s ease-in-out 0s;
-  :hover {
+  &:hover {
     background-color: rgb(244, 244, 249);
   }
 `

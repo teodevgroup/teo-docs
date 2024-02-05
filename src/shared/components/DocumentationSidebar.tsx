@@ -39,7 +39,7 @@ const DocSidebarItemTitleContainer = styled.div`
   ${flexColumn('flex-start')}
   justify-content: space-between;
   width: 100%;
-  :not(:last-child) {
+  &:not(:last-child) {
     margin-bottom: ${spacing}px;
   }
 `

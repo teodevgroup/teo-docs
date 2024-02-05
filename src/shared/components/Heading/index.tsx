@@ -164,7 +164,7 @@ const HeadingNavItemsReused = () => {
 const HeadingIconA = styled.a`
   color: #424242;
   transition: 0.2s all ease-in-out 0s;
-  :hover {
+  &:hover {
     color: #212121;
   }
 `

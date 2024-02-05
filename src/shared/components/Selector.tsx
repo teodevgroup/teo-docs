@@ -76,15 +76,15 @@ const SelectItem = (props: SelectItemProps) => {
     cursor: pointer;
     flex: 1 1 0px;
     transition: 0.2s all ease-in-out 0s;
-    :hover {
+    &:hover {
       background-color: #fafafc;
     }
-    :not(:last-child) {
+    &:not(:last-child) {
       border-right: 1px solid #eaecef;
     }
   `, props.selected ? css`
     background-color: #eaecef;
-    :hover {
+    &:hover {
       background-color: #eaecef;
     }
   ` : css`
