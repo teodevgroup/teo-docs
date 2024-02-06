@@ -41,16 +41,18 @@ const HeadingContentContainer = styled.div`
   background-color: ${contentBackgroundColor};
   box-shadow: 0 0 10px rgb(0 0 0 / 7%);
   position: relative;
+  height: 92px;
 `
 
-const HeadingConstrait = styled(Constraint)`
+const HeadingConstraint = styled(Constraint)`
   color: ${tintColor};
-  ${flexRow('center')}
+  ${flexRow('stretch')}
   font-family: ${tintFontStack};
   justify-content: space-between;
-  padding-top: ${margin}px;
-  padding-bottom: ${margin}px;
+  padding-top: 0;
+  padding-bottom: 0;
   font-weight: 300;
+  height: 100%;
 `
 
 const HeadingMenuContainer = styled.div`
@@ -74,14 +76,15 @@ const HeadingLogoContainer = styled.div`
 `
 
 const HeadingNavArea = styled.div`
-  ${flexRow('center')}
+  ${flexRow('baseline')}
+  margin-left: 40px;
   ${phoneAndTablet} {
     display: none;
   }
 `
 
 const HeadingLeft = styled.div`
-  ${flexRow('center')}
+  ${flexRow('stretch')}
   ${anyDesktop} {
     margin-right: 40px;
   }
@@ -95,25 +98,31 @@ const HeadingNavItems = styled.ul`
   padding: 0;
   list-style: none;
   color: #424242;
+  margin: 0;
   ${phoneAndTablet} {
     ${flexColumn('center')}
     align-items: flex-start;
   }
   ${anyDesktop} {
-    ${flexRow('center')}
+    ${flexRow('stretch')}
     align-items: center;
+    height: 100%;
   }
 `
 
 const HeadingNavItem = styled.li`
   padding: 0;
   margin-right: 36px;
+  height: 100%;
+`
+
+const HeadingNavItemANoEffect = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   ${phoneAndTablet} {
     padding: 10px 16px;
   }
-`
-
-const HeadingNavItemA = styled.a`
   color: unset;
   text-decoration: none;
   position: relative;
@@ -121,7 +130,23 @@ const HeadingNavItemA = styled.a`
   font-size: 16px;
 `
 
-const HeadingLogoNavItemA = styled(HeadingNavItemA)`
+const HeadingNavItemA = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${phoneAndTablet} {
+    padding: 10px 16px;
+  }
+  color: unset;
+  text-decoration: none;
+  position: relative;
+  font-weight: 500;
+  font-size: 16px;
+  height: 100%;
+  border-bottom: 2px solid blue;
+`
+
+const HeadingLogoNavItemA = styled(HeadingNavItemANoEffect)`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -229,27 +254,22 @@ const Heading = () => {
           <HeadingGitHubButton />
         </HeadingIconLinks>
       </HeadingMenuContainer>
-      <HeadingConstrait>
+      <HeadingConstraint>
         <HeadingLeft>
           <HeadingLogo />
-        </HeadingLeft>
-        <HeadingRight>
           <HeadingNavArea>
             <HeadingNavItemsReused />
           </HeadingNavArea>
+        </HeadingLeft>
+        <HeadingRight>
           <HeadingIconLinks>
             <HeadingGitHubButton />
           </HeadingIconLinks>
-
-          {/* <HeadingButton onClick={(e) => {
-            e.preventDefault()
-            window.location.href = "https://workspace.teocloud.io"
-          }}>Workspace</HeadingButton> */}
           <HeadingMenuButton onClick={() => setShowMenu(!showMenu)}>
             <Menu size={20} />
           </HeadingMenuButton>
         </HeadingRight>
-      </HeadingConstrait>
+      </HeadingConstraint>
     </HeadingContentContainer>
   </HeadingContainer>
 }
