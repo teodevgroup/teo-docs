@@ -69,7 +69,9 @@ const show = css`
   display: flex;
 `
 
-const HeadingLogoContainer = styled.div``
+const HeadingLogoContainer = styled.div`
+  ${flexRow('center')}
+`
 
 const HeadingNavArea = styled.div`
   ${flexRow('center')}
@@ -131,17 +133,23 @@ const HeadingLogoImageContainer = styled.div`
   margin-right: 8px;
 `
 
-export const HeadingLogoImage = () => <Image alt="Logo" src={'/images/logo/newlogo.png'} width={122} height={50} />
+const HeadingLogoDocs = styled.a`
+  font-size: 27px;
+  color: #535353;
+  margin-top: 2px;
+`
+
+export const HeadingLogoImage = () => <Image alt="Logo" src={'/images/logo/logo.png'} width={120} height={45} />
 
 export const HeadingLogo = () => <HeadingLogoContainer>
-<HeadingLogoNavItemA href='/'>
-  <HeadingLogoImageContainer>
-    <HeadingLogoImage />
-  </HeadingLogoImageContainer>
-  {/* <HeadingLogoText>
-    TEO <span style={{fontWeight: 400}}>Cloud</span>
-  </HeadingLogoText> */}
-</HeadingLogoNavItemA>
+  <HeadingLogoNavItemA href='https://teocloud.io'>
+    <HeadingLogoImageContainer>
+      <HeadingLogoImage />
+    </HeadingLogoImageContainer>
+  </HeadingLogoNavItemA>
+  <HeadingLogoDocs href='/'>
+    Docs
+  </HeadingLogoDocs>
 </HeadingLogoContainer>
 
 const HeadingNavItemsReused = () => {
