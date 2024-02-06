@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { styled } from '@linaria/react'
@@ -9,6 +11,7 @@ import patreonIcon from './patreon.svg'
 import githubIcon from './github.svg'
 import slackIcon from './slack.svg'
 import xIcon from './x-twitter.svg'
+import { usePathname } from 'next/navigation'
 
 const HeadingMenuButton = styled.button`
   color: ${tintColor};
@@ -77,7 +80,7 @@ const HeadingLogoContainer = styled.div`
 
 const HeadingNavArea = styled.div`
   ${flexRow('baseline')}
-  margin-left: 40px;
+  margin-left: 80px;
   ${phoneAndTablet} {
     display: none;
   }
@@ -112,7 +115,7 @@ const HeadingNavItems = styled.ul`
 
 const HeadingNavItem = styled.li`
   padding: 0;
-  margin-right: 36px;
+  margin-right: 18px;
   height: 100%;
 `
 
@@ -130,20 +133,33 @@ const HeadingNavItemANoEffect = styled.a`
   font-size: 16px;
 `
 
-const HeadingNavItemA = styled.a`
+interface HeadingNavItemAProps {
+  selected: boolean
+}
+
+const HeadingNavItemA = styled.a<HeadingNavItemAProps>`
   display: flex;
   align-items: center;
   justify-content: center;
   ${phoneAndTablet} {
     padding: 10px 16px;
   }
+  ${anyDesktop} {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 6px;
+    border-bottom: 2px solid ${props => (props.selected ? tintColor : 'white')};
+    &:hover {
+      border-bottom: 2px solid ${tintColor};
+    }
+  }
+  transition: all 0.2s ease-in-out 0s;
   color: unset;
   text-decoration: none;
   position: relative;
   font-weight: 500;
   font-size: 16px;
   height: 100%;
-  border-bottom: 2px solid blue;
 `
 
 const HeadingLogoNavItemA = styled(HeadingNavItemANoEffect)`
@@ -178,18 +194,19 @@ export const HeadingLogo = () => <HeadingLogoContainer>
 </HeadingLogoContainer>
 
 const HeadingNavItemsReused = () => {
+  const pathname = usePathname()
   return <HeadingNavItems>
     <HeadingNavItem>
-      <HeadingNavItemA href='/getting-started'>Get Started</HeadingNavItemA>
+      <HeadingNavItemA href='/getting-started' selected={pathname.startsWith('/getting-started')}>Get Started</HeadingNavItemA>
     </HeadingNavItem>
     <HeadingNavItem>
-      <HeadingNavItemA href='/concepts'>Concepts</HeadingNavItemA>
+      <HeadingNavItemA href='/concepts' selected={pathname.startsWith('/concepts')}>Concepts</HeadingNavItemA>
     </HeadingNavItem>
     <HeadingNavItem>
-      <HeadingNavItemA href='/guides'>Guides</HeadingNavItemA>
+      <HeadingNavItemA href='/guides' selected={pathname.startsWith('/guides')}>Guides</HeadingNavItemA>
     </HeadingNavItem>
     <HeadingNavItem>
-      <HeadingNavItemA href='/reference'>Reference</HeadingNavItemA>
+      <HeadingNavItemA href='/reference' selected={pathname.startsWith('/reference')}>Reference</HeadingNavItemA>
     </HeadingNavItem>
   </HeadingNavItems>
 }
