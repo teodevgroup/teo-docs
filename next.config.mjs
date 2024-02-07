@@ -11,8 +11,13 @@ import remarkGfm from 'remark-gfm'
 import remarkFrontmatter from 'remark-frontmatter'
 import { getHighlighter, BUNDLED_LANGUAGES } from 'shiki'
 import generateFullTextIndexes from './scripts/generateFullTextIndexes.mjs'
+import { search } from '@teocloud/teo-docs-search-engine'
 
 generateFullTextIndexes()
+
+global.docSearch = (text) => {
+  return search(text)
+}
 
 let withMDX = mdx({
   extension: /\.mdx?$/,
@@ -65,6 +70,22 @@ let withMDX = mdx({
 /** @type {import('next-with-linaria').LinariaConfig} */
 const config = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  // webpack: (
+  //   config,
+  //   { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  // ) => {
+  //   if (!config.module) {
+  //     config.module = {}
+  //   }
+  //   if (!config.module.rules) {
+  //     config.module.rules = []
+  //   }
+  //   config.module.rules.push({
+  //     test: /\.node$/,
+  //     loader: "native-ext-loader"
+  //   })
+  //   return config
+  // }
 }
 
 export default withMDX(withLinaria(config))

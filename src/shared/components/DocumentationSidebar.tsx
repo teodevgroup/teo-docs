@@ -1,8 +1,11 @@
+'use client'
+
 import React, { ReactElement, ReactNode } from 'react'
 import Link from 'next/link'
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
 import { docFontFamily, docTagBackgroundColor, docTagColor, docTextColor, docTextSelectedColor, docTextUnselectedColor, flexColumn, flexRow, margin, phone, spacing } from '../styles/theme'
+import { SearchInput, SearchIcon, SearchIconContainer } from './Search'
 
 const DocSidebarContainer = styled.div`
   ${flexColumn('flex-start')};
@@ -146,6 +149,7 @@ type DocumentationSidebarProps = {
 
 const DocGetStartedSidebar: (props: DocumentationSidebarProps) => ReactElement = ({ path }) => {
   return <DocSidebarContainer>
+    <DocSideBarSearchInput />
     <DocSidebarTitle>Getting started</DocSidebarTitle>
     <DocSidebarItem path={path} link='/getting-started/quickstart' title='Quickstart' time='5 min'></DocSidebarItem>
     <DocSidebarSectionTitle>Beginner tutorial</DocSidebarSectionTitle>
@@ -170,6 +174,7 @@ const DocGetStartedSidebar: (props: DocumentationSidebarProps) => ReactElement =
 
 const DocConceptsSidebar: (props: DocumentationSidebarProps) => ReactElement = ({ path }) => {
   return <DocSidebarContainer>
+    <DocSideBarSearchInput />
     <DocSidebarTitle>Concepts</DocSidebarTitle>
     <DocSidebarSectionTitle>Overview</DocSidebarSectionTitle>
     <DocSidebarItem path={path} link='/concepts/overview/what-is-teo' title='What is Teo?'></DocSidebarItem>
@@ -195,6 +200,7 @@ const DocConceptsSidebar: (props: DocumentationSidebarProps) => ReactElement = (
 
 const DocGuidesSidebar: (props: DocumentationSidebarProps) => ReactElement = ({ path }) => {
   return <DocSidebarContainer>
+    <DocSideBarSearchInput />
     <DocSidebarTitle>Guides</DocSidebarTitle>
     <DocSidebarSectionTitle>Server guides</DocSidebarSectionTitle>
     <DocSidebarItem path={path} link='/guides/server-guides/data-modeling' title='Data modeling' />
@@ -213,6 +219,7 @@ const DocGuidesSidebar: (props: DocumentationSidebarProps) => ReactElement = ({ 
 
 const DocAPIReferenceSidebar: (props: DocumentationSidebarProps) => ReactElement = ({ path }) => {
   return <DocSidebarContainer>
+    <DocSideBarSearchInput />
     <DocSidebarTitle>Reference</DocSidebarTitle>
     <DocSidebarSectionTitle>API Reference</DocSidebarSectionTitle>
     <DocSidebarItem path={path} link='/reference/api-reference/schema-reference' title='Schema reference' />
@@ -239,6 +246,7 @@ const DocAPIReferenceSidebar: (props: DocumentationSidebarProps) => ReactElement
 
 const DocCookbookSidebar: (props: DocumentationSidebarProps) => ReactElement = ({ path }) => {
   return <DocSidebarContainer>
+    <DocSideBarSearchInput />
     <DocSidebarTitle>Cookbook</DocSidebarTitle>
     <DocSidebarSectionTitle>Code snippets</DocSidebarSectionTitle>
     <DocSidebarItem path={path} link='/cookbook/code-snippets/user-session' title='User session'>
@@ -277,3 +285,22 @@ export const DocumentationSidebar = (props: DocumentationSidebarProps) => {
     return <></>
   }
 }
+
+const DocSideBarInputContainer = styled.div`
+  position: relative;
+  margin-top: 44px;
+`
+
+const DocSideBarSearchInput = () => {
+  return <DocSideBarInputContainer>
+    <SearchInput placeholder='Search Docs...' onKeyUp={(e) => {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        location.href = `/search?q=${encodeURIComponent(e.currentTarget.value)}`
+      }
+    }} />
+    <SearchIconContainer>
+      <SearchIcon fill='rgb(203, 213, 224)' />
+    </SearchIconContainer>
+  </DocSideBarInputContainer> 
+}
+

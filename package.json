@@ -18,6 +18,7 @@
     "@linaria/react": "^6.0.0",
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^14.1.0",
+    "@teocloud/teo-docs-search-engine": "0.0.5",
     "next": "^14.1.0",
     "next-with-linaria": "^0.7.0",
     "react": "^18.2.0",
@@ -39,6 +40,7 @@
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
     "glob": "^10.3.10",
+    "native-ext-loader": "^2.3.0",
     "typescript": "5.3.3"
   }
 }
