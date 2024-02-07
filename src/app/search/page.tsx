@@ -14,21 +14,12 @@ const SearchPage = ({ searchParams }: {
             fetchSearchResult(original).then((result) => setItems(result))
         }
     }, [])
-    if (original) {
-        return <div style={{width: '100%'}}>
-            <FullWidthSearchInput defaultValue={original as string | undefined} />
-            <div>
-                {items.map((item) => <div key={item.urlPath}>{item.urlPath}</div>)}
-            </div>
+    return <div style={{width: '100%'}}>
+        <FullWidthSearchInput defaultValue={original as string | undefined} />
+        <div>
+            {items.map((item) => <div key={item.urlPath}>{item.urlPath}</div>)}
         </div>
-    } else {
-        return <div style={{width: '100%'}}>
-            <FullWidthSearchInput defaultValue={original as string | undefined} />
-            <div>
-    
-            </div>
-        </div>
-    }
+    </div>
 }
 
 export default SearchPage
