@@ -30,7 +30,6 @@ const usePreference = (name: string): [number, (value: number) => void] => {
   const [state, setState] = useState(index)
   useEffect(() => {
     savedSetStateCallbacks[name].push(setState);
-    console.log(name, savedSetStateCallbacks[name].length)
     return () => {
       const index = savedSetStateCallbacks[name].indexOf(setState);
       savedSetStateCallbacks[name].splice(index, 1);

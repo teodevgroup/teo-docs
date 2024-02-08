@@ -45,7 +45,6 @@ const tableOfContents = () => {
         node.tagName = "ul"
         let tocNodes = childrenItems(toc.children)
         node.children = tocNodes
-        console.log(node)
     })
   }
 }
