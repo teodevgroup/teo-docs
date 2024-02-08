@@ -13,6 +13,7 @@ const Constraint = styled.div`
   }
   ${desktop} {
     margin: 0 auto;
+    width: calc(100% - 2em);
     max-width: 960px;
   }
   ${desktopHD} {
