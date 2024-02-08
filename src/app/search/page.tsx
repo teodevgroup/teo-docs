@@ -14,7 +14,7 @@ const SearchPage = ({ searchParams }: {
             fetchSearchResult(original).then((result) => setItems(result))
         }
     }, [])
-    return <div style={{width: '100%'}}>
+    return <div style={{ width: '100%' }}>
         <FullWidthSearchInput defaultValue={original as string | undefined} />
         <div>
             {items.map((item) => <div key={item.urlPath}>{item.urlPath}</div>)}

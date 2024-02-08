@@ -184,8 +184,12 @@ export const DocumentationSidebar = (props: DocumentationSidebarProps) => {
   if (sidebarToc) {
     return <SidebarWithToc item={sidebarToc} path={props.path} />
   } else {
-    return <></>
+    return requiresSidebar(props.path) ? <DocSidebarContainer /> : <></>
   }
+}
+
+const requiresSidebar = (path: string) => {
+  return path.startsWith('/guides') || path.startsWith('/getting-started') || path.startsWith('/concepts') || path.startsWith('/reference')
 }
 
 const firstPathComponent = (path: string) => {

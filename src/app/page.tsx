@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import { styled } from '@linaria/react'
 import { anyDesktop, docTitleFontFamily, flexColumn, flexRow, phone, phoneAndTablet, tablet, tintFontStack } from '../shared/styles/theme'
 import { Book, BookOpen } from 'react-feather'
+import { FullWidthSearchInput } from '../shared/components/Search'
 
 const DocHomeContainer = styled.div`
   ${flexColumn('center')}
@@ -13,7 +14,7 @@ const Title = styled.div`
   font-size: 3.2rem;
   font-weight: 600;
   font-family: ${tintFontStack};
-  margin-top: 40px;
+  margin-top: 64px;
   margin-bottom: 8px;
   color: black;
   ${phoneAndTablet} {
@@ -192,6 +193,7 @@ const GuideItemText = styled.div`
 
 const DocHome: NextPage = () => {
   return <DocHomeContainer>
+    <FullWidthSearchInput />
     <Title>TEO Documentation</Title>
     <Subtitle>Welcome to Teo documentation center! Choose a topic to get started with. Join our thriving community on Slack and GitHub for help and ideas.</Subtitle>
     <GetStartedButton href="/getting-started"><Book />Getting started</GetStartedButton>
