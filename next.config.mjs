@@ -10,13 +10,18 @@ import recmaNextjsStaticProps from 'recma-nextjs-static-props'
 import remarkGfm from 'remark-gfm'
 import remarkFrontmatter from 'remark-frontmatter'
 import { getHighlighter, BUNDLED_LANGUAGES } from 'shiki'
-import generateFullTextIndexes from './scripts/generateFullTextIndexes.mjs'
+import generateCaches from './scripts/generateCaches.mjs'
 import { search } from '@teocloud/teo-docs-search-engine'
+import { fetchToc } from './scripts/generateToc.mjs'
 
-generateFullTextIndexes()
+generateCaches()
 
 global.docSearch = (text) => {
   return search(text)
+}
+
+global.docFetchToc = (urlPath) => {
+  return fetchToc(urlPath)
 }
 
 let withMDX = mdx({

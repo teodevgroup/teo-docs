@@ -6,18 +6,13 @@ import remarkParse from 'remark-parse'
 import remarkMdx from 'remark-mdx'
 import remarkRehype from 'remark-rehype'
 import plainText from '../plugins/plainText.mjs'
-import { buildCommit, buildInsertRecord } from '@teocloud/teo-docs-search-engine'
+import { buildInsertRecord } from '@teocloud/teo-docs-search-engine'
 
 const pipeline = unified().use(remarkParse).use(remarkMdx).use(remarkRehype).use(plainText)
 
-function generateFullTextIndex(filepath) {
+export default function generateFullTextIndex(filepath) {
     const urlPath = dirname(filepath).replace(/^src\/app/, "")
     const content = readFileSync(filepath).toString()
     const plainTextValue = pipeline.processSync(content).value
     buildInsertRecord(filepath, urlPath, plainTextValue)
-}
-
-export default function generateFullTextIndexes() {
-    globSync("./src/app/**/*.mdx").forEach(generateFullTextIndex)
-    buildCommit()
 }
