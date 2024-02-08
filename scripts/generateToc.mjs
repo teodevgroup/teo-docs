@@ -23,3 +23,25 @@ export function generateToc(fileLocation) {
 export function fetchToc(urlPath) {
     return tocCaches[urlPath.replace(/\/$/, "")]
 }
+
+export function fetchPrevNext(urlPath) {
+    const pureUrlPath = urlPath.replace(/\/$/, "")
+    const components = pureUrlPath.split('/')
+    components.pop()
+    const parentUrlPath = components.join("/")
+    const parentItem = tocCaches[parentUrlPath]
+    if (!parentItem) {
+        return undefined
+    }
+    if (parentItem.children.length <= 1) {
+        return undefined
+    }
+    const thisIndex = parentItem.children.indexOf((child) => child.urlPath = pureUrlPath)
+    if (!thisIndex) {
+        return undefined
+    }
+    return {
+        prev: thisIndex === 0 ? undefined : parentItem.children[thisIndex - 1],
+        next: thisIndex === parentItem.children.length - 1 ? undefined: parentItem.children[thisIndex + 1],
+    }
+}

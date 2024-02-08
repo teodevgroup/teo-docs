@@ -12,7 +12,7 @@ import remarkFrontmatter from 'remark-frontmatter'
 import { getHighlighter, BUNDLED_LANGUAGES } from 'shiki'
 import generateCaches from './scripts/generateCaches.mjs'
 import { search } from '@teocloud/teo-docs-search-engine'
-import { fetchToc } from './scripts/generateToc.mjs'
+import { fetchPrevNext, fetchToc } from './scripts/generateToc.mjs'
 import breadcrumb from './plugins/breadcrumb.mjs'
 import { fetchBreadcrumb } from './scripts/generateBreadcrumb.mjs'
 import tableOfContents from './plugins/tableOfContents.mjs'
@@ -29,6 +29,10 @@ global.docFetchToc = (urlPath) => {
 
 global.docFetchBreadcrumb = (urlPath) => {
   return fetchBreadcrumb(urlPath)
+}
+
+global.docFetchPrevNext = (urlPath) => {
+  return fetchPrevNext(urlPath)
 }
 
 let withMDX = mdx({
