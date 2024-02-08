@@ -29,16 +29,16 @@ const usePreference = (name: string): [number, (value: number) => void] => {
   let index = parseInt(saved)
   const [state, setState] = useState(index)
   useEffect(() => {
-    savedSetStateCallbacks[name].push(setState);
+    savedSetStateCallbacks[name].push(setState)
     return () => {
-      const index = savedSetStateCallbacks[name].indexOf(setState);
+      const index = savedSetStateCallbacks[name].indexOf(setState)
       savedSetStateCallbacks[name].splice(index, 1);
     };
 }, [name]);
   const wrappedSetState = (newValue: number) => {
     localStorage.setItem(name, newValue.toString())
     for (const key in savedSetStateCallbacks[name]) {
-      const setState = savedSetStateCallbacks[name][key];
+      const setState = savedSetStateCallbacks[name][key]
       setState(newValue)
     }
   }
@@ -104,7 +104,7 @@ const SelectItemTitle = styled.div`
 `
 
 export const ServerSelectorComponent = () => {
-  const [index, setIndex] = usePreference(serverKey);
+  const [index, setIndex] = usePreference(serverKey)
 
   return <SelectorContainer>
     <SelectItem onClick={() => setIndex(0)} selected={index === 0}>

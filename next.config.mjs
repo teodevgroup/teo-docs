@@ -16,6 +16,7 @@ import { fetchPrevNext, fetchToc } from './scripts/generateToc.mjs'
 import breadcrumb from './plugins/breadcrumb.mjs'
 import { fetchBreadcrumb } from './scripts/generateBreadcrumb.mjs'
 import tableOfContents from './plugins/tableOfContents.mjs'
+import prevNext from './plugins/prevNext.mjs'
 
 generateCaches()
 
@@ -78,6 +79,7 @@ let withMDX = mdx({
       }],
       dataCopy,
       tableOfContents,
+      prevNext,
       breadcrumb,
       onThisPage
     ],

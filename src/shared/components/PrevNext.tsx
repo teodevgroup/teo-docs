@@ -77,8 +77,10 @@ export const NextArticle = (props: PrevNextProps) => {
   </PrevNextA>
 }
 
-export const PrevNext = styled.div`
-  ${flexRow('center')}
-  justify-content: space-between;
-  margin-top: 40px;
-`
+export const PrevNext = () => <></>
+
+// styled.div`
+//   ${flexRow('center')}
+//   justify-content: space-between;
+//   margin-top: 40px;
+// `
