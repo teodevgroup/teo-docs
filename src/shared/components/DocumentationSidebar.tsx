@@ -194,7 +194,6 @@ const requiresSidebar = (path: string) => {
 
 const firstPathComponent = (path: string) => {
   const components = path.split('/')
-  console.log(components)
   if (components.length > 1) {
     return '/' + components[1]
   } else {

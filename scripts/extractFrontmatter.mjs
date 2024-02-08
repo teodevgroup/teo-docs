@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkMdx from 'remark-mdx'
@@ -9,6 +9,9 @@ import { load } from 'js-yaml'
 const pipeline = unified().use(remarkParse).use(remarkMdx).use(remarkRehype).use(remarkFrontmatter)
 
 export default function extractFrontmatter(fileLocation, urlPath) {
+    if (!existsSync(fileLocation)) {
+        return undefined
+    }
     const content = readFileSync(fileLocation).toString()
     const parsed = pipeline.parse(content)
     if (!parsed.children) {

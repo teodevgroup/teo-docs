@@ -13,6 +13,8 @@ import { getHighlighter, BUNDLED_LANGUAGES } from 'shiki'
 import generateCaches from './scripts/generateCaches.mjs'
 import { search } from '@teocloud/teo-docs-search-engine'
 import { fetchToc } from './scripts/generateToc.mjs'
+import breadcrumb from './plugins/breadcrumb.mjs'
+import { fetchBreadcrumb } from './scripts/generateBreadcrumb.mjs'
 
 generateCaches()
 
@@ -22,6 +24,10 @@ global.docSearch = (text) => {
 
 global.docFetchToc = (urlPath) => {
   return fetchToc(urlPath)
+}
+
+global.docFetchBreadcrumb = (urlPath) => {
+  return fetchBreadcrumb(urlPath)
 }
 
 let withMDX = mdx({
@@ -66,6 +72,7 @@ let withMDX = mdx({
         }),
       }],
       dataCopy,
+      breadcrumb,
       onThisPage
     ],
     recmaPlugins: [recmaNextjsStaticProps],
