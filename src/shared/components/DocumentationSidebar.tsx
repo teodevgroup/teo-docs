@@ -149,7 +149,6 @@ type DocumentationSidebarProps = {
 }
 
 const renderChildren = (children: TocItem[], path: string) => {
-  console.log(children)
   return children.map((child) => child.children.length ? <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} time={child.time}>
     {renderChildren(child.children, path)}
   </DocSidebarItem> : <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} time={child.time} />)
@@ -178,7 +177,9 @@ export const DocumentationSidebar = (props: DocumentationSidebarProps) => {
   const [sidebarToc, setSidebarToc] = useState<undefined | TocItem>()
 
   useEffect(() => {
-    fetchToc(firstPathComponent(props.path)).then((result) => setSidebarToc(result))
+    fetchToc(firstPathComponent(props.path)).then((result) => {
+      setSidebarToc(result)
+    })
   }, [])
   if (sidebarToc) {
     return <SidebarWithToc item={sidebarToc} path={props.path} />
@@ -214,4 +215,3 @@ const DocSideBarSearchInput = () => {
     </SearchIconContainer>
   </DocSideBarInputContainer> 
 }
-
