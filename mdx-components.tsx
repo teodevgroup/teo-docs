@@ -1,5 +1,5 @@
 import type { MDXComponents } from "mdx/types"
-import { Aside, Div, H2, H3, H4, H5, H6, Pre } from "./src/shared/components/Documentation";
+import { Aside, Div, H2, H3, H4, H5, H6, Pre } from "./src/shared/components/Documentation"
 
 // This file is required to use MDX in `app` directory.
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -13,5 +13,5 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h5: (props: any) => <H5 {...props} />,
     h6: (props: any) => <H6 {...props} />,
     ...components,
-  };
+  }
 }
