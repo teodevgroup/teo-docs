@@ -15,6 +15,7 @@ import { search } from '@teocloud/teo-docs-search-engine'
 import { fetchToc } from './scripts/generateToc.mjs'
 import breadcrumb from './plugins/breadcrumb.mjs'
 import { fetchBreadcrumb } from './scripts/generateBreadcrumb.mjs'
+import tableOfContents from './plugins/tableOfContents.mjs'
 
 generateCaches()
 
@@ -72,6 +73,7 @@ let withMDX = mdx({
         }),
       }],
       dataCopy,
+      tableOfContents,
       breadcrumb,
       onThisPage
     ],
