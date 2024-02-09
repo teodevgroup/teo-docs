@@ -1,7 +1,7 @@
 import React from 'react'
 import { styled } from '@linaria/react'
 import Constraint from './Constraint'
-import { flexColumn, flexRow, tintFontStack, margin, anyDesktop, phoneAndTablet, docFontFamily } from '../styles/theme'
+import { flexColumn, flexRow, tintFontStack, margin, anyDesktop, phoneAndTablet, docFontFamily, light, dark } from '../styles/theme'
 import { HeadingGitHubButton, HeadingLogo, HeadingPatreonButton, HeadingSlackButton, HeadingTwitterButton } from './Heading'
 
 const FooterContainer = styled(Constraint)`
@@ -54,7 +54,12 @@ const FooterTextSection = styled(FooterSection)`
 
 const FooterCopyright = styled.div`
   margin-top: 24px;
-  color: #424244;
+  ${light} {
+    color: #424244;
+  }
+  ${dark} {
+    color: #F0F0F0;
+  }
   line-height: 1.5;
   font-size: 18px;
   margin-top: 20px;

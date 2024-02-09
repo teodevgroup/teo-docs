@@ -5,13 +5,14 @@ import Image from 'next/image'
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
 import Constraint from '../Constraint'
-import { contentBackgroundColor, flexRow, tintFontStack, tintColor, phone, tablet, phoneAndTablet, anyDesktop, flexColumn } from '../../styles/theme'
+import { contentBackgroundColor, flexRow, tintFontStack, tintColor, phone, tablet, phoneAndTablet, anyDesktop, flexColumn, light, dark, darkContentBackGroundColor, darkHeadingBackgroundColor } from '../../styles/theme'
 import { Menu } from 'react-feather'
 import patreonIcon from './patreon.svg'
 import githubIcon from './github.svg'
 import slackIcon from './slack.svg'
 import xIcon from './x-twitter.svg'
 import { usePathname } from 'next/navigation'
+import GitHubIcon from './GitHubIcon'
 
 const HeadingMenuButton = styled.button`
   color: ${tintColor};
@@ -30,18 +31,27 @@ const HeadingMenuButton = styled.button`
 `
 
 const HeadingContainer = styled.div`
-  border-bottom: 1px solid #e2e8f0;
+  ${light} {
+    border-bottom: 1px solid #e2e8f0;
+  }
+  ${dark} {
+    
+  }
 `
 
 const HeadingBorderLine = styled.div`
   background-color: #0052ff;
   height: 4px;
-  color: white;
 `
 
 const HeadingContentContainer = styled.div`
   z-index: 50;
-  background-color: ${contentBackgroundColor};
+  ${light} {
+    background-color: ${contentBackgroundColor};
+  }
+  ${dark} {
+    background-color: ${darkHeadingBackgroundColor};
+  }
   box-shadow: 0 0 10px rgb(0 0 0 / 7%);
   position: relative;
   height: 92px;
@@ -100,7 +110,12 @@ ${flexRow('center')}
 const HeadingNavItems = styled.ul`
   padding: 0;
   list-style: none;
-  color: #424242;
+  ${light} {
+    color: #424242;
+  }
+  ${dark} {
+    color: white;
+  }
   margin: 0;
   ${phoneAndTablet} {
     ${flexColumn('center')}
@@ -148,7 +163,12 @@ const HeadingNavItemA = styled.a<HeadingNavItemAProps>`
     padding-left: 16px;
     padding-right: 16px;
     padding-top: 6px;
-    border-bottom: 2px solid ${props => (props.selected ? tintColor : 'white')};
+    ${light} {
+      border-bottom: 2px solid ${props => (props.selected ? tintColor : 'white')};
+    }
+    ${dark} {
+      border-bottom: 2px solid ${props => (props.selected ? tintColor : darkHeadingBackgroundColor)};
+    }
     &:hover {
       border-bottom: 2px solid ${tintColor};
     }
@@ -176,7 +196,12 @@ const HeadingLogoImageContainer = styled.div`
 
 const HeadingLogoDocs = styled.a`
   font-size: 27px;
-  color: #535353;
+  ${light} {
+    color: #535353;
+  }
+  ${dark} {
+    color: #DEDEDE;
+  }
   margin-top: 2px;
 `
 
@@ -226,6 +251,19 @@ const HeadingIconLinks = styled.div`
   ${phone} {
     display: none;
   }
+  ${dark} {
+    svg {
+      fill: white;
+      &:hover {
+        fill: white;
+      }
+    }
+  }
+  ${light} {
+    svg {
+      fill: #212121;
+    }
+  }
 `
 
 export const HeadingPatreonButton = () => {
@@ -254,7 +292,7 @@ export const HeadingSlackButton = () => {
 
 export const HeadingGitHubButton = () => {
   return <HeadingIconA href='https://github.com/teocloud/teo' target="_blank">
-    <Image src={githubIcon} alt="GitHub Icon" width={32} height={32} style={{
+    <GitHubIcon width={32} height={32} style={{
       transition: "0.2s all ease-in-out 0s"
     }} />
   </HeadingIconA>

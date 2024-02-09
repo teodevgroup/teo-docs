@@ -4,14 +4,19 @@ import React, { ReactElement, ReactNode, Children, cloneElement, useState, useEf
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
 import Constraint from './Constraint'
-import { contentColor, docTitleFontFamily, flexColumn, flexRow, tintFontStack, margin, spacing, tagContentColor, codeFontStack, docFontFamily, contentFontStack, phone, tabletAndDesktop, anyDesktop, tintColor } from '../styles/theme'
+import { contentColor, docTitleFontFamily, flexColumn, flexRow, tintFontStack, margin, spacing, tagContentColor, codeFontStack, docFontFamily, contentFontStack, phone, tabletAndDesktop, anyDesktop, tintColor, light, dark } from '../styles/theme'
 import Layout from './Layout'
 import Footer from './Footer'
 import Heading from './Heading'
 import { Clipboard, File, Hash } from 'react-feather'
 
 export const DocumentationContainer = styled.div`
-  color: #40404c;
+  ${light} {
+    color: #40404c;
+  }
+  ${dark} {
+    color: white;
+  }
   ${flexColumn('center')}
   font-family: ${tintFontStack};
   justify-content: space-between;
@@ -239,7 +244,12 @@ export const DocumentationContent = styled.div`
           color: rgb(113, 128, 150);
           text-decoration: none;
           &:hover {
-            color: #4A5568;
+            ${light} {
+              color: #4A5568;
+            }
+            ${dark} {
+              color: rgb(154, 177, 211);
+            }
             text-decoration: underline;
           }
         }

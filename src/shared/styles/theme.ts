@@ -53,6 +53,10 @@ export const dark = '@media (prefers-color-scheme: dark)'
 
 export const contentBackgroundColor = "#FFFFFF"
 
+export const darkContentBackGroundColor = '#000000'
+
+export const darkHeadingBackgroundColor = '#2a2a2a'
+
 export const workspaceHeadingBackgroundColor = "#F6F6F6"
 
 export const workspaceBorderColor = "#CCCCCC"

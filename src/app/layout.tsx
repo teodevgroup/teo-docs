@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="color-scheme" content="light only" />
+        <meta name="color-scheme" content="light dark" />
         <meta name="description" content="Teo Documentation. Guides, references, tutorials for Teo web framework." />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,10 +35,10 @@ export default function RootLayout({
           background-color: ${lightBackground};
           color: ${lightContent};
         }
-        /* ${dark} {
+        ${dark} {
           background-color: ${darkBackground};
           color: ${darkContent};
-        } */
+        }
         font-family: ${contentFontStack};
       `}>
         <DocumentationLayout path={pathname}>
