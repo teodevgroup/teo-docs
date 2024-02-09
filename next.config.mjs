@@ -90,6 +90,11 @@ let withMDX = mdx({
 /** @type {import('next-with-linaria').LinariaConfig} */
 const config = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['docs.teocloud.io', 'docker-teo-docs']
+    }
+  }
   // webpack: (
   //   config,
   //   { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
