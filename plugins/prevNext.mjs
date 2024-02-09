@@ -6,7 +6,6 @@ const prevNext = () => {
     visit(tree, (node) => node.type == "mdxJsxFlowElement" && node.name === "PrevNext", (node) => {
         const urlPath = vfile.path.replace(vfile.cwd, '').replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
         const prevNextData = global.docFetchPrevNext(urlPath)
-        console.log("see :", prevNextData)
         if (!prevNextData) {
             return
         }

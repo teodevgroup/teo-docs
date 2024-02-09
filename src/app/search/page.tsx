@@ -2,13 +2,47 @@
 
 import { useEffect, useState } from "react"
 import { FullWidthSearchInput } from "../../shared/components/Search"
-import fetchSearchResult from "./fetcher"
+import fetchSearchResult, { SearchRecord } from "./fetcher"
+import { styled } from "@linaria/react"
+import { docFontFamily, docTitleFontFamily } from "../../shared/styles/theme"
+
+const SearchRecordTitle = styled.a`
+    font-size: 26px;
+    font-weight: bold;
+    font-family: ${docTitleFontFamily};
+    line-height: 1.2;
+    &:hover {
+        text-decoration: underline;
+    }
+`
+
+const SearchRecordView = styled.div`
+    margin-top: 40px;
+    display: block;
+`
+
+const SearchRecordBreadcrumbContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    display: block;
+    color: rgb(113, 128, 150)!important;
+    font-size: 16px;
+    font-weight: 300;
+    font-family: ${docFontFamily};
+    a {
+        display: inline;
+        &:hover {
+            color: #4A5568;
+            text-decoration: underline;
+        }
+    }
+`
 
 const SearchPage = ({ searchParams }: {
     searchParams: { [key: string]: string | string[] | undefined }
 }) => {
     const original = searchParams["q"] as string | undefined
-    const [items, setItems] = useState([])
+    const [items, setItems] = useState<SearchRecord[]>([])
     useEffect(() => {
         if (original) {
             fetchSearchResult(original).then((result) => setItems(result))
@@ -16,9 +50,21 @@ const SearchPage = ({ searchParams }: {
     }, [])
     return <div style={{ width: '100%' }}>
         <FullWidthSearchInput defaultValue={original as string | undefined} />
-        <div>
-            {items.map((item) => <div key={item.urlPath}>{item.urlPath}</div>)}
-        </div>
+        {items.map((item) => <SearchRecordView key={item.urlPath}>
+            {item.breadcrumb ? <SearchRecordBreadcrumbContainer>
+                {item.breadcrumb.map((data, index) => {
+                    if (index !== item.breadcrumb.length - 1) {
+                        return [
+                            <a href={data.urlPath}>{data.title}</a>,
+                            <span> / </span>
+                        ]
+                    } else {
+                        return <a href={data.urlPath}>{data.title}</a>
+                    }
+                })}
+            </SearchRecordBreadcrumbContainer> : <></>}
+            <SearchRecordTitle href={item.urlPath}>{item.title}</SearchRecordTitle>
+        </SearchRecordView>)}
     </div>
 }
 

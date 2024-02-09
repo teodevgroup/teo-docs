@@ -1,18 +1,27 @@
 'use server'
 
-interface Record {
-    fullpath: string
+export interface SearchRecord {
+    title: string
     urlPath: string
-    content: string
+    breadcrumb: any
 }
 
-export default async function fetchSearchResult(query: string): Promise<Record[]> {
-    const items = global.docSearch(query)
-    return items.map((item: any) => {
+export default async function fetchSearchResult(query: string): Promise<SearchRecord[]> {
+    const items = global.docSearch(`"${query}"`)
+    const result = items.map((item: any) => {
+        const tocItem = global.docFetchToc(item.urlPath)
+        if (!tocItem) {
+            return undefined
+        }
+        const breadcrumb = global.docFetchBreadcrumb(item.urlPath)
+        if (!breadcrumb || breadcrumb.length === 0) {
+            return undefined
+        }
         return {
-            fullpath: item.fullpath,
+            title: tocItem.title,
             urlPath: item.urlPath,
-            content: item.content
+            breadcrumb,
         }
     })
+    return result.filter((r) => r !== undefined)
 }
