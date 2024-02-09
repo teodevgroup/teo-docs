@@ -8,10 +8,7 @@ import { contentColor, docTitleFontFamily, flexColumn, flexRow, tintFontStack, m
 import Layout from './Layout'
 import Footer from './Footer'
 import Heading from './Heading'
-import Row from './Row'
-import { MDXComponents } from 'mdx/types'
 import { Clipboard, File, Hash } from 'react-feather'
-import Image from 'next/image'
 
 export const DocumentationContainer = styled.div`
   color: #40404c;
