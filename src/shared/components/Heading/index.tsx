@@ -13,6 +13,9 @@ import slackIcon from './slack.svg'
 import xIcon from './x-twitter.svg'
 import { usePathname } from 'next/navigation'
 import GitHubIcon from './GitHubIcon'
+import SlackIcon from './SlackIcon'
+import XIcon from './XIcon'
+import PatreonIcon from './PatreonIcon'
 
 const HeadingMenuButton = styled.button`
   color: ${tintColor};
@@ -281,7 +284,7 @@ const HeadingIconLinks = styled.div`
 
 export const HeadingPatreonButton = () => {
   return <HeadingIconA href='https://www.patreon.com/victorteo' target="_blank">
-    <Image src={patreonIcon} alt="Patreon Icon" width={32} height={32} style={{
+    <PatreonIcon width={32} height={32} style={{
       transition: "0.2s all ease-in-out 0s"
     }} />
   </HeadingIconA>
@@ -289,7 +292,7 @@ export const HeadingPatreonButton = () => {
 
 export const HeadingTwitterButton = () => {
   return <HeadingIconA href='https://twitter.com/victorteokw' target="_blank">
-    <Image src={xIcon} alt="X Icon" width={32} height={32} style={{
+    <XIcon width={32} height={32} style={{
       transition: "0.2s all ease-in-out 0s"
     }} />
   </HeadingIconA>
@@ -297,7 +300,7 @@ export const HeadingTwitterButton = () => {
 
 export const HeadingSlackButton = () => {
   return <HeadingIconA href='https://teocloud.slack.com' target="_blank">
-    <Image src={slackIcon} alt="Slack Icon" width={32} height={32} style={{
+    <SlackIcon width={32} height={32} style={{
       transition: "0.2s all ease-in-out 0s"
     }} />
   </HeadingIconA>

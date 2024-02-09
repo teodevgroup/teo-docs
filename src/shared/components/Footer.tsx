@@ -42,6 +42,14 @@ const FooterIconSection = styled.div`
     margin-bottom: 32px;
     margin-top: 40px;
   }
+  svg {
+    ${light} {
+      fill: black;
+    }
+    ${dark} {
+      fill: white;
+    }
+  }
 `
 
 const FooterTextSection = styled(FooterSection)`
