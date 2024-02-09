@@ -534,7 +534,12 @@ export const DocumentationContent = styled.div`
         margin: 0;
         font-size: 12px;
         font-weight: 600;
-        color: rgb(113,128,150) !important;
+        ${light} {
+          color: rgb(113,128,150) !important;
+        }
+        ${dark} {
+          color: rgb(155, 170, 193) !important;
+        }
         line-height: 1.4 !important;
       }
       .title {
@@ -551,7 +556,12 @@ export const DocumentationContent = styled.div`
       flex-grow: 1;
       flex-direction: column;
       margin-right: 12px;
-      border: 1px solid #dadde1;
+      ${light} {
+        border: 1px solid #dadde1;
+      }
+      ${dark} {
+        border: 1px solid rgb(63, 67, 74);
+      }
       border-radius: 0.4em;
       transition: all 0.2s ease-in-out 0s;
       &:hover {
@@ -565,7 +575,12 @@ export const DocumentationContent = styled.div`
         height: 0;
         border-top: 5px solid transparent;
         border-bottom: 5px solid transparent; 
-        border-right: 6px solid #dadde1; 
+        ${light} {
+          border-right: 6px solid #dadde1;
+        }
+        ${dark} {
+          border-right: 6px solid rgb(63, 67, 74);
+        }
       }
       padding: 16px;
       text-decoration: none !important;
@@ -575,7 +590,12 @@ export const DocumentationContent = styled.div`
       flex-grow: 1;
       flex-direction: column;
       align-items: flex-end;
-      border: 1px solid #dadde1;
+      ${light} {
+        border: 1px solid #dadde1;
+      }
+      ${dark} {
+        border: 1px solid rgb(63, 67, 74);
+      }
       border-radius: 0.4em;
       transition: all 0.2s ease-in-out 0s;
       .label::after {
@@ -586,7 +606,13 @@ export const DocumentationContent = styled.div`
         height: 0;
         border-top: 5px solid transparent;
         border-bottom: 5px solid transparent; 
-        border-left: 6px solid #dadde1; 
+        border-left: 6px solid #dadde1;
+        ${light} {
+          border-left: 6px solid #dadde1;
+        }
+        ${dark} {
+          border-left: 6px solid rgb(63, 67, 74);
+        }
       }
       &:hover {
         border-color: ${tintColor};
