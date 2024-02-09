@@ -4,7 +4,7 @@ import React, { ReactElement, ReactNode, Children, cloneElement, useState, useEf
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
 import Constraint from './Constraint'
-import { contentColor, docTitleFontFamily, flexColumn, flexRow, tintFontStack, margin, spacing, tagContentColor, codeFontStack, docFontFamily, contentFontStack, phone, tabletAndDesktop, anyDesktop } from '../styles/theme'
+import { contentColor, docTitleFontFamily, flexColumn, flexRow, tintFontStack, margin, spacing, tagContentColor, codeFontStack, docFontFamily, contentFontStack, phone, tabletAndDesktop, anyDesktop, tintColor } from '../styles/theme'
 import Layout from './Layout'
 import Footer from './Footer'
 import Heading from './Heading'
@@ -483,6 +483,77 @@ export const DocumentationContent = styled.div`
     code[data-language="sh"] > [data-line]::before {
       content: "$ ";
       color: #4a5568;
+    }
+
+    div.prevNext {
+      display: flex;
+      align-items: stretch;
+      flex-direction: row;
+      margin-top: 64px;
+
+      .label {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 600;
+        color: rgb(113,128,150) !important;
+        line-height: 1.4 !important;
+      }
+      .title {
+        text-decoration: none;
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.4 !important;
+        text-decoration: none !important;
+      }
+    }
+    a.prev {
+      display: flex;
+      flex-grow: 1;
+      flex-direction: column;
+      margin-right: 12px;
+      border: 1px solid #dadde1;
+      border-radius: 0.4em;
+      transition: all 0.2s ease-in-out 0s;
+      &:hover {
+        border-color: ${tintColor};
+      }
+      .label::before {
+        margin-right: 4px;
+        display: inline-block;
+        content: ' ';
+        width: 0; 
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent; 
+        border-right: 6px solid #dadde1; 
+      }
+      padding: 16px;
+      text-decoration: none !important;
+    }
+    a.next {
+      display: flex;
+      flex-grow: 1;
+      flex-direction: column;
+      align-items: flex-end;
+      border: 1px solid #dadde1;
+      border-radius: 0.4em;
+      transition: all 0.2s ease-in-out 0s;
+      .label::after {
+        margin-left: 4px;
+        display: inline-block;
+        content: ' ';
+        width: 0; 
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent; 
+        border-left: 6px solid #dadde1; 
+      }
+      &:hover {
+        border-color: ${tintColor};
+      }
+      padding: 16px;
+      text-decoration: none !important;
     }
   }
 `
