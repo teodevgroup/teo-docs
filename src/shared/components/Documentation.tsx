@@ -241,8 +241,14 @@ export const DocumentationContent = styled.div`
     }
     span.concept {
       display: inline-block;
-      color: #3182ce;
-      background-color: #bee3f8;
+      ${light} {
+        color: #3182ce;
+        background-color: #bee3f8;
+      }
+      ${dark} {
+        color: #1983e6;
+        background-color: #2a2d2e;
+      }
       border-radius: 4px;
       font-size: 12px;
       font-weight: 500;
@@ -393,7 +399,12 @@ export const DocumentationContent = styled.div`
       }
     }
     a {
-      color: #3182ce;
+      ${light} {
+        color: #3182ce;
+      }
+      ${dark} {
+        color: #1983e6;
+      }
       text-decoration: underline;
     }
     code {
