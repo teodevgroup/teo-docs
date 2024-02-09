@@ -1,3 +1,5 @@
 import React from 'react'
 
-export const PrevNext = () => <></>
+const PrevNext = () => <></>
+
+export default PrevNext

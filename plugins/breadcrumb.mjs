@@ -5,6 +5,7 @@ const breadcrumb = () => {
     if (index !== undefined) {
         const urlPath = vfile.path.replace(vfile.cwd, '').replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
         const breadcrumbData = global.docFetchBreadcrumb(urlPath)
+        console.log("See dta: ", breadcrumbData)
         if (breadcrumbData) {
             let breadcrumbsNode = {
                 type: "element",
