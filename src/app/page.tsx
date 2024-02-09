@@ -16,7 +16,12 @@ const Title = styled.div`
   font-family: ${tintFontStack};
   margin-top: 64px;
   margin-bottom: 8px;
-  color: black;
+  ${light} {
+    color: black;
+  }
+  ${dark} {
+    color: white;
+  }
   ${phoneAndTablet} {
     font-size: 2rem;
   }
@@ -29,7 +34,6 @@ const Subtitle = styled.div`
     font-size: 18px;
   }
   margin-top: 28px;
-  color: #626a73;
   ${anyDesktop} {
     padding: 0 80px;
   }
@@ -37,6 +41,12 @@ const Subtitle = styled.div`
     padding: 0 40px;
   }
   line-height: 1.5;
+  ${light} {
+    color: #626a73;
+  }
+  ${dark} {
+    color: #d7d7d9;
+  }
 `
 
 const GetStartedButton = styled.a`
@@ -44,7 +54,12 @@ const GetStartedButton = styled.a`
   text-decoration: none;
   background-color: rgb(72, 187, 120);
   transition: all 0.2s ease-in-out 0s;
-  color: rgb(255, 255, 255);
+  ${light} {
+    color: rgb(255, 255, 255);
+  }
+  ${dark} {
+    color: rgb(29, 29, 31);
+  }
   padding: 10px 32px 10px 24px;
   border-radius: 4px;
   margin-top: 28px;
@@ -59,7 +74,12 @@ const GetStartedButton = styled.a`
 `
 
 const OverviewContainer = styled.div`
-  background: rgb(255, 255, 255);
+  ${light} {
+    background: rgb(255, 255, 255);
+  }
+  ${dark} {
+    background: rgb(39, 39, 39);
+  }
   box-shadow: rgb(0 0 0 / 7%) 0px 28px 53px, rgb(0 0 0 / 4%) 0px 8.44118px 15.9779px, rgb(0 0 0 / 2%) 0px 3.50603px 6.63642px, rgb(0 0 0 / 1%) 0px 1.26806px 2.40026px;
   border-radius: 8px;
   display: flex;
@@ -116,12 +136,22 @@ const OverviewSectionItem = styled.a`
   text-decoration: none;
   cursor: pointer;
   text-decoration: none;
-  color: rgb(45, 55, 72);
+  ${light} {
+    color: rgb(45, 55, 72);
+  }
+  ${dark} {
+    color: rgb(215, 221, 232);
+  }
   margin-top: 4px;
   position: relative;
   padding-left: 16px;
   &:hover {
-    color: #0052ff;
+    ${light} {
+      color: #0052ff;
+    }
+    ${dark} {
+      color: rgb(251, 251, 251);
+    }
   }
   &::before {
     content: " ";
@@ -161,10 +191,20 @@ const GuideItem = styled.a`
   border-radius: 4px;
   overflow: hidden;
   flex: 1 1 0;
-  background-color: rgb(250,250,254);
+  ${light} {
+    background-color: rgb(250,250,254);
+  }
+  ${dark} {
+    background-color: rgb(39, 39, 39);
+  }
   transition: all 0.2s ease-in-out 0s;
   &:hover {
-    background-color: rgb(244, 244, 249);
+    ${light} {
+      background-color: rgb(244, 244, 249);
+    }
+    ${dark} {
+      background-color: rgb(49, 51, 53);
+    }
   }
 `
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { FullWidthSearchInput } from "../../shared/components/Search"
 import fetchSearchResult, { SearchRecord } from "./fetcher"
 import { styled } from "@linaria/react"
-import { docFontFamily, docTitleFontFamily } from "../../shared/styles/theme"
+import { dark, docFontFamily, docTitleFontFamily, light } from "../../shared/styles/theme"
 
 const SearchRecordTitle = styled.a`
     font-size: 26px;
@@ -32,7 +32,12 @@ const SearchRecordBreadcrumbContainer = styled.div`
     a {
         display: inline;
         &:hover {
-            color: #4A5568;
+            ${light} {
+              color: #4A5568;
+            }
+            ${dark} {
+              color: rgb(154, 177, 211);
+            }
             text-decoration: underline;
         }
     }
