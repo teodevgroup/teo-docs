@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import { styled } from '@linaria/react'
-import { anyDesktop, docTitleFontFamily, flexColumn, flexRow, phone, phoneAndTablet, tablet, tintFontStack } from '../shared/styles/theme'
+import { anyDesktop, dark, docTextColor, docTextColorDark, docTitleFontFamily, flexColumn, flexRow, light, phone, phoneAndTablet, tablet, tintFontStack } from '../shared/styles/theme'
 import { Book, BookOpen } from 'react-feather'
 import { FullWidthSearchInput } from '../shared/components/Search'
 
@@ -182,7 +182,12 @@ const GuideItemTitle = styled.div`
   font-weight: bold;
   line-height: 1rem;
   font-size: 1rem;
-  color: rgb(26, 32, 44) !important;
+  ${light} {
+    color: ${docTextColor} !important;
+  }
+  ${dark} {
+    color: ${docTextColorDark} !important;
+  }
 `
 
 const GuideItemText = styled.div`

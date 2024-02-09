@@ -4,7 +4,7 @@ import React, { ReactElement, ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
-import { docFontFamily, docTagBackgroundColor, docTagColor, docTextColor, docTextSelectedColor, docTextUnselectedColor, flexColumn, flexRow, margin, phone, spacing } from '../styles/theme'
+import { dark, docFontFamily, docTagBackgroundColor, docTagColor, docTextColor, docTextColorDark, docTextSelectedColor, docTextUnselectedColor, flexColumn, flexRow, light, margin, phone, spacing } from '../styles/theme'
 import { SearchInput, SearchIcon, SearchIconContainer } from './Search'
 import fetchToc, { TocItem } from '../../shared/lib/fetchToc'
 
@@ -21,7 +21,12 @@ const DocSidebarContainer = styled.div`
 
 const DocSidebarTitle = styled.div`
   font-family: ${docFontFamily};
-  color: ${docTextColor};
+  ${light} {
+    color: ${docTextColor};
+  }
+  ${dark} {
+    color: ${docTextColorDark};
+  }
   font-size: 18px;
   font-weight: 600;
   margin: ${spacing * 3}px 0 ${spacing * 1.5}px 0;
@@ -29,7 +34,12 @@ const DocSidebarTitle = styled.div`
 
 const DocSidebarSectionTitle = styled.div`
   font-size: 12px;
-  color: ${docTextColor};
+  ${light} {
+    color: ${docTextColor};
+  }
+  ${dark} {
+    color: ${docTextColorDark};
+  }
   text-transform: uppercase;
   margin-top: ${spacing}px;
   margin-bottom: ${spacing}px;
@@ -77,7 +87,12 @@ const DocSidebarItemTitleTime = styled.div`
 const DocSidebarItemInner = styled.div`
   padding-left: ${spacing * 2.85}px;
   margin-left: -${spacing * 1.5}px;
-  border-left: 2px solid rgb(226, 232, 240);
+  ${light} {
+    border-left: 2px solid rgb(226, 232, 240);
+  }
+  ${dark} {
+    border-left: 2px solid rgb(52, 54, 57);
+  }
   margin-bottom: ${spacing * 1.5}px;
 `
 

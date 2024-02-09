@@ -63,6 +63,8 @@ export const workspaceBorderColor = "#CCCCCC"
 
 export const docTextColor = "rgb(26, 32, 44)"
 
+export const docTextColorDark = "rgb(175, 187, 213)"
+
 export const docTextUnselectedColor = "rgb(113, 128, 150)"
 
 export const docTextSelectedColor = "rgb(49, 130, 206)"

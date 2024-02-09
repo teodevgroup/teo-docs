@@ -146,13 +146,24 @@ export const DocumentationContent = styled.div`
         }
         &.selected {
           a {
-            background-image: linear-gradient(#0c344b,#0c344b);
+            ${light} {
+              background-image: linear-gradient(#0c344b,#0c344b);
+            }
+            ${dark} {
+              background-image: linear-gradient(#4e6e82,#4e6e82);
+            }
             background-position: 0% 100%;
             background-repeat: no-repeat;
             background-size: 100% 2px;
             code {
-              background-color: #0c344b;
-              color: #f7fafc;
+              ${light} {
+                background-color: #0c344b;
+                color: #f7fafc;
+              }
+              ${dark} {
+                background-color: #4e6e82;
+                color: #242424;
+              }
               text-decoration: none;
             }
           }
@@ -162,7 +173,12 @@ export const DocumentationContent = styled.div`
           display: inline;
           vertical-align: baseline;
           padding: 0.05em 0.3em 0.2em;
-          background: rgb(237, 242, 247);
+          ${light} {
+            background: rgb(237, 242, 247);
+          }
+          ${dark} {
+            background: rgb(62, 64, 66);
+          }
           font-size: 14px;
           border-radius: 5px;
           font-family: ${codeFontStack};
@@ -384,7 +400,12 @@ export const DocumentationContent = styled.div`
       display: inline;
       vertical-align: baseline;
       padding: 0.05em 0.3em 0.2em;
-      background: rgb(237, 242, 247);
+      ${light} {
+        background: rgb(237, 242, 247);
+      }
+      ${dark} {
+        background: rgb(62, 64, 66);
+      }
       border-radius: 5px;
     }
     [data-rehype-pretty-code-figure] {
