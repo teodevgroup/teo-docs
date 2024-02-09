@@ -235,7 +235,7 @@ const DocSideBarSearchInput = () => {
       }
     }} />
     <SearchIconContainer>
-      <SearchIcon fill='rgb(203, 213, 224)' />
+      <SearchIcon />
     </SearchIconContainer>
   </DocSideBarInputContainer> 
 }
