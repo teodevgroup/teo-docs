@@ -188,6 +188,34 @@ export const DocumentationContent = styled.div`
   }
 
   article {
+
+    ${dark} {
+      --shiki-color-text: #f6f8fa;
+      --shiki-color-background: #292929; 
+      --shiki-token-constant: #dd6b21;
+      --shiki-token-string: #690;
+      --shiki-token-comment: #718096;
+      --shiki-token-keyword: #d5408c;
+      --shiki-token-parameter: #9a6e3a;
+      --shiki-token-function: #805ad5;
+      --shiki-token-string-expression: #690;
+      --shiki-token-punctuation: #319795;
+      --shiki-token-link: #EE0000;       
+    }
+    ${light} {
+      --shiki-color-text: #1a202c;
+      --shiki-color-background: #f6f8fa;    
+      --shiki-token-constant: #dd6b21;
+      --shiki-token-string: #690;
+      --shiki-token-comment: #718096;
+      --shiki-token-keyword: #d5408c;
+      --shiki-token-parameter: #9a6e3a;
+      --shiki-token-function: #805ad5;
+      --shiki-token-string-expression: #690;
+      --shiki-token-punctuation: #319795;
+      --shiki-token-link: #EE0000;        
+    }
+
     overflow-x: hidden;
     overflow-y: auto;
     flex: 100 100 600px;
@@ -291,7 +319,12 @@ export const DocumentationContent = styled.div`
         border-radius: 5px;
         background: rgb(251, 211, 141) !important;
       }
-      color: rgb(113, 128, 150);
+      ${light} {
+        color: rgb(113, 128, 150);
+      }
+      ${dark} {
+        color: rgb(154, 177, 211);
+      }
       font-weight: 400;
     }
     h1 {
@@ -455,7 +488,12 @@ export const DocumentationContent = styled.div`
       max-width: 580px;
       overflow: hidden;
       button {
-        background-color: rgb(237, 242, 247);
+        ${light} {
+          background-color: rgb(237, 242, 247);
+        }
+        ${dark} {
+          background: rgb(62, 64, 66);
+        }
       }
       &[data-language="sh"] {
         background-color: rgb(26, 32, 44) !important;
@@ -516,7 +554,12 @@ export const DocumentationContent = styled.div`
       width: 1rem;
       margin-right: 1rem;
       text-align: right;
-      color: rgb(203, 213, 224);
+      ${light} {
+        color: rgb(203, 213, 224);
+      }
+      ${dark} {
+        color: rgb(79, 83, 87);
+      }
     }
 
     code[data-language="sh"] > [data-line]::before {
@@ -556,6 +599,7 @@ export const DocumentationContent = styled.div`
       flex-grow: 1;
       flex-direction: column;
       margin-right: 12px;
+      max-width: calc(50% - 6px);
       ${light} {
         border: 1px solid #dadde1;
       }
@@ -590,6 +634,7 @@ export const DocumentationContent = styled.div`
       flex-grow: 1;
       flex-direction: column;
       align-items: flex-end;
+      max-width: calc(50% - 6px);
       ${light} {
         border: 1px solid #dadde1;
       }
@@ -619,6 +664,9 @@ export const DocumentationContent = styled.div`
       }
       padding: 16px;
       text-decoration: none !important;
+      .title {
+        text-align: right;
+      }
     }
   }
 `
@@ -652,10 +700,20 @@ const CopyButton = (props: CopyButtonProps) => {
     border-radius: 4px;
     cursor: pointer;
     padding: 0;
+    svg {
+      width: 16px;
+      height: 16px;
+      ${light} {
+        color: rgb(160, 174, 192);
+      }
+      ${dark} {
+        color: rgb(142, 165, 195);
+      }
+    }
   `} onClick={() => {
     navigator.clipboard.writeText(props['data-copy'])
   }}>
-    <Clipboard className={css`color: rgb(160, 174, 192); width: 16px; height: 16px;`} />
+    <Clipboard />
   </button>
 }
 

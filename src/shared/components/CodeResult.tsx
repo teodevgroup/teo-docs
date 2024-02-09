@@ -2,7 +2,7 @@
 
 import React, { ReactNode, Children, useState, cloneElement } from 'react'
 import { styled } from '@linaria/react'
-import { docFontFamily } from '../styles/theme'
+import { dark, docFontFamily, light } from '../styles/theme'
 
 type CodeResultProps = {
   name: string
@@ -33,7 +33,12 @@ const CodeResultButton = styled.div`
   height: 24px;
   line-height: 24px;
   font-family: ${docFontFamily};
-  background-color: ${props => props['data-use-dark'] ? "rgb(26,32,44)" : "#f6f8fa"};
+  ${light} {
+    background-color: ${props => props['data-use-dark'] ? "rgb(26,32,44)" : "#f6f8fa"};
+  }
+  ${dark} {
+    background-color: ${props => props['data-use-dark'] ? "rgb(26,32,44)" : "var(--shiki-color-background)"};
+  }
   user-select: none;
 `
 
