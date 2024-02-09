@@ -75,7 +75,11 @@ export const docTitleFontFamily = "Barlow, system-ui, Arial, sans-serif"
 
 export const docTagColor = "rgb(160, 174, 192)"
 
+export const docTagColorDark = "rgb(86, 95, 107)"
+
 export const docTagBackgroundColor = "rgb(237, 242, 247)"
+
+export const docTagBackgroundColorDark = "rgb(27, 30, 33)"
 
 export const headerBackground = '#303846'
 

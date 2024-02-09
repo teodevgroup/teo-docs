@@ -195,23 +195,36 @@ const HeadingLogoImageContainer = styled.div`
 `
 
 const HeadingLogoDocs = styled.a`
-  font-size: 27px;
+  font-size: 30px;
+  margin-left: 8px;
   ${light} {
     color: #535353;
   }
   ${dark} {
     color: #DEDEDE;
   }
-  margin-top: 2px;
 `
 
-export const HeadingLogoImage = () => <Image alt="Logo" src={'/images/logo/logo.png'} width={120} height={45} />
+const HeadingLogoText = styled.div`
+  font-size: 30px;
+  font-weight: bold;
+  margin-left: 4px;
+  ${light} {
+    color: black;
+  }
+  ${dark} {
+    color: white;
+  }
+`
+
+export const HeadingLogoImage = () => <Image alt="Logo" src={'/images/logo/logo.png'} width={45} height={45} />
 
 export const HeadingLogo = () => <HeadingLogoContainer>
   <HeadingLogoNavItemA href='https://teocloud.io'>
     <HeadingLogoImageContainer>
       <HeadingLogoImage />
     </HeadingLogoImageContainer>
+    <HeadingLogoText>TEO</HeadingLogoText>
   </HeadingLogoNavItemA>
   <HeadingLogoDocs href='/'>
     Docs

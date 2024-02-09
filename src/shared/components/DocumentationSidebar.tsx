@@ -4,7 +4,7 @@ import React, { ReactElement, ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
-import { dark, docFontFamily, docTagBackgroundColor, docTagColor, docTextColor, docTextColorDark, docTextSelectedColor, docTextUnselectedColor, flexColumn, flexRow, light, margin, phone, spacing } from '../styles/theme'
+import { dark, docFontFamily, docTagBackgroundColor, docTagBackgroundColorDark, docTagColor, docTagColorDark, docTextColor, docTextColorDark, docTextSelectedColor, docTextUnselectedColor, flexColumn, flexRow, light, margin, phone, spacing } from '../styles/theme'
 import { SearchInput, SearchIcon, SearchIconContainer } from './Search'
 import fetchToc, { TocItem } from '../../shared/lib/fetchToc'
 
@@ -75,8 +75,14 @@ const DocSidebarItemTitleLine = styled.div`
 `
 
 const DocSidebarItemTitleTime = styled.div`
-  color: ${docTagColor};
-  background-color: ${docTagBackgroundColor};
+  ${light} {
+    color: ${docTagColor};
+    background-color: ${docTagBackgroundColor};
+  }
+  ${dark} {
+    color: ${docTagColorDark};
+    background-color: ${docTagBackgroundColorDark};
+  }
   text-transform: capitalize;
   font-size: 14px;
   font-weight: 500;

@@ -113,13 +113,13 @@ export const ServerSelectorComponent = () => {
       </SelectItemIcon>
       <SelectItemTitle>Rust</SelectItemTitle>
     </SelectItem>
-    <SelectItem disabled={true} onClick={() => setIndex(1)} selected={index === 1}>
+    <SelectItem onClick={() => setIndex(1)} selected={index === 1}>
       <SelectItemIcon>
         <NodeLogo16 />
       </SelectItemIcon>
       <SelectItemTitle>Node.js</SelectItemTitle>
     </SelectItem>
-    <SelectItem disabled={true} onClick={() => setIndex(2)} selected={index === 2}>
+    <SelectItem onClick={() => setIndex(2)} selected={index === 2}>
       <SelectItemIcon>
         <PythonLogo16 />
       </SelectItemIcon>

@@ -1,6 +1,7 @@
 'use client'
 
 import { styled } from "@linaria/react"
+import { dark, light } from "../styles/theme"
 
 export const SearchIconContainer = styled.div`
   display: flex;
@@ -11,21 +12,30 @@ export const SearchIconContainer = styled.div`
   top: 0;
   bottom: 0;
   left: 10px;
+  svg {
+    ${light} {
+      stroke: rgb(203, 213, 224);
+    }
+    ${dark} {
+      stroke: rgb(57, 60, 63);
+    }
+  }
 `
 
-export type SearchIconProps = {
-  fill: string
-}
-
-export const SearchIcon = (props: SearchIconProps) => {
-  return <svg fill="none" height="24" stroke={props.fill} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+export const SearchIcon = () => {
+  return <svg fill="none" height="24" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <circle cx="11" cy="11" r="8"/>
     <line x1="21" x2="16.65" y1="21" y2="16.65"/>
   </svg>
 }
 
 export const SearchInput = styled.input`
-  border: 1px solid rgb(203, 213, 224);
+  ${light} {
+    border: 1px solid rgb(203, 213, 224);
+  }
+  ${dark} {
+    border: 1px solid rgb(57, 60, 63);
+  }
   border-radius: 8px;
   width: 100%;
   height: 44px;
@@ -35,7 +45,12 @@ export const SearchInput = styled.input`
   user-select: none;
   font-size: 16px;
   &::placeholder {
-    color: rgb(203, 213, 224);
+    ${light} {
+      color: rgb(203, 213, 224);
+    }
+    ${dark} {
+      color: rgb(75, 79, 84);
+    }
   }
 `
 
@@ -55,8 +70,7 @@ export const FullWidthSearchInput = ({ defaultValue }: {
       }
     }} />
     <SearchIconContainer>
-      <SearchIcon fill='rgb(203, 213, 224)' />
+      <SearchIcon />
     </SearchIconContainer>
   </FullWidthSearchInputContainer> 
 }
-
