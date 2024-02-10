@@ -390,6 +390,25 @@ export const FastSelector = (props: FastSelectorProps) => {
         border: 0.5px solid #F7F7F9;
       }
       border-radius: 6px;
+      &::after {
+        position: absolute;
+        display: block;
+        right: 8px;
+        transform: translateY(-50%);
+        top: 50%;
+        content: ' ';
+        width: 0; 
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent; 
+        border-top: 7px solid #dadde1;
+        ${light} {
+          border-top: 7px solid #dadde1;
+        }
+        ${dark} {
+          border-top: 7px solid rgb(12, 13, 15);
+        }
+      }
     ` : css`
       ${dark} {
         border-top: 0.5px solid #171717;
@@ -403,6 +422,25 @@ export const FastSelector = (props: FastSelectorProps) => {
       }
       border-top-left-radius: 6px;
       border-top-right-radius: 6px;
+      &::after {
+        position: absolute;
+        display: block;
+        right: 8px;
+        transform: translateY(-50%);
+        top: 50%;
+        content: ' ';
+        width: 0; 
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent; 
+        border-bottom: 7px solid #dadde1;
+        ${light} {
+          border-bottom: 7px solid #dadde1;
+        }
+        ${dark} {
+          border-bottom: 7px solid rgb(12, 13, 15);
+        }
+      }      
     `}>
       {selectedChild}
     </FastSelectorDisplayItem>
