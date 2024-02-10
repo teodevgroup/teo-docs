@@ -349,7 +349,11 @@ const FastSelectorExpandedList = styled.div`
   }
 `
 
-const FastSelectorItem = styled.div`
+type FastSelectorItemProps = {
+  disabled?: boolean
+}
+
+const FastSelectorItem = styled.div<FastSelectorItemProps>`
   ${flexRow('center')}
   &:hover {
     ${dark} {
@@ -362,6 +366,7 @@ const FastSelectorItem = styled.div`
   width: 100%;
   padding: 4px 8px;
   font-size: 14px;
+  opacity: ${(props) => props.disabled ? 0.5 : 1};
 `
 
 const FastSelectorIconContainer = styled.div`
@@ -450,8 +455,10 @@ export const FastSelector = (props: FastSelectorProps) => {
     `}>
       {Children.map(props.children, (child, index) => {
         return cloneElement(child, { onClick: () => {
-          setIndex(index)
-          setExpanded(false)
+          if (!child.props.disabled) {
+            setIndex(index)
+            setExpanded(false)  
+          }
         }})
       })}
     </FastSelectorExpandedList>
@@ -524,25 +531,25 @@ export const FastClientSelector = () => {
       </FastSelectorIconContainer>
       <FastSelectorTitle>TypeScript</FastSelectorTitle>
     </FastSelectorItem>
-    <FastSelectorItem>
+    <FastSelectorItem disabled={true}>
       <FastSelectorIconContainer>
         <SwiftLogo16 />
       </FastSelectorIconContainer>
       <FastSelectorTitle>Swift</FastSelectorTitle>
     </FastSelectorItem>
-    <FastSelectorItem>
+    <FastSelectorItem disabled={true}>
       <FastSelectorIconContainer>
         <KotlinLogo16 />
       </FastSelectorIconContainer>
       <FastSelectorTitle>Kotlin</FastSelectorTitle>
     </FastSelectorItem>
-    <FastSelectorItem>
+    <FastSelectorItem disabled={true}>
       <FastSelectorIconContainer>
         <CSharpLogo16 />
       </FastSelectorIconContainer>
       <FastSelectorTitle>C#</FastSelectorTitle>
     </FastSelectorItem>
-    <FastSelectorItem>
+    <FastSelectorItem disabled={true}>
       <FastSelectorIconContainer>
         <DartLogo16 />
       </FastSelectorIconContainer>
