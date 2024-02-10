@@ -26,7 +26,7 @@ const savedSetStateCallbacks: any = {
 }
 
 const usePreference = (name: string): [number, (value: number) => void] => {
-  let saved = localStorage.getItem(name)
+  let saved = typeof localStorage !== 'undefined' ? localStorage.getItem(name) : '0'
   if (!saved) {
     saved = '0'
   }
@@ -40,7 +40,9 @@ const usePreference = (name: string): [number, (value: number) => void] => {
     };
 }, [name]);
   const wrappedSetState = (newValue: number) => {
-    localStorage.setItem(name, newValue.toString())
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(name, newValue.toString())
+    }
     for (const key in savedSetStateCallbacks[name]) {
       const setState = savedSetStateCallbacks[name][key]
       setState(newValue)
