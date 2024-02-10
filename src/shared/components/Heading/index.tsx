@@ -36,7 +36,6 @@ const HeadingContainer = styled.div`
   ${dark} {
     
   }
-  z-index: 5000;
 `
 
 const HeadingBorderLine = styled.div`

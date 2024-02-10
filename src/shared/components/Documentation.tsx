@@ -4,12 +4,13 @@ import React, { ReactElement, ReactNode, Children, cloneElement, useState, useEf
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
 import Constraint from './Constraint'
-import { docTitleFontFamily, flexColumn, flexRow, tintFontStack, margin, spacing, tagContentColor, codeFontStack, docFontFamily, contentFontStack, phone, tabletAndDesktop, anyDesktop, tintColor, light, dark, tablet, exceptPhone } from '../styles/theme'
+import { docTitleFontFamily, flexColumn, flexRow, tintFontStack, margin, spacing, tagContentColor, codeFontStack, docFontFamily, contentFontStack, phone, tabletAndDesktop, anyDesktop, tintColor, light, dark, tablet, exceptPhone, darkHeadingBackgroundColor } from '../styles/theme'
 import Layout from './Layout'
 import Footer from './Footer'
 import Heading from './Heading'
 import { Clipboard, File, Hash } from 'react-feather'
 import { FastTripleSelector } from './Selector'
+import FileIcon from './FileIcon'
 
 export const DocumentationContainer = styled.div`
   ${light} {
@@ -88,6 +89,26 @@ export const DocumentationSearch = styled.input`
 export const DocumentationConstraint = styled(Constraint)`
 `
 
+const AsideContentContainer = styled.div`
+  ${phone} {
+    position: absolute;
+  }
+  ${exceptPhone} {
+    position: sticky;
+    display: block !important;
+    width: 180px;
+    overflow-y: auto;
+    max-height: 100vh;
+  }
+  
+  
+  right: 0;
+  top: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding-top: 8px;
+`
+
 export const DocumentationContent = styled.div`
   ${flexRow()}
   justify-content: flex-start;
@@ -106,19 +127,25 @@ export const DocumentationContent = styled.div`
   flex-grow: 1;
   padding-top: 28px;
   padding-bottom: 48px;
-
   aside {
     ${phone} {
-      display: none;
+      z-index: 1000;
+      position: fixed;
+      left: -1em;
+      top: 0;
+      padding-top: 96px !important;
+      width: calc(100% + 2em);
+      padding: 2em;
+      height: 100vh;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      ${light} {
+        background-color: #f8f8fa;
+      }
+      ${dark} {
+        background-color: ${darkHeadingBackgroundColor};
+      }
     }
-    width: 180px;
-    overflow-y: auto;
-    max-height: 100vh;
-    position: sticky;
-    right: 0;
-    top: 0;
-    flex-grow: 0;
-    flex-shrink: 0;
     .title {
       margin-top: 20px;
       font-size: 0.875rem;
@@ -744,8 +771,35 @@ export const Pre = (props: PreProps) => {
   </pre>
 }
 
+const MobileAsideToggleButton = styled.div`
+  ${exceptPhone} {
+    display: none;
+  }
+  ${phone} {
+    display: flex;
+    position: fixed;
+    top: 29px;
+    right: calc(1em + 40px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+  cursor: pointer;
+  ${light} {
+    background-color: #f8f8fa;
+  }
+  ${dark} {
+    background-color: ${darkHeadingBackgroundColor};
+  }
+  color: ${tintColor};
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+`
+
 export const Aside = (props: AsideProps) => {
   const [hash, setHash] = useState('')
+  const [phoneAsideVisible, setPhoneAsideVisible] = useState(false)
   useEffect(() => {
     const headings = Array.prototype.slice.call(document.querySelectorAll('h2[id],h3[id]'))
     const handler = (e: Event) => {
@@ -784,9 +838,14 @@ export const Aside = (props: AsideProps) => {
       return c
     }
   })
-  return <aside>
-    {children}
-  </aside>
+  return <AsideContentContainer>
+    <MobileAsideToggleButton onClick={() => setPhoneAsideVisible(!phoneAsideVisible)}>
+      <FileIcon />
+    </MobileAsideToggleButton>
+    <aside style={{ display: phoneAsideVisible ? 'block' : 'none' }}>
+      {children}
+    </aside>
+  </AsideContentContainer>
 }
 
 const CodeTitleContainer = styled.div`

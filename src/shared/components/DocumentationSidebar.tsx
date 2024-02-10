@@ -219,7 +219,7 @@ const SidebarToggleButton = styled.div`
     display: flex;
     position: fixed;
     top: 29px;
-    right: calc(1em + 40px);
+    right: calc(1em + 96px);
     z-index: 2000;
     align-items: center;
     justify-content: center;
