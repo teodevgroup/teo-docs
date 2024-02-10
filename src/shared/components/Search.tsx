@@ -17,7 +17,7 @@ export const SearchIconContainer = styled.div`
       stroke: rgb(203, 213, 224);
     }
     ${dark} {
-      stroke: rgb(57, 60, 63);
+      stroke: rgb(109, 115, 121);
     }
   }
 `
