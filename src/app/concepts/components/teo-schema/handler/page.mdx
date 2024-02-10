@@ -1,0 +1,63 @@
+---
+title: Handler
+author: Victor Teo, Jiannan Zhang
+orderHint: 13
+---
+
+import PrevNext from '../../../../../shared/components/PrevNext'
+
+# Handler
+
+Traditional HTTP frameworks expose endpoints. Handlers are Teo's HTTP endpoints.
+Handlers are different from [Actions](/docs/concepts/components/teo-schema/action).
+Each predefined handler correspond to a predefined root level [action](/docs/concepts/components/teo-schema/action) <span class="concept">CONCEPT</span>.
+
+## HTTP request handlers
+
+When working with HTTP requests, the requests are mapped into handlers
+with predefined rules.
+
+When Teo's frontend packages are building a request url, they use a form of
+`/{server path prefix}/{namespacePaths}/{ModelName}/{actionName}`. For example, to access
+`findMany` on `User`, we request this url: `/User/findMany`.
+
+The builtin handlers supported by Teo are:
+
+* `findUnique` find a unique object
+* `findMany` find many objects
+* `findFirst` find one object
+* `create` create a new object
+* `update` update an existing object
+* `upsert` create an existing object if it doesn't exist
+* `copy` copy an existing object into a new one
+* `delete` delete an existing object
+* `createMany` create many objects
+* `updateMany` update many objects
+* `copyMany` create many objects by copying
+* `deleteMany` delete many objects
+* `count` count matched objects
+* `aggregate` view statistics data on this model
+* `groupBy` view grouped statistics data on this model
+
+## Disabling
+
+Some of the handlers exposed by Teo may not be needed for your business
+requirements. You can disable some of them with `@action` decorator.
+
+```teo showLineNumbers
+@action(disable: .update | .delete)
+model Demo {
+
+}
+```
+
+In this example, objects of this model cannot be updated or deleted. Once
+created, it is what it is.
+
+## Going next
+
+The next topic introduces
+[**action**](/concepts/components/teo-server/action),
+which is exactly what it going on when database mutation is triggered.
+
+<PrevNext />
