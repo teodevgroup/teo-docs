@@ -26,6 +26,9 @@ const DocSidebarContainer = styled.div`
     padding-top: 96px;
     width: calc(100% + 2em);
     padding: 2em;
+    height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
     ${light} {
       background-color: #f8f8fa;
     }
