@@ -243,7 +243,12 @@ export const DocumentationContent = styled.div`
         width: 100%;
       }
       overflow-x: scroll;
-      border: 1px solid #e2e8f0;
+      ${light} {
+        border: 1px solid #e2e8f0;
+      }
+      ${dark} {
+        border: 1px solid #3e464f;
+      }
       border-radius: 8px;
       border-spacing: 0;
       margin: 0 0 20px;
@@ -262,7 +267,12 @@ export const DocumentationContent = styled.div`
           text-align: left;
         }
         td {
-          border-top: 1px solid #e2e8f0;
+          ${light} {
+            border-top: 1px solid #e2e8f0;
+          }
+          ${dark} {
+            border-top: 1px solid #3e464f;
+          }
           padding: 12px;
           vertical-align: top;
         }
