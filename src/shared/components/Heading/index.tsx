@@ -72,12 +72,20 @@ const HeadingConstraint = styled(Constraint)`
 `
 
 const HeadingMenuContainer = styled.div`
+  ${anyDesktop} {
+    display: none !important;
+  }
   position: absolute;
   top: 100%;
   right: 0;
   left: 0;
   display: none;
-  background-color: white;
+  ${light} {
+    background-color: white;
+  }
+  ${dark} {
+    background-color: ${darkHeadingBackgroundColor};
+  }
   box-shadow: 0 0 10px rgb(0 0 0 / 7%);
   z-index: 1;
   flex-direction: column;
@@ -135,6 +143,15 @@ const HeadingNavItem = styled.li`
   padding: 0;
   margin-right: 18px;
   height: 100%;
+  ${phoneAndTablet} {
+    margin-bottom: 8px;
+  }
+`
+
+const HeadingLogoA = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const HeadingNavItemANoEffect = styled.a`
@@ -142,7 +159,7 @@ const HeadingNavItemANoEffect = styled.a`
   align-items: center;
   justify-content: center;
   ${phoneAndTablet} {
-    padding: 10px 16px;
+    padding: 4px 16px;
   }
   color: unset;
   text-decoration: none;
@@ -223,12 +240,12 @@ const HeadingLogoText = styled.div`
 export const HeadingLogoImage = () => <Image alt="Logo" src={'/images/logo/logo.png'} width={45} height={45} />
 
 export const HeadingLogo = () => <HeadingLogoContainer>
-  <HeadingLogoNavItemA href='https://teocloud.io'>
+  <HeadingLogoA href='https://teocloud.io'>
     <HeadingLogoImageContainer>
       <HeadingLogoImage />
     </HeadingLogoImageContainer>
     <HeadingLogoText>TEO</HeadingLogoText>
-  </HeadingLogoNavItemA>
+  </HeadingLogoA>
   <HeadingLogoDocs href='/'>
     Docs
   </HeadingLogoDocs>
