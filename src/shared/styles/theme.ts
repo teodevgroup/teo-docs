@@ -181,11 +181,6 @@ export const flexContainerCenterItems = `
   position: relative;
 `
 
-export const wholeScreen = `
-  height: 100vh;
-  width: 100vw;
-`
-
 export const flexRow = (alignItems: string = 'center') => `
   display: flex;
   flex-direction: row;

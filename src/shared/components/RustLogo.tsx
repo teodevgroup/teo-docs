@@ -20,11 +20,11 @@ const RustLogoSvg = () => {
         }
     `} version="1.1" height="16" width="16" viewBox="0 0 106 106" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
         <g id="logo" transform="translate(53, 53)">
-            <path id="r" transform="translate(0.5, 0.5)" stroke-width="1" stroke-linejoin="round" d="     M -9,-15 H 4 C 12,-15 12,-7 4,-7 H -9 Z     M -40,22 H 0 V 11 H -9 V 3 H 1 C 12,3 6,22 15,22 H 40     V 3 H 34 V 5 C 34,13 25,12 24,7 C 23,2 19,-2 18,-2 C 33,-10 24,-26 12,-26 H -35     V -15 H -25 V 11 H -40 Z"/>
+            <path id="r" transform="translate(0.5, 0.5)" strokeWidth="1" strokeLinejoin="round" d="     M -9,-15 H 4 C 12,-15 12,-7 4,-7 H -9 Z     M -40,22 H 0 V 11 H -9 V 3 H 1 C 12,3 6,22 15,22 H 40     V 3 H 34 V 5 C 34,13 25,12 24,7 C 23,2 19,-2 18,-2 C 33,-10 24,-26 12,-26 H -35     V -15 H -25 V 11 H -40 Z"/>
             <g id="gear" mask="url(#holes)">
-                <circle id="circle" r="43" fill="none" stroke-width="9"/>
+                <circle id="circle" r="43" fill="none" strokeWidth="9"/>
                 <g id="cogs">
-                    <polygon id="cog" stroke-width="3" stroke-linejoin="round" points="46,3 51,0 46,-3"/>
+                    <polygon id="cog" strokeWidth="3" strokeLinejoin="round" points="46,3 51,0 46,-3"/>
                     <use xlinkHref="#cog" transform="rotate(11.25)"/>
                     <use xlinkHref="#cog" transform="rotate(22.50)"/>
                     <use xlinkHref="#cog" transform="rotate(33.75)"/>
@@ -58,7 +58,7 @@ const RustLogoSvg = () => {
                     <use xlinkHref="#cog" transform="rotate(348.75)"/>
                 </g>
                 <g id="mounts">
-                    <polygon id="mount" stroke-width="6" stroke-linejoin="round" points="-7,-42 0,-35 7,-42"/>
+                    <polygon id="mount" strokeWidth="6" strokeLinejoin="round" points="-7,-42 0,-35 7,-42"/>
                     <use xlinkHref="#mount" transform="rotate(72)"/>
                     <use xlinkHref="#mount" transform="rotate(144)"/>
                     <use xlinkHref="#mount" transform="rotate(216)"/>

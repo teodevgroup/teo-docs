@@ -189,7 +189,8 @@ export const DocumentationContent = styled.div`
   }
 
   article {
-
+    overflow-x: hidden;
+    max-width: calc(100vw - 2em);
     ${dark} {
       --shiki-color-text: #f6f8fa;
       --shiki-color-background: #292929; 

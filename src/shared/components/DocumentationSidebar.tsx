@@ -183,7 +183,7 @@ const SidebarWithToc: (props: { item: TocItem, path: string }) => ReactElement =
     {props.item.children.map((child) => {
       if (child.children.length) {
         return [
-          <DocSidebarSectionTitle>{child.title}</DocSidebarSectionTitle>,
+          <DocSidebarSectionTitle key="__sidebar__title">{child.title}</DocSidebarSectionTitle>,
           ...renderChildren(child.children, props.path)
         ]
       } else {

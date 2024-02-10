@@ -38,7 +38,7 @@ model User {
 ```
 
 A model has a primary index, at least a primary field. It optionally has a
-documented `@name`. It can have any number of [indexes](/concepts/components/teo-schema/index-concept) <span class="concept">CONCEPT</span>.
+documented `@name`. It can have any number of [indexes](/concepts/components/teo-schema/index-concept) <span className="concept">CONCEPT</span>.
 
 ## Virtual Model
 
@@ -46,7 +46,7 @@ A virtual model is a model which don't have a database table. It only supports
 `create` and `createMany` action. If it has identity defined, `signIn` and
 `identity` are also supported. To understand actions, check
 [Action](/concepts/components/teo-schema/action)
-<span class="concept">CONCEPT</span> topic.
+<span className="concept">CONCEPT</span> topic.
 
 A virtual model cannot have relationships since it's not existing in the
 database. A virtual model also doesn't need a primary key.

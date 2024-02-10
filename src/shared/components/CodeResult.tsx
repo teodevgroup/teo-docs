@@ -19,6 +19,7 @@ const CodeResultContainer = styled.div`
   }
   [data-rehype-pretty-code-figure] {
     margin: 0 !important;
+    overflow: scroll;
   }
 `
 
