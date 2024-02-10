@@ -187,13 +187,13 @@ export const wholeScreen = `
 `
 
 export const flexRow = (alignItems: string = 'center') => `
-display: flex;
-flex-direction: row;
-align-items: ${alignItems};
+  display: flex;
+  flex-direction: row;
+  align-items: ${alignItems};
 `
 
 export const flexColumn = (alignItems: string = 'center') => `
-display: flex;
-flex-direction: column;
-align-items: ${alignItems};
+  display: flex;
+  flex-direction: column;
+  align-items: ${alignItems};
 `

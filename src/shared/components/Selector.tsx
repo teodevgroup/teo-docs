@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useEffect, useState } from 'react'
 import { styled } from '@linaria/react'
-import { docTitleFontFamily, flexRow } from '../../shared/styles/theme'
+import { dark, docTitleFontFamily, flexRow, light } from '../../shared/styles/theme'
 import { cx, css } from '@linaria/core'
 import {
   CSharpLogo16, DartLogo16, KotlinLogo16, MongoDBLogo16,
@@ -11,6 +11,10 @@ import {
 } from './Logos'
 import VSpace from './VSpace'
 import NoSSRWrapper from './NoSSRWrapper'
+import RustLogoSvg from './RustLogo'
+
+const selectorBorderColor = "#eaecef"
+const selectorBorderColorDark = "#2a2c2f"
 
 const serverKey = "serverSelector"
 const databaseKey = "databaseSelector"
@@ -47,9 +51,15 @@ const usePreference = (name: string): [number, (value: number) => void] => {
 
 const SelectorContainer = styled.div`
   ${flexRow('stretch')}
-  color: rgb(51, 51, 51);
+  ${light} {
+    color: rgb(51, 51, 51);
+    border: 1px solid ${selectorBorderColor};
+  }
+  ${dark} {
+    color: rgb(201, 201, 201);
+    border: 1px solid ${selectorBorderColorDark};
+  }
   border-radius: 4px;
-  border: 1px solid #eaecef;
   justify-content: stretch;
   align-items: stretch;
   height: 44px;
@@ -76,20 +86,42 @@ const SelectItem = (props: SelectItemProps) => {
     flex: 1 1 0px;
     transition: 0.2s all ease-in-out 0s;
     &:hover {
-      background-color: #fafafc;
+      ${light} {
+        background-color: #fafafc;
+      }
+      ${dark} {
+        background-color: #1f1f21;
+      }
     }
     &:not(:last-child) {
-      border-right: 1px solid #eaecef;
+      ${light} {
+        border-right: 1px solid ${selectorBorderColor};
+      }
+      ${dark} {
+        border-right: 1px solid ${selectorBorderColorDark};
+      }
     }
   `, props.selected ? css`
-    background-color: #eaecef;
+    ${light} {
+      background-color: ${selectorBorderColor};
+    }
+    ${dark} {
+      background-color: ${selectorBorderColorDark};
+    }
     &:hover {
-      background-color: #eaecef;
+      ${light} {
+        background-color: ${selectorBorderColor};
+      }
+      ${dark} {
+        background-color: ${selectorBorderColorDark};
+      }
     }
   ` : css`
     background-color: transparent;
   `, props.disabled ? css`
     opacity: 0.5;
+    pointer-events: none;
+    cursor: default;
   ` : css``)}>{props.children}</div>
 }
 
@@ -109,7 +141,7 @@ export const ServerSelectorComponent = () => {
   return <SelectorContainer>
     <SelectItem onClick={() => setIndex(0)} selected={index === 0}>
       <SelectItemIcon>
-        <RustLogo16 />
+        <RustLogoSvg />
       </SelectItemIcon>
       <SelectItemTitle>Rust</SelectItemTitle>
     </SelectItem>
