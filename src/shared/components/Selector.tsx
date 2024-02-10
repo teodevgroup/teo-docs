@@ -1,8 +1,8 @@
 'use client'
 
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { Children, ReactElement, ReactNode, cloneElement, useEffect, useRef, useState } from 'react'
 import { styled } from '@linaria/react'
-import { dark, docTitleFontFamily, flexRow, light } from '../../shared/styles/theme'
+import { dark, docTitleFontFamily, flexColumn, flexRow, light } from '../../shared/styles/theme'
 import { cx, css } from '@linaria/core'
 import {
   CSharpLogo16, DartLogo16, KotlinLogo16, MongoDBLogo16,
@@ -309,3 +309,217 @@ export const SwiftDoc = MakeDocBlock("SwiftDoc", clientKey, [1])
 export const KotlinDoc = MakeDocBlock("KotlinDoc", clientKey, [2])
 export const CSharpDoc = MakeDocBlock("CSharpDoc", clientKey, [3])
 export const DartDoc = MakeDocBlock("DartDoc", clientKey, [4])
+
+const FastSelectorContainer = styled.div`
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+`
+
+const FastSelectorDisplayItem = styled.div`
+  overflow: hidden;
+  ${dark} {
+    background-color: #242424;
+  }
+  ${light} {
+    background-color: #FBFBFD;
+  }
+`
+
+const FastSelectorExpandedList = styled.div`
+  top: 100%;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  z-index: 1000;
+  ${dark} {
+    background-color: #242424;
+    border-left: 0.5px solid #171717;
+    border-right: 0.5px solid #171717;
+    border-bottom: 0.5px solid #171717;
+
+  }
+  ${light} {
+    background-color: #FBFBFD;
+    border-left: 0.5px solid #F7F7F9;
+    border-right: 0.5px solid #F7F7F9;
+    border-bottom: 0.5px solid #F7F7F9;
+  }
+`
+
+const FastSelectorItem = styled.div`
+  ${flexRow('center')}
+  &:hover {
+    ${dark} {
+      background-color: #3d3d3d;
+    }
+    ${light} {
+      background-color: #F3F3F5;
+    }
+  }
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 14px;
+`
+
+const FastSelectorIconContainer = styled.div`
+  ${flexRow('center')}
+  margin-right: 8px;
+`
+
+const FastSelectorTitle = styled.div``
+
+
+type FastSelectorProps = {
+  preferenceKey: string
+  children: ReactElement[]
+}
+
+export const FastSelector = (props: FastSelectorProps) => {
+  const [index, setIndex] = usePreference(props.preferenceKey)
+  const [expanded, setExpanded] = useState(false)
+  const selectedChild = Children.toArray(props.children)[index]
+  return <FastSelectorContainer onMouseLeave={() => setExpanded(false)}>
+    <FastSelectorDisplayItem onClick={() => setExpanded(!expanded)} className={!expanded ? css`
+      ${dark} {
+        border: 0.5px solid #171717;
+      }
+      ${light} {
+        border: 0.5px solid #F7F7F9;
+      }
+      border-radius: 6px;
+    ` : css`
+      ${dark} {
+        border-top: 0.5px solid #171717;
+        border-left: 0.5px solid #171717;
+        border-right: 0.5px solid #171717;
+      }
+      ${light} {
+        border-top: 0.5px solid #F7F7F9;
+        border-left: 0.5px solid #F7F7F9;
+        border-right: 0.5px solid #F7F7F9;
+      }
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    `}>
+      {selectedChild}
+    </FastSelectorDisplayItem>
+    <FastSelectorExpandedList className={!expanded ? css`display: none;` : css`
+      ${flexColumn('flex-start')}
+      position: absolute;
+    `}>
+      {Children.map(props.children, (child, index) => {
+        return cloneElement(child, { onClick: () => {
+          setIndex(index)
+          setExpanded(false)
+        }})
+      })}
+    </FastSelectorExpandedList>
+  </FastSelectorContainer>
+}
+
+export const FastServerSelector = () => {
+  return <FastSelector preferenceKey={serverKey}>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <RustLogoSvg />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>Rust</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <NodeLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>Node.js</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <PythonLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>Python</FastSelectorTitle>
+    </FastSelectorItem>
+  </FastSelector>
+}
+
+export const FastDatabaseSelector = () => {
+  return <FastSelector preferenceKey={databaseKey}>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <MySQLLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>MySQL</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <PostgreSQLLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>PostgreSQL</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <KotlinLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>Kotlin</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <SQLiteLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>SQLite</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <MongoDBLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>MongoDB</FastSelectorTitle>
+    </FastSelectorItem>
+  </FastSelector>
+}
+
+export const FastClientSelector = () => {
+  return <FastSelector preferenceKey={clientKey}>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <TypeScriptLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>TypeScript</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <SwiftLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>Swift</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <KotlinLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>Kotlin</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <CSharpLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>C#</FastSelectorTitle>
+    </FastSelectorItem>
+    <FastSelectorItem>
+      <FastSelectorIconContainer>
+        <DartLogo16 />
+      </FastSelectorIconContainer>
+      <FastSelectorTitle>Dart</FastSelectorTitle>
+    </FastSelectorItem>
+  </FastSelector>
+}
+
+export const FastTripleSelector = () => {
+  return <>
+    <FastServerSelector />
+    <VSpace height={8} />
+    <FastDatabaseSelector />
+    <VSpace height={8} />
+    <FastClientSelector />
+    <VSpace height={8} />  
+  </>
+}

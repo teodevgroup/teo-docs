@@ -11,8 +11,7 @@ const RustLogoSvg = () => {
             ${dark} {
                 stroke: white;
             }
-        }        
-
+        }
         #r {
             ${dark} {
                 fill: white;

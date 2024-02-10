@@ -39,6 +39,10 @@ const onThisPage = () => {
       children: h2H3List.children.length > 0 ? [
         {
           type: "element",
+          tagName: "triple",
+        },
+        {
+          type: "element",
           tagName: "div",
           properties: {
             class: "title"

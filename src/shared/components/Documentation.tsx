@@ -9,6 +9,7 @@ import Layout from './Layout'
 import Footer from './Footer'
 import Heading from './Heading'
 import { Clipboard, File, Hash } from 'react-feather'
+import { FastTripleSelector } from './Selector'
 
 export const DocumentationContainer = styled.div`
   ${light} {
@@ -758,6 +759,8 @@ export const Aside = (props: AsideProps) => {
           return c
         }
       })})
+    } else if ((c as any).type && (c as any).type === 'triple') {
+      return <FastTripleSelector />
     } else {
       return c
     }
