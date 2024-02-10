@@ -27,7 +27,7 @@ const DocSidebarContainer = styled.div`
     width: calc(100% + 2em);
     padding: 2em;
     ${light} {
-      background-color: white;
+      background-color: #f8f8fa;
     }
     ${dark} {
       background-color: ${darkHeadingBackgroundColor};
@@ -215,7 +215,7 @@ const SidebarToggleButton = styled.div`
   ${phone} {
     display: flex;
     position: fixed;
-    top: 30px;
+    top: 29px;
     right: calc(1em + 40px);
     z-index: 2000;
     align-items: center;
@@ -223,7 +223,7 @@ const SidebarToggleButton = styled.div`
   }
   cursor: pointer;
   ${light} {
-    background-color: white;
+    background-color: #f8f8fa;
   }
   ${dark} {
     background-color: ${darkHeadingBackgroundColor};
