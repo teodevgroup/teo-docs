@@ -128,6 +128,9 @@ export const DocumentationContent = styled.div`
   padding-top: 28px;
   padding-bottom: 48px;
   aside {
+    ${exceptPhone} {
+      display: block !important;
+    }
     ${phone} {
       z-index: 1000;
       position: fixed;

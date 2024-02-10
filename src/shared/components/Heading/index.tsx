@@ -140,6 +140,12 @@ const HeadingNavItem = styled.li`
   margin-right: 18px;
   height: 100%;
   ${phone} {
+    &:first-child {
+      margin-top: 16px;
+    }
+    &:last-child {
+      margin-bottom: 16px;
+    }
     margin-bottom: 8px;
   }
 `
