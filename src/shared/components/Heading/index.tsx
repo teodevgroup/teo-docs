@@ -5,12 +5,8 @@ import Image from 'next/image'
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
 import Constraint from '../Constraint'
-import { contentBackgroundColor, flexRow, tintFontStack, tintColor, phone, tablet, phoneAndTablet, anyDesktop, flexColumn, light, dark, darkContentBackGroundColor, darkHeadingBackgroundColor } from '../../styles/theme'
+import { contentBackgroundColor, flexRow, tintFontStack, tintColor, phone, tablet, anyDesktop, flexColumn, light, dark, darkContentBackGroundColor, darkHeadingBackgroundColor, tabletAndDesktop, exceptPhone } from '../../styles/theme'
 import { Menu } from 'react-feather'
-import patreonIcon from './patreon.svg'
-import githubIcon from './github.svg'
-import slackIcon from './slack.svg'
-import xIcon from './x-twitter.svg'
 import { usePathname } from 'next/navigation'
 import GitHubIcon from './GitHubIcon'
 import SlackIcon from './SlackIcon'
@@ -28,7 +24,7 @@ const HeadingMenuButton = styled.button`
   margin-right: -10px;
   display: none;
   
-  ${phoneAndTablet} {
+  ${phone} {
     display: block;
   }
 `
@@ -102,7 +98,7 @@ const HeadingLogoContainer = styled.div`
 const HeadingNavArea = styled.div`
   ${flexRow('baseline')}
   margin-left: 80px;
-  ${phoneAndTablet} {
+  ${phone} {
     display: none;
   }
 `
@@ -128,11 +124,11 @@ const HeadingNavItems = styled.ul`
     color: white;
   }
   margin: 0;
-  ${phoneAndTablet} {
+  ${phone} {
     ${flexColumn('center')}
     align-items: flex-start;
   }
-  ${anyDesktop} {
+  ${exceptPhone} {
     ${flexRow('stretch')}
     align-items: center;
     height: 100%;
@@ -143,7 +139,7 @@ const HeadingNavItem = styled.li`
   padding: 0;
   margin-right: 18px;
   height: 100%;
-  ${phoneAndTablet} {
+  ${phone} {
     margin-bottom: 8px;
   }
 `
@@ -158,7 +154,7 @@ const HeadingNavItemANoEffect = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  ${phoneAndTablet} {
+  ${phone} {
     padding: 4px 16px;
   }
   color: unset;
@@ -176,10 +172,10 @@ const HeadingNavItemA = styled.a<HeadingNavItemAProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  ${phoneAndTablet} {
+  ${phone} {
     padding: 10px 16px;
   }
-  ${anyDesktop} {
+  ${exceptPhone} {
     padding-left: 16px;
     padding-right: 16px;
     padding-top: 6px;

@@ -4,7 +4,7 @@ import React, { ReactElement, ReactNode, Children, cloneElement, useState, useEf
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
 import Constraint from './Constraint'
-import { contentColor, docTitleFontFamily, flexColumn, flexRow, tintFontStack, margin, spacing, tagContentColor, codeFontStack, docFontFamily, contentFontStack, phone, tabletAndDesktop, anyDesktop, tintColor, light, dark } from '../styles/theme'
+import { docTitleFontFamily, flexColumn, flexRow, tintFontStack, margin, spacing, tagContentColor, codeFontStack, docFontFamily, contentFontStack, phone, tabletAndDesktop, anyDesktop, tintColor, light, dark, tablet, exceptPhone } from '../styles/theme'
 import Layout from './Layout'
 import Footer from './Footer'
 import Heading from './Heading'
@@ -190,7 +190,7 @@ export const DocumentationContent = styled.div`
 
   article {
     overflow-x: hidden;
-    max-width: calc(100vw - 2em);
+    position: relative;
     ${dark} {
       --shiki-color-text: #f6f8fa;
       --shiki-color-background: #292929; 
@@ -221,7 +221,7 @@ export const DocumentationContent = styled.div`
     overflow-x: hidden;
     overflow-y: auto;
     flex: 100 100 600px;
-    ${tabletAndDesktop} {
+    ${exceptPhone} {
       padding: 0 40px;
     }
     ${anyDesktop} {
@@ -229,8 +229,17 @@ export const DocumentationContent = styled.div`
     }
     ${phone} {
       padding: 0;
+      max-width: calc(100vw - 2em);
+    }
+    ${tablet} {
+      max-width: calc(100vw - 440px);
+    }
+    ${anyDesktop} {
+      max-width: calc(100vw - 440px);
     }
     table {
+      overflow-x: scroll;
+      max-width: 100%;
       ${tabletAndDesktop} {
         width: 100%;
         max-width: 580px;
@@ -243,7 +252,6 @@ export const DocumentationContent = styled.div`
         display: block;
         width: 100%;
       }
-      overflow-x: scroll;
       ${light} {
         border: 1px solid #e2e8f0;
       }
