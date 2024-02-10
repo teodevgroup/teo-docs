@@ -4,18 +4,34 @@ import React, { ReactElement, ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { styled } from '@linaria/react'
 import { css } from '@linaria/core'
-import { dark, docFontFamily, docTagBackgroundColor, docTagBackgroundColorDark, docTagColor, docTagColorDark, docTextColor, docTextColorDark, docTextSelectedColor, docTextUnselectedColor, flexColumn, flexRow, light, margin, phone, spacing } from '../styles/theme'
+import { dark, darkHeadingBackgroundColor, docFontFamily, docTagBackgroundColor, docTagBackgroundColorDark, docTagColor, docTagColorDark, docTextColor, docTextColorDark, docTextSelectedColor, docTextUnselectedColor, exceptPhone, flexColumn, flexRow, light, margin, phone, spacing, tintColor } from '../styles/theme'
 import { SearchInput, SearchIcon, SearchIconContainer } from './Search'
 import fetchToc, { TocItem } from '../../shared/lib/fetchToc'
+import BookIcon from './BookIcon'
 
 const DocSidebarContainer = styled.div`
+  ${exceptPhone} {
+    display: block !important;
+  }
   ${flexColumn('flex-start')};
   width: 232px;
   flex-shrink: 0;
   position: sticky;
   top: 0;
   ${phone} {
-    display: none;
+    z-index: 1000;
+    position: fixed;
+    left: -1em;
+    top: 0;
+    padding-top: 96px;
+    width: calc(100% + 2em);
+    padding: 2em;
+    ${light} {
+      background-color: white;
+    }
+    ${dark} {
+      background-color: ${darkHeadingBackgroundColor};
+    }
   }
 `
 
@@ -175,9 +191,8 @@ const renderChildren = (children: TocItem[], path: string) => {
   </DocSidebarItem> : <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} time={child.time} />)
 }
 
-const SidebarWithToc: (props: { item: TocItem, path: string }) => ReactElement = (props) => {
-
-  return <DocSidebarContainer>
+const SidebarWithToc: (props: { item: TocItem, path: string, phoneOpen?: boolean }) => ReactElement = (props) => {
+  return <DocSidebarContainer style={{'display': props.phoneOpen ? "block" : "none"}}>
     <DocSideBarSearchInput />
     <DocSidebarTitle>{props.item.title}</DocSidebarTitle>
     {props.item.children.map((child) => {
@@ -193,9 +208,36 @@ const SidebarWithToc: (props: { item: TocItem, path: string }) => ReactElement =
   </DocSidebarContainer>
 }
 
+const SidebarToggleButton = styled.div`
+  ${exceptPhone} {
+    display: none;
+  }
+  ${phone} {
+    display: flex;
+    position: fixed;
+    top: 30px;
+    right: calc(1em + 40px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+  cursor: pointer;
+  ${light} {
+    background-color: white;
+  }
+  ${dark} {
+    background-color: ${darkHeadingBackgroundColor};
+  }
+  color: ${tintColor};
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+`
+
 export const DocumentationSidebar = (props: DocumentationSidebarProps) => {
 
   const [sidebarToc, setSidebarToc] = useState<undefined | TocItem>()
+  const [sidebarVisible, setSidebarVisible] = useState(false)
 
   useEffect(() => {
     fetchToc(firstPathComponent(props.path)).then((result) => {
@@ -203,7 +245,12 @@ export const DocumentationSidebar = (props: DocumentationSidebarProps) => {
     })
   }, [])
   if (sidebarToc) {
-    return <SidebarWithToc item={sidebarToc} path={props.path} />
+    return [
+      <SidebarToggleButton onClick={() => setSidebarVisible(!sidebarVisible)} key="sidebar-toggle-button">
+        <BookIcon />
+      </SidebarToggleButton>,
+      <SidebarWithToc item={sidebarToc} path={props.path} key="sidebar" phoneOpen={sidebarVisible} />
+    ]
   } else {
     return requiresSidebar(props.path) ? <DocSidebarContainer /> : <></>
   }
