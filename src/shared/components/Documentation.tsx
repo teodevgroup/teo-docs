@@ -805,13 +805,11 @@ export const Aside = (props: AsideProps) => {
   const [phoneAsideVisible, setPhoneAsideVisible] = useState(false)
   useEffect(() => {
     const listener = () => {
-      if (phoneAsideVisible) {
-        setPhoneAsideVisible(false)
-      }
+      setPhoneAsideVisible(false)
     }
-    window.addEventListener('locationchange', listener)
+    window.addEventListener('hashchange', listener)
     return () => {
-      window.removeEventListener("locationchange", listener)
+      window.removeEventListener("hashchange", listener)
     }
   }, [])
   useEffect(() => {
