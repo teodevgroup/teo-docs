@@ -804,6 +804,17 @@ export const Aside = (props: AsideProps) => {
   const [hash, setHash] = useState('')
   const [phoneAsideVisible, setPhoneAsideVisible] = useState(false)
   useEffect(() => {
+    const listener = () => {
+      if (phoneAsideVisible) {
+        setPhoneAsideVisible(false)
+      }
+    }
+    window.addEventListener('locationchange', listener)
+    return () => {
+      window.removeEventListener("locationchange", listener)
+    }
+  }, [])
+  useEffect(() => {
     const headings = Array.prototype.slice.call(document.querySelectorAll('h2[id],h3[id]'))
     const handler = (e: Event) => {
       let cachedHash = ''
