@@ -5,15 +5,25 @@ import { flexColumn, flexRow, tintFontStack, margin, anyDesktop, phoneAndTablet,
 import { HeadingGitHubButton, HeadingLogo, HeadingPatreonButton, HeadingSlackButton, HeadingTwitterButton } from './Heading'
 
 const FooterContainer = styled(Constraint)`
-  border-top: 1px solid rgb(226, 232, 240);
   ${anyDesktop} {
     ${flexRow('flex-start')}
+    ${light} {
+      border-top: 1px solid rgb(226, 232, 240);
+    }
+    ${dark} {
+      border-top: 1px solid rgb(56, 57, 59);
+    }
   }
   ${phoneAndTablet} {
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
-    border-top: 1px solid #f2f2f4;
+    ${light} {
+      border-top: 1px solid #f2f2f4;
+    }
+    ${dark} {
+      border-top: 1px solid rgb(56, 57, 59);
+    }
   }
   font-family: ${tintFontStack};
   justify-content: space-between;
