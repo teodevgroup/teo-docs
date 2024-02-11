@@ -146,9 +146,10 @@ type DocSidebarItemProps = {
   link: string,
   title: string,
   path?: string,
+  setSidebarVisible: (v: boolean) => void,
 }
 
-const DocSidebarItem: (props: DocSidebarItemProps) => ReactElement = ({ link, children, time, title, path }) => {
+const DocSidebarItem: (props: DocSidebarItemProps) => ReactElement = ({ link, children, time, title, path, setSidebarVisible }) => {
   let open: boolean;
   if (children && path) {
     open = path.startsWith(link)
@@ -163,7 +164,10 @@ const DocSidebarItem: (props: DocSidebarItemProps) => ReactElement = ({ link, ch
   }
   return <>
     <DocSidebarItemTitleContainer>
-      <Link href={link} className={docSidebarItemTitleLinkClassName}>
+      <Link href={link} className={docSidebarItemTitleLinkClassName} onClick={(e) => {
+        e.stopPropagation()
+        setSidebarVisible(false)
+      }}>
         <DocSidebarItemTitleLine className={selected ? css`
           color: ${docTextSelectedColor};
           font-weight: 600;
@@ -188,13 +192,13 @@ type DocumentationSidebarProps = {
   path: string
 }
 
-const renderChildren = (children: TocItem[], path: string) => {
-  return children.map((child) => child.children.length ? <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} time={child.time}>
-    {renderChildren(child.children, path)}
-  </DocSidebarItem> : <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} time={child.time} />)
+const renderChildren = (children: TocItem[], path: string, setSidebarVisible: (v: boolean) => void) => {
+  return children.map((child) => child.children.length ? <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} time={child.time} setSidebarVisible={setSidebarVisible}>
+    {renderChildren(child.children, path, setSidebarVisible)}
+  </DocSidebarItem> : <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} time={child.time} setSidebarVisible={setSidebarVisible} />)
 }
 
-const SidebarWithToc: (props: { item: TocItem, path: string, phoneOpen?: boolean }) => ReactElement = (props) => {
+const SidebarWithToc: (props: { item: TocItem, path: string, phoneOpen?: boolean, setSidebarVisible: (v: boolean) => void }) => ReactElement = (props) => {
   return <DocSidebarContainer style={{'display': props.phoneOpen ? "block" : "none"}}>
     <DocSideBarSearchInput />
     <DocSidebarTitle>{props.item.title}</DocSidebarTitle>
@@ -202,10 +206,10 @@ const SidebarWithToc: (props: { item: TocItem, path: string, phoneOpen?: boolean
       if (child.children.length) {
         return [
           <DocSidebarSectionTitle key="__sidebar__title">{child.title}</DocSidebarSectionTitle>,
-          ...renderChildren(child.children, props.path)
+          ...renderChildren(child.children, props.path, props.setSidebarVisible)
         ]
       } else {
-        return <DocSidebarItem key={child.urlPath} path={props.path} link={child.urlPath} title={child.title} time={child.time} />
+        return <DocSidebarItem key={child.urlPath} path={props.path} link={child.urlPath} title={child.title} time={child.time} setSidebarVisible={props.setSidebarVisible} />
       }
     })}
   </DocSidebarContainer>
@@ -241,7 +245,6 @@ export const DocumentationSidebar = (props: DocumentationSidebarProps) => {
 
   const [sidebarToc, setSidebarToc] = useState<undefined | TocItem>()
   const [sidebarVisible, setSidebarVisible] = useState(false)
-
   useEffect(() => {
     fetchToc(firstPathComponent(props.path)).then((result) => {
       setSidebarToc(result)
@@ -252,7 +255,7 @@ export const DocumentationSidebar = (props: DocumentationSidebarProps) => {
       <SidebarToggleButton onClick={() => setSidebarVisible(!sidebarVisible)} key="sidebar-toggle-button">
         <BookIcon />
       </SidebarToggleButton>,
-      <SidebarWithToc item={sidebarToc} path={props.path} key="sidebar" phoneOpen={sidebarVisible} />
+      <SidebarWithToc item={sidebarToc} path={props.path} key="sidebar" phoneOpen={sidebarVisible} setSidebarVisible={setSidebarVisible} />
     ]
   } else {
     return requiresSidebar(props.path) ? <DocSidebarContainer /> : <></>
