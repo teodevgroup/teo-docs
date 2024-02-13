@@ -296,6 +296,173 @@ app.mainNamespace().defineMiddleware("logBeforeAfter", (args) => {
 })
 ```
 
+### `defineHandlerGroup`
+
+Define a handler group on a namespace.
+
+#### Example
+
+##### Define a custom handler group
+
+```ts showLineNumbers
+app.mainNamespace().defineHandlerGroup("MyHandlerGroup", (group: HandlerGroup) => {
+    group.defineHandler("myHandler", async (teo: Teo) => {
+        const user = await teo.user.findFirst({})
+        return Response.teon(await user?.toTeon())
+    })
+})
+```
+
+### `defineModelHandlerGroup`
+
+Define model handlers on a namespace.
+
+#### Example
+
+##### Define a custom model handler group
+
+```ts showLineNumbers
+app.mainNamespace().defineHandlerGroup("User", (group: HandlerGroup) => {
+    group.defineHandler("grabOne", async (teo: Teo) => {
+        const user = await teo.user.findFirst({})
+        return Response.teon(await user?.toTeon())
+    })
+})
+```
+
+## `HandlerGroup`
+
+A handler group is a container for defining custom route handlers.
+
+### `defineHandler`
+
+Define a custom route handler on a handler group.
+
+#### Example
+
+##### Define a custom route handler
+
+```ts showLineNumbers
+app.mainNamespace().defineHandlerGroup("MyHandlerGroup", (group: HandlerGroup) => {
+    group.defineHandler("myHandler", async (teo: Teo) => {
+        const user = await teo.user.findFirst({})
+        return Response.teon(await user?.toTeon())
+    })
+})
+```
+
+## `Request`
+
+A request represents an HTTP request.
+
+### `method`
+
+Retrieve the request's method.
+
+### `path`
+
+Retrieve the request's path.
+
+### `queryString`
+
+Retrieve the request's query string.
+
+### `contentType`
+
+Retrieve the request's content type.
+
+### `headers`
+
+Retrieve the request's headers.
+
+## `ReadOnlyHeaderMap`
+
+The `ReadOnlyHeaderMap` class represents readonly headers on a request.
+
+### `keys`
+
+Retrieve the header map's keys.
+
+### `len`
+
+Retrieve the length of the header map.
+
+### `containsKey`
+
+Whether the headers contain a specific key.
+
+### `get`
+
+Retrieve the value of a header entry by `key`.
+
+## `Response`
+
+The `Response` class represents an HTTP response.
+
+### `empty`
+
+Create an empty response.
+
+#### Example
+
+##### Create an empty response
+
+```ts showLineNumbers
+Response.empty()
+```
+
+### `teon`
+
+Create a Teon response.
+
+### `data`
+
+Create a Teon response which contains a `data` field.
+
+### `dataMeta`
+
+Create a Teon response which contains a `data` field and a `meta` field.
+
+### `error`
+
+Create an error response.
+
+### `setCode`
+
+Set the response code.
+
+### `code`
+
+Retrieve the response code.
+
+### `headers`
+
+Retrieve the response headers.
+
+## `ReadWriteHeaderMap`
+
+The `ReadWriteHeaderMap` class represents readwrite headers on a response.
+
+### `keys`
+
+Retrieve the header map's keys.
+
+### `len`
+
+Retrieve the length of the header map.
+
+### `containsKey`
+
+Whether the headers contain a specific key.
+
+### `get`
+
+Retrieve the value of a header entry by `key`.
+
+### `set`
+
+Set a new value of a header entry at `key`.
+
 ## Entity
 
 API documentation for generated model entities.
