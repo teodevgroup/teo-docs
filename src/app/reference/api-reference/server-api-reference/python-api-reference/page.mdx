@@ -376,7 +376,7 @@ Define a custom route handler on a handler group.
 
 ##### Define a custom route handler
 
-```rust showLineNumbers
+```python showLineNumbers
 def my_group(group: HandlerGroup):
     async def my_handler(_request: Request, _data: MyHandlerInputData, _teo: Teo):
         return Response.data({"myKey": "myValue"})

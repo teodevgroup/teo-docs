@@ -6,18 +6,9 @@ orderHint: 2
 
 # Node.js API reference
 
-> This Node.js API reference is outdated. We're currently working on a new version of 
-> Node.js API.
-
 ## `App`
 
-An app accepts programming callback functions and starts a server.
-
-#### Import
-
-```ts showLineNumbers
-import { App } from '@teocloud/teo'
-```
+The `App` class represents a Teo server app.
 
 ### constructor
 
@@ -28,19 +19,188 @@ Create an app.
 ##### Create an app
 
 ```ts showLineNumbers
-const app = new App();
+const app = new App()
 ```
 
-### `transform`
+### `mainNamespace`
 
-Register a custom transform function.
+Retrieve the main namespace from the app. Namespace is where models, handlers, 
+decorators and pipeline items are defined. See [`Namespace`](#namespace).
 
 #### Examples
 
-##### Register a transform function
+##### Retrieve the main namespace
 
 ```ts showLineNumbers
-app.transform("addOne", (i: number) => i + 1)
+const mainNamespace = app.mainNamespace()
+```
+
+### `setup`
+
+Attach some code to run after the database is connected. The parameter `Teo` 
+is in generated entities.
+
+#### Examples
+
+##### Run custom setup code
+
+```ts showLineNumbers
+app.setup(async (teo: Teo) => {
+    await teo.transaction(async (teo: Teo) => {
+      // perform something within this transaction
+    })
+})
+```
+
+### `program`
+
+Define a custom program to run with Teo CLI. The parameter `Teo` is in 
+generated entities.
+
+#### Examples
+
+##### Define a custom program
+
+```ts showLineNumbers
+app.program("mycode", async (teo: Teo) => {
+    // do something with the data...
+})
+```
+
+### `run`
+
+Start the Teo server app.
+
+#### Example
+
+##### Run an server app
+
+```ts showLineNumbers
+await app.run()
+```
+
+## `Namespace`
+
+Namespace is where things are defined and organized.
+
+### `isMain`
+
+Whether the namespace is the main namespace.
+
+### `isStd`
+
+Whether the namespace is the builtin standard namespace.
+
+### `path`
+
+Get the namespace's path.
+
+#### Example
+
+#### Namespace's path
+
+```ts showLineNumbers
+const namespacePath: string[] = namespace.path()
+```
+
+### `namespace`
+
+Get the namespace's child namespace by `name` or `None`.
+
+### `namespaceOrCreate`
+
+Get the namespace's child namespace by `name`. If not present, create and 
+return.
+
+### `namespaceAtPath`
+
+Get the namespace's child namespace at path.
+
+### `namespaceOrCreateAtPath`
+
+The the namespace's child namespace at path. If not present, create and return.
+
+### `defineModelDecorator`
+
+Define a new model decorator on a namespace.
+
+#### Example
+
+##### Define a custom model decorator
+
+```ts showLineNumbers
+app.mainNamespace().defineModelDecorator("myModelDecorator", (model) => {
+    model.setData("myData", "myValue")
+})
+```
+
+### `defineModelFieldDecorator`
+
+Define a new model field decorator on a namespace.
+
+#### Example
+
+##### Define a custom model field decorator
+
+```python showLineNumbers
+app.mainNamespace().defineModelFieldDecorator("myModelFieldDecorator", (field) => {
+    field.setData("myData", "myValue")
+})
+```
+
+### `defineModelRelationDecorator`
+
+Define a new model relation decorator on a namespace.
+
+#### Example
+
+##### Define a custom model relation decorator
+
+```python showLineNumbers
+app.mainNamespace().defineModelRelationDecorator("myModelRelationDecorator", (relation) => {
+    relation.setData("myData", "myValue")
+})
+```
+
+### `defineModelPropertyDecorator`
+
+Define a new model property decorator on a namespace.
+
+#### Example
+
+##### Define a custom model property decorator
+
+```python showLineNumbers
+app.mainNamespace().defineModelPropertyDecorator("myModelPropertyDecorator", (property) => {
+    property.setData("myData", "myValue")
+})
+```
+
+### `definePipelineItem`
+
+Define a custom pipeline item on a namespace.
+
+#### Example
+
+##### Define a custom pipeline item
+
+```ts showLineNumbers
+app.mainNamespace().definePipelineItem("replaceComWithIo", async (input: string) => {
+    return input.replace(/com$/, 'io')
+})
+```
+
+### `defineTransformPipelineItem`
+
+Define a transformer pipeline item. This is a shortcut to 
+`define_pipeline_item`.
+
+#### Example
+
+##### Define a custom transformer
+
+```ts showLineNumbers
+app.mainNamespace().defineTransformPipelineItem("addOne", (i: number) => i + 1)
 ```
 
 ### `validate`
@@ -81,17 +241,6 @@ app.callback("callback", async (user: User) => {
 
 Register a custom compare function.
 
-### `run`
-
-Start the Teo server app.
-
-#### Example
-
-##### Run an server app
-
-```ts showLineNumbers
-await app.run()
-```
 
 ## Entity
 
