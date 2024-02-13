@@ -474,50 +474,50 @@ Find many objects with params same as `findMany` handler.
 #### Signature
 
 ```ts
-async function findMany(finder?: FindManyArgs): This[]
+async function findMany(finder?: ModelFindManyArgs): Promise<Model[]>
 ```
 
 #### Arguments
 
 | Name   | Required | Type         | Description |
 | :----- | :------- | :----------- | :---------- |
-| finder | No       | FindManyArgs | The finder  |
+| finder | Yes       | ModelFindManyArgs | The finder  |
 
 #### Examples
 
 ##### Find all users
 
 ```ts showLineNumbers
-const users = await User.findMany()
+const users = await teo.user.findMany()
 ```
 
 ##### Find users filtered by `name`
 
 ```ts showLineNumbers
-const users = await User.findMany({
-  where: {
-    name: 'John'
-  }
+const users = await teo.user.findMany({
+    where: {
+      name: 'John'
+    }
 })
 ```
 
 ##### Find users ordered by `createdAt`
 
 ```ts showLineNumbers
-const users = await User.findMany({
-  orderBy: {
-    createdAt: 'desc'
-  }
+const users = await teo.user.findMany({
+    orderBy: {
+      createdAt: 'desc'
+    }
 })
 ```
 
 ##### Find users with posts
 
 ```ts showLineNumbers
-const users = await User.findMany({
-  include: {
-    posts: true
-  }
+const users = await teo.user.findMany({
+    include: {
+      posts: true
+    }
 })
 ```
 
@@ -528,21 +528,21 @@ Find a unique object with params same as `findUnique` handler.
 #### Signature
 
 ```ts
-async function findUnique(finder?: FindUniqueArgs): This?
+async function findUnique(finder: ModelFindUniqueArgs): Promise<Model | null>
 ```
 
 #### Arguments
 
 | Name   | Required | Type   | Description |
 | :----- | :------- | :----- | :---------- |
-| finder | No       | FindUniqueArgs | The finder  |
+| finder | Yes      | ModelFindUniqueArgs | The finder  |
 
 #### Examples
 
 ##### Find a unique user
 
 ```ts showLineNumbers
-const user = await User.findUnique({
+const user = await teo.user.findUnique({
   where: {
     id: 1
   }
@@ -556,21 +556,21 @@ Find an object with params same as `findFirst` handler.
 #### Signature
 
 ```ts
-async function findFirst(finder?: FindManyArgs): This?
+async function findFirst(finder: ModelFindManyArgs): Promise<Model | null>
 ```
 
 #### Arguments
 
 | Name   | Required | Type   | Description |
 | :----- | :------- | :----- | :---------- |
-| finder | No       | FindManyArgs | The finder  |
+| finder | Yes      | ModelFindManyArgs | The finder  |
 
 #### Examples
 
 ##### Find a user
 
 ```ts showLineNumbers
-const user = await User.findFirst({
+const user = await teo.user.findFirst({
   where: {
     age: 20
   }
@@ -584,21 +584,21 @@ Create a new entity.
 #### Signature
 
 ```ts
-static async function create(input?: CreateArgs): This
+static async function create(input: ModelCreateArgs): Promise<Model>
 ```
 
 #### Arguments
 
 | Name  | Required | Type       | Description     |
 | :---- | :------- | :--------- | :-------------- |
-| input | No       | CreateArgs | The create data |
+| input | No       | ModelCreateArgs | The create data |
 
 #### Examples
 
 ##### Create a new Post
 
 ```ts showLineNumbers
-const post = await Post.create({ title: "Post 1" })
+const post = await teo.post.create({ title: "Post 1" })
 ```
 
 ### `isNew`
@@ -627,19 +627,19 @@ const isModified = post.isModified
 
 ### `set`
 
-Set values to an object. `onSet` pipelines are triggered.
+Set values to an object. The `onSet` pipeline is triggered.
 
 #### Signature
 
 ```ts
-async function set(values?: UpdateInput): void
+async function set(values: ModelUpdateInput): void
 ```
 
 #### Arguments
 
 | Name   | Required | Type             | Description  |
 | :----- | :------- | :--------------- | :----------- |
-| values | No       | impl UpdateInput | The set data |
+| values | Yes      | ModelUpdateInput | The set data |
 
 #### Examples
 
@@ -656,14 +656,14 @@ Update values on an object.
 #### Signature
 
 ```ts
-async function update(values?: ScalarUpdateInput): void
+async function update(values?: ModelScalarUpdateInput): void
 ```
 
 #### Arguments
 
 | Name   | Required | Type                   | Description     |
 | :----- | :------- | :--------------------- | :-------------- |
-| values | No       | impl ScalarUpdateInput | The update data |
+| values | No       | ModelScalarUpdateInput | The update data |
 
 #### Examples
 
