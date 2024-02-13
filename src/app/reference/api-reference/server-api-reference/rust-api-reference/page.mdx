@@ -555,7 +555,7 @@ let users = teo.user().find_many(&teon!({
     "where": {
         "name": "John"
     }
-}))
+})).await?;
 ```
 
 ##### Find users ordered by `createdAt`
@@ -565,7 +565,7 @@ let users = teo.user().find_many(&teon!({
     "orderBy": {
         "createdAt": "desc"
     }
-}))
+})).await?;
 ```
 
 ##### Find users with posts
@@ -575,7 +575,7 @@ let users = teo.user().find_many(&teon!({
     "include": {
         "posts": true
     }
-}))
+})).await?
 ```
 
 ### `find_unique`
@@ -585,7 +585,7 @@ Find a unique object with params same as `find_unique` handler.
 #### Signature
 
 ```rust
-pub async fn find_unique(finder: &Value) -> Result<Self>
+pub async fn find_unique(finder: &Value) -> Result<Option<Self>>
 ```
 
 #### Arguments
@@ -613,7 +613,7 @@ Find an object with params same as `find_first` handler.
 #### Signature
 
 ```rust
-pub async fn find_first(finder: &Value) -> Result<Self>
+pub async fn find_first(finder: &Value) -> Result<Option<Self>>
 ```
 
 #### Arguments

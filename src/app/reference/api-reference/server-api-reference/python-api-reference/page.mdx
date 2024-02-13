@@ -472,3 +472,142 @@ Retrieve the response code.
 ### `headers`
 
 Retrieve the response headers.
+
+## `ReadWriteHeaderMap`
+
+The `ReadWriteHeaderMap` class represents readwrite headers on a response.
+
+### `keys`
+
+Retrieve the header map's keys.
+
+### `len`
+
+Retrieve the length of the header map.
+
+### `contains_key`
+
+Whether the headers contain a specific key.
+
+### `get`
+
+Retrieve the value of a header entry by `key`.
+
+### `set`
+
+Set a new value of a header entry at `key`.
+
+## Entity
+
+API documentation for generated model entities.
+
+### `find_many`
+
+Find many objects with params same as `find_many` handler.
+
+#### Signature
+
+```python
+async def find_many(self, query: ModelFindManyArgs, /) -> list[ModelName]:
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | ModelFindManyArgs | The finder  |
+
+#### Examples
+
+##### Find all users
+
+```python showLineNumbers
+users = await teo.user.find_many({})
+```
+
+##### Find users filtered by `name`
+
+```python showLineNumbers
+users = await teo.user.find_many({
+    "where": {
+        "name": "John"
+    }
+})
+```
+
+##### Find users ordered by `createdAt`
+
+```python showLineNumbers
+users = await teo.user.find_many({
+    "orderBy": {
+        "createdAt": "desc"
+    }
+})
+```
+
+##### Find users with posts
+
+```python showLineNumbers
+users = await teo.user().find_many({
+    "include": {
+        "posts": true
+    }
+})
+```
+
+### `find_unique`
+
+Find a unique object with params same as `find_unique` handler.
+
+#### Signature
+
+```python
+async def find_unique(self, query: ModelFindUniqueArgs, /) -> Optional[Model]
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | ModelFindUniqueArgs | The finder  |
+
+#### Examples
+
+##### Find a unique user
+
+```python showLineNumbers
+user = await teo.user.find_unique({
+    "where": {
+        "id": 1
+    }
+})
+```
+
+### `find_first`
+
+Find an object with params same as `find_first` handler.
+
+#### Signature
+
+```python
+async def find_unique(self, query: ModelFindFirstArgs, /) -> Optional[Model]
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | &Value | The finder  |
+
+#### Examples
+
+##### Find a user
+
+```python showLineNumbers
+user = await teo.user.find_first({
+    "where": {
+        "age": 20
+    }
+})
+```
+
