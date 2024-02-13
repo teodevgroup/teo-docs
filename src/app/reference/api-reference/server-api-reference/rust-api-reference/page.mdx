@@ -636,7 +636,7 @@ let user = teo.user().find_first(&teon!({
 
 ### `new`
 
-Create a new entity.
+Create a new model object.
 
 #### Signature
 
@@ -660,7 +660,7 @@ let post = Post::new(teon!({ "title": "Post 1" })).await;
 
 ### `default`
 
-Create an empty entity.
+Create an empty model object.
 
 #### Signature
 
@@ -714,7 +714,7 @@ let is_modified = post.is_modified();
 
 ### `set`
 
-Set values to an object. `onSet` pipelines are triggered.
+Set values to an object. The `onSet` pipeline is triggered.
 
 #### Signature
 

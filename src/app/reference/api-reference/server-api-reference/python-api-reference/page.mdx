@@ -611,3 +611,118 @@ user = await teo.user.find_first({
 })
 ```
 
+### `create`
+
+Create a new model object.
+
+#### Signature
+
+```python
+async def create(self, input: ModelCreateInput, /) -> Model
+```
+
+#### Arguments
+
+| Name   | Required | Type                      | Description     |
+| :----- | :------- | :------------------------ | :-------------- |
+| values | **Yes**  | ModelCreateInput | The create data |
+
+#### Examples
+
+##### Create a new Post
+
+```python showLineNumbers
+post = await Post.create({ "title": "Post 1" })
+```
+
+### `is_new`
+
+Returns true if object is new.
+
+### `is_modified`
+
+Returns true if object is modified.
+
+### `set`
+
+Set values to an object. The `onSet` pipeline is triggered.
+
+#### Signature
+
+```python
+async def set(self, values: ModelUpdateInput) -> None
+```
+
+#### Arguments
+
+| Name   | Required | Type                      | Description  |
+| :----- | :------- | :------------------------ | :----------- |
+| values | **Yes**  | ModelUpdateInput | The set data |
+
+#### Examples
+
+##### Set values to a user
+
+```python showLineNumbers
+await user.set({ "name": "Peter", "age": 15 })
+```
+
+### `update`
+
+Update values on an object.
+
+#### Signature
+
+```python
+async def set(self, values: ModelScalarUpdateInput) -> None
+```
+
+#### Arguments
+
+| Name   | Required | Type                      | Description     |
+| :----- | :------- | :------------------------ | :-------------- |
+| values | **Yes**  | ModelScalarUpdateInput | The update data |
+
+#### Examples
+
+##### Update values on a user
+
+```python showLineNumbers
+await user.update({ "name": "Peter", "age": 15 })
+```
+
+### `save`
+
+Save an object.
+
+#### Signature
+
+```python
+async def save(self) -> None
+```
+
+#### Examples
+
+##### Save a post
+
+```python showLineNumbers
+await post.save()
+```
+
+### `delete`
+
+Delete an object.
+
+#### Signature
+
+```python
+async def delete(self) -> None
+```
+
+#### Examples
+
+##### Delete a post
+
+```python showLineNumbers
+await post.delete()
+```
