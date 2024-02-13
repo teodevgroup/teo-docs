@@ -384,3 +384,91 @@ def my_group(group: HandlerGroup):
 
 app.main_namespace_mut().define_handler_group("MyHandlerGroup", my_group)
 ```
+
+## `Request`
+
+A request represents an HTTP request.
+
+### `method`
+
+Retrieve the request's method.
+
+### `path`
+
+Retrieve the request's path.
+
+### `query_string`
+
+Retrieve the request's query string.
+
+### `content_type`
+
+Retrieve the request's content type.
+
+### `headers`
+
+Retrieve the request's headers.
+
+## `ReadOnlyHeaderMap`
+
+The `ReadOnlyHeaderMap` class represents readonly headers on a request.
+
+### `keys`
+
+Retrieve the header map's keys.
+
+### `len`
+
+Retrieve the length of the header map.
+
+### `contains_key`
+
+Whether the headers contain a specific key.
+
+### `get`
+
+Retrieve the value of a header entry by `key`.
+
+## `Response`
+
+The `Response` class represents an HTTP response.
+
+### `empty`
+
+Create an empty response.
+
+#### Example
+
+##### Create an empty response
+
+```python showLineNumbers
+Response.empty()
+```
+
+### `teon`
+
+Create a Teon response.
+
+### `data`
+
+Create a Teon response which contains a `data` field.
+
+### `data_meta`
+
+Create a Teon response which contains a `data` field and a `meta` field.
+
+### `error`
+
+Create an error response.
+
+### `set_code`
+
+Set the response code.
+
+### `code`
+
+Retrieve the response code.
+
+### `headers`
+
+Retrieve the response headers.
