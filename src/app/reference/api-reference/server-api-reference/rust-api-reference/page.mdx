@@ -361,7 +361,7 @@ Define model handlers on a namespace.
 
 ##### Define a custom model handler group
 
-```rust
+```rust showLineNumbers
 app.main_namespace_mut().define_model_handler_group("User", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
         let captures = ctx.handler_match().captures();

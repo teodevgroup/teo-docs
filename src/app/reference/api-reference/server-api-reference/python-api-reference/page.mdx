@@ -310,3 +310,77 @@ def compare(old: int, new: int, _args: Any, _object: Any, _teo: Teo):
 app.main_namespace().define_compare_pipeline_item("compare", compare)
 ```
 
+### `define_middleware`
+
+Define a middleware on a namespace.
+
+#### Example
+
+##### Define a custom middleware
+
+```python showLineNumbers
+def my_wrap1(args):
+        async def middleware(ctx, next):
+        print("before request")
+        res = await next(ctx)
+        print("after request")
+        return res
+    return middleware
+
+app.main_namespace().define_middleware("logBeforeAfter", my_middleware)
+```
+
+### `define_handler_group`
+
+Define a handler group on a namespace.
+
+#### Example
+
+##### Define a custom handler group
+
+```python showLineNumbers
+def my_group(group: HandlerGroup):
+    async def my_handler(_request: Request, _data: MyHandlerInputData, _teo: Teo):
+        return Response.data({"myKey": "myValue"})
+    group.define_handler("myHandler", my_handler)
+
+app.main_namespace_mut().define_handler_group("MyHandlerGroup", my_group)
+```
+
+### `define_model_handler_group`
+
+Define model handlers on a namespace.
+
+#### Example
+
+##### Define a custom model handler group
+
+```python showLineNumbers
+def my_group(group: HandlerGroup):
+    async def my_handler(_request: Request, _data: MyHandlerInputData, _teo: Teo):
+        return Response.data({"myKey": "myValue"})
+    group.define_handler("myHandler", my_handler)
+
+app.main_namespace_mut().define_handler_group("User", my_group)
+```
+
+## `HandlerGroup`
+
+A handler group is a container for defining custom route handlers.
+
+### `define_handler`
+
+Define a custom route handler on a handler group.
+
+#### Example
+
+##### Define a custom route handler
+
+```rust showLineNumbers
+def my_group(group: HandlerGroup):
+    async def my_handler(_request: Request, _data: MyHandlerInputData, _teo: Teo):
+        return Response.data({"myKey": "myValue"})
+    group.define_handler("myHandler", my_handler)
+
+app.main_namespace_mut().define_handler_group("MyHandlerGroup", my_group)
+```
