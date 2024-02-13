@@ -193,7 +193,7 @@ app.mainNamespace().definePipelineItem("replaceComWithIo", async (input: string)
 ### `defineTransformPipelineItem`
 
 Define a transformer pipeline item. This is a shortcut to 
-`define_pipeline_item`.
+`definePipelineItem`.
 
 #### Example
 
@@ -203,44 +203,98 @@ Define a transformer pipeline item. This is a shortcut to
 app.mainNamespace().defineTransformPipelineItem("addOne", (i: number) => i + 1)
 ```
 
-### `validate`
+### `defineValidatorPipelineItem`
 
 Register a custom validate function.
 
 #### Examples
 
-##### Register a validate function with bool return value
+##### Define a custom validator pipeline item with bool return value
 
 ```ts showLineNumbers
-app.validate("largerThan15", (i: number) => i > 15);
+app.mainNamespace().defineValidatorPipelineItem("myValidator", (input: string) => {
+    return input.endsWith(".")
+})
 ```
 
-##### Register a validator function with string value
+##### Define a custom validator pipeline item with string return value
 
 ```ts showLineNumbers
-app.validate("largerThan15", (i: number) => {
-  if (i <= 15) {
-    return "value should be larger than 15"
-  }
-});
+app.mainNamespace().defineValiatorPipelineItem("myValidator", (input: string) => {
+    if (!input.endsWith(".")) {
+      return "value is invalid"
+    }
+})
 ```
 
-### `callback`
-
-Register a custom callback function.
-
-##### Register a callback function
+##### Define a custom validator pipeline item which errors
 
 ```ts showLineNumbers
-app.callback("callback", async (user: User) => {
-    // do anything
-});
+app.mainNamespace().defineValidatorPipelineItem("myValidator", (input: string) => {
+    if (!input.endsWith(".")) {
+      throw Error("value is invalid")
+    }
+})
 ```
 
-### `compare`
+### `defineCallbackPipelineItem`
 
-Register a custom compare function.
+Define a callback pipeline item. This is a shortcut to `definePipelineItem`.
 
+#### Example
+
+##### Define a custom callback pipeline item
+
+```ts showLineNumbers
+app.mainNamespace().defineCallbackPipelineItem("myCallback", (user: User) => {
+    // do something with the user object...
+})
+```
+
+##### Define a custom callback pipeline item which errors
+
+```ts showLineNumbers
+app.mainNamespace().defineCallbackPipelineItem("myCallback", (user: User) => {
+    if (user.email.endsWith('.com')) {
+        throw Error("value is invalid")
+    }
+    // do something with the user object...
+})
+```
+
+### `defineComparePipelineItem`
+
+Define a compare pipeline item. This is a shortcut to `definePipelineItem`.
+
+#### Example
+
+#### Define a custom compare pipeline item
+
+```ts showLineNumbers
+app.mainNamespace().defineComparePipelineItem("myCallback", (old: string, new: string) => {
+    // do some callback with the old value and the new value
+    // return a validation result if the new value is invalid
+})
+```
+
+### `defineMiddleware`
+
+Define a middleware on a namespace.
+
+#### Example
+
+##### Define a custom middleware
+
+```ts showLineNumbers
+app.mainNamespace().defineMiddleware("logBeforeAfter", (args) => {
+    return async (ctx, next) => {
+        console.log("before request", ctx)
+        const res = await next(ctx)
+        console.log("after request", res)
+        return res
+    }
+})
+```
 
 ## Entity
 

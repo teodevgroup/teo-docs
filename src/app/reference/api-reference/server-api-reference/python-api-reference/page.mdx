@@ -320,7 +320,7 @@ Define a middleware on a namespace.
 
 ```python showLineNumbers
 def my_wrap1(args):
-        async def middleware(ctx, next):
+    async def middleware(ctx, next):
         print("before request")
         res = await next(ctx)
         print("after request")
