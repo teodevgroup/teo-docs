@@ -217,7 +217,7 @@ app.validate("largerThan15", (i: number) => i > 15);
 
 ##### Register a validator function with string value
 
-```rust showLineNumbers
+```ts showLineNumbers
 app.validate("largerThan15", (i: number) => {
   if (i <= 15) {
     return "value should be larger than 15"
@@ -272,7 +272,7 @@ const users = await User.findMany()
 
 ##### Find users filtered by `name`
 
-```rust showLineNumbers
+```ts showLineNumbers
 const users = await User.findMany({
   where: {
     name: 'John'
@@ -434,7 +434,7 @@ Update values on an object.
 
 #### Signature
 
-```rust
+```ts
 async function update(values?: ScalarUpdateInput): void
 ```
 
@@ -448,7 +448,7 @@ async function update(values?: ScalarUpdateInput): void
 
 ##### Update values on a user
 
-```rust showLineNumbers
+```ts showLineNumbers
 await user.update({ "name": "Peter", "age": 15 })
 ```
 
@@ -458,7 +458,7 @@ Save an object.
 
 #### Signature
 
-```rust
+```ts
 async function save(): void
 ```
 
@@ -477,7 +477,7 @@ Delete an object.
 #### Signature
 
 ```ts
-pub async fn delete(&self) -> Result<()>
+async function delete(): void
 ```
 
 #### Examples
