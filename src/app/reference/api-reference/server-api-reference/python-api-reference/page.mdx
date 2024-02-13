@@ -6,4 +6,307 @@ orderHint: 3
 
 # Python API reference
 
-> Python server will be implemented in later 2024.
+## `App`
+
+The `App` class represents a Teo server app.
+
+### `__init__`
+
+Create an app.
+
+#### Examples
+
+##### Create an app
+
+```python showLineNumbers
+app = App()
+```
+
+### `main_namespace`
+
+Retrieve the main namespace from the app. Namespace is where models, handlers, 
+decorators and pipeline items are defined. See [`Namespace`](#namespace).
+
+#### Examples
+
+##### Retrieve the main namespace
+
+```python showLineNumbers
+main_namespace = app.main_namespace()
+```
+
+### `setup`
+
+Attach some code to run after the database is connected. The parameter `Teo` 
+is in generated entities.
+
+#### Examples
+
+##### Run custom setup code
+
+```python showLineNumbers
+async def setup(teo: Teo):
+  users = await teo.user.find_many({"where": {}})
+  print(users)
+
+app.setup(setup)
+```
+
+### `program`
+
+Define a custom program to run with Teo CLI. The parameter `Teo` is in 
+generated entities.
+
+#### Examples
+
+##### Define a custom program
+
+```python showLineNumbers
+async def list_all_users(teo: Teo):
+  users = await teo.user.find_many({"where": {}})
+  print(users)
+
+app.program("list_all_users", setup)
+```
+
+### `run`
+
+Start the Teo server app.
+
+#### Example
+
+##### Run an server app
+
+```python showLineNumbers
+asyncio.run(app.run())
+```
+
+## `Namespace`
+
+Namespace is where things are defined and organized.
+
+### `is_main`
+
+Whether the namespace is the main namespace.
+
+### `is_std`
+
+Whether the namespace is the builtin standard namespace.
+
+### `path`
+
+Get the namespace's path.
+
+#### Example
+
+#### Namespace's path
+
+```python showLineNumbers
+namespace_path: list[str] = namespace.path()
+```
+
+### `namespace`
+
+Get the namespace's child namespace by `name` or `None`.
+
+### `namespace_or_create`
+
+Get the namespace's child namespace by `name`. If not present, create and 
+return.
+
+### `namespace_at_path`
+
+Get the namespace's child namespace at path.
+
+### `namespace_or_create_at_path`
+
+The the namespace's child namespace at path. If not present, create and return.
+
+### `define_model_decorator`
+
+Define a new model decorator on a namespace.
+
+#### Example
+
+##### Define a custom model decorator
+
+```python showLineNumbers
+def my_model_decorator(args: Any, model: Model):
+    model.set_data("customDataKey", "customDataValue")
+
+namespace.define_model_decorator("decoratorName", my_model_decorator)
+```
+
+### `define_model_field_decorator`
+
+Define a new model field decorator on a namespace.
+
+#### Example
+
+##### Define a custom model field decorator
+
+```python showLineNumbers
+def my_model_field_decorator(args: Any, field: Field):
+    field.set_data("customDataKey", "customDataValue")
+
+namespace.define_model_field_decorator("decoratorName", my_model_field_decorator)
+```
+
+### `define_model_relation_decorator`
+
+Define a new model relation decorator on a namespace.
+
+#### Example
+
+##### Define a custom model relation decorator
+
+```python showLineNumbers
+def my_model_relation_decorator(args: Any, relation: Relation):
+    relation.set_data("customDataKey", "customDataValue")
+
+namespace.define_model_relation_decorator("decoratorName", my_model_relation_decorator)
+```
+
+### `define_model_property_decorator`
+
+Define a new model property decorator on a namespace.
+
+#### Example
+
+##### Define a custom model property decorator
+
+```python showLineNumbers
+def my_model_property_decorator(args: Any, property: Property):
+    property.set_data("customDataKey", "customDataValue")
+
+namespace.define_model_property_decorator("decoratorName", my_model_property_decorator)
+```
+
+### `define_pipeline_item`
+
+Define a custom pipeline item on a namespace.
+
+#### Example
+
+##### Define a custom pipeline item
+
+```python showLineNumbers
+def my_pipeline_item(value: str, _args: Any, _object: User, _teo: Teo):
+    return value + "-suffix"
+
+app.main_namespace().define_pipeline_item("myItem", my_pipeline_item)
+```
+
+### `define_transform_pipeline_item`
+
+Define a transformer pipeline item. This is a shortcut to 
+`define_pipeline_item`.
+
+#### Example
+
+##### Define a custom transformer
+
+```python showLineNumbers
+def my_append_suffix(value: str, _args: Any, _object: User, _teo: Teo):
+    return value + "-suffix"
+
+app.main_namespace().define_transform_pipeline_item("appendSuffix", my_append_suffix)
+```
+
+##### Define a custom transformer which errors
+
+```python showLineNumbers
+def my_append_suffix(value: str, _args: Any, _object: User, _teo: Teo):
+    if value == "":
+        raise Exception("value should not be empty")
+    return value + "-suffix"
+
+app.main_namespace().define_transform_pipeline_item("appendSuffix", my_append_suffix)
+```
+
+### `define_validator_pipeline_item`
+
+Define a validator pipeline item. This is a shortcut to `define_pipeline_item`.
+
+#### Example
+
+##### Define a custom validator pipeline item with bool return value
+
+```python showLineNumbers
+def number_is_even(value: int, _args: Any, _object: Any, _teo: Teo):
+    return n % 2 == 0
+
+app.main_namespace().define_validator_pipeline_item("numberIsEven", number_is_even)
+```
+
+##### Define a custom validator pipeline item with string return value
+
+```python showLineNumbers
+def number_is_even(value: int, _args: Any, _object: Any, _teo: Teo):
+    if n % 2 == 0:
+        return None
+    else:
+        return "value is not even"
+
+app.main_namespace().define_validator_pipeline_item("numberIsEven", number_is_even)
+```
+
+##### Define a custom validator pipeline item which errors
+
+```python showLineNumbers
+def number_is_even(value: int, _args: Any, _object: Any, _teo: Teo):
+    if n < 0:
+        raise Exception("value is negative")
+    elif n % 2 == 0:
+        return None
+    else:
+        return "value is not even"
+
+app.main_namespace().define_validator_pipeline_item("numberIsEven", number_is_even)
+```
+
+### `define_callback_pipeline_item`
+
+Define a callback pipeline item. This is a shortcut to `define_pipeline_item`.
+
+#### Example
+
+##### Define a custom callback pipeline item
+
+```python showLineNumbers
+def my_custom_callback(_args: Any, _object: Any, _teo: Teo):
+    # do something with the value
+    return None
+
+app.main_namespace().define_callback_pipeline_item("myCustomCallback", my_custom_callback)
+```
+
+##### Define a custom callback pipeline item which errors
+
+```python showLineNumbers
+def my_custom_callback(_args: Any, object: User, _teo: Teo):
+    if object.email.endswith("somesuffix"):
+        raise Exception("invalid operation")
+    return None
+
+app.main_namespace().define_callback_pipeline_item("myCustomCallback", my_custom_callback)
+```
+
+### `define_compare_pipeline_item`
+
+Define a compare pipeline item. This is a shortcut to `define_pipeline_item`.
+
+#### Example
+
+#### Define a custom compare pipeline item
+
+```python showLineNumbers
+def compare(old: int, new: int, _args: Any, _object: Any, _teo: Teo):
+    # do some callback with the old value and the new value
+    # return a validation result if the new value is invalid
+    valid = true | false
+    return valid
+
+app.main_namespace().define_compare_pipeline_item("compare", compare)
+```
+

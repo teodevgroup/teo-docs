@@ -43,7 +43,7 @@ Retrieve the main namespace from the app. This is the mutable version.
 
 ##### Retrieve the mutable main namespace
 
-```rust
+```rust showLineNumbers
 let main_namespace_mut = app.main_namespace_mut();
 ```
 
@@ -55,7 +55,7 @@ Attach some code to run after the database is connected.
 
 ##### Run custom setup code
 
-```rust
+```rust showLineNumbers
 app.setup(|teo: Teo| async move {
     // list all users
     println!("{:?}", teo.user().find_many().await?);
@@ -71,7 +71,7 @@ Define a custom program to run with Teo CLI.
 
 ##### Define a custom program
 
-```rust
+```rust showLineNumbers
 app.program("listAllUsers", |teo: Teo| async move {
     // list all users
     println!("{:?}", teo.user().find_many().await?);
