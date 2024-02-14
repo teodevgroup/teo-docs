@@ -19,7 +19,7 @@ const DocSidebarContainer = styled.div`
   position: sticky;
   top: 0;
   ${phone} {
-    z-index: 1000;
+    z-index: 3000;
     position: fixed;
     left: -1em;
     top: 0;
@@ -215,7 +215,11 @@ const SidebarWithToc: (props: { item: TocItem, path: string, phoneOpen?: boolean
   </DocSidebarContainer>
 }
 
-const SidebarToggleButton = styled.div`
+interface isSidebarVisible {
+  sidebarVisible: boolean;
+}
+
+const SidebarToggleButton = styled.div<isSidebarVisible>`
   ${exceptPhone} {
     display: none;
   }
@@ -224,7 +228,7 @@ const SidebarToggleButton = styled.div`
     position: fixed;
     top: 29px;
     right: calc(1em + 96px);
-    z-index: 2000;
+    z-index: ${props => (props.sidebarVisible ? '4000' : '2000')};
     align-items: center;
     justify-content: center;
   }
@@ -252,7 +256,7 @@ export const DocumentationSidebar = (props: DocumentationSidebarProps) => {
   }, [])
   if (sidebarToc) {
     return [
-      <SidebarToggleButton onClick={() => setSidebarVisible(!sidebarVisible)} key="sidebar-toggle-button">
+      <SidebarToggleButton onClick={() => setSidebarVisible(!sidebarVisible)} key="sidebar-toggle-button" sidebarVisible={sidebarVisible}>
         <BookIcon />
       </SidebarToggleButton>,
       <SidebarWithToc item={sidebarToc} path={props.path} key="sidebar" phoneOpen={sidebarVisible} setSidebarVisible={setSidebarVisible} />
