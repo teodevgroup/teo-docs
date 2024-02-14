@@ -13,11 +13,11 @@ import SlackIcon from './SlackIcon'
 import XIcon from './XIcon'
 import PatreonIcon from './PatreonIcon'
 
-interface isShowMenu {
+interface HeadingMenuButtonProps {
   showMenu: boolean;
 }
 
-const HeadingMenuButton = styled.button<isShowMenu>`
+const HeadingMenuButton = styled.button<HeadingMenuButtonProps>`
   color: ${tintColor};
   border: none;
   user-select: none;
@@ -152,7 +152,7 @@ const HeadingNavItems = styled.ul`
     ${flexColumn('center')}
     align-items: flex-start;
     position: absolute;
-    top: 8%;
+    top: 92px;
   }
   ${exceptPhone} {
     ${flexRow('stretch')}

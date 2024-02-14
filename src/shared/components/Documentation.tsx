@@ -774,11 +774,11 @@ export const Pre = (props: PreProps) => {
   </pre>
 }
 
-interface isPhoneAsideVisible {
+interface MobileAsideToggleButtonProps {
   phoneAsideVisible: boolean;
 }
 
-const MobileAsideToggleButton = styled.div<isPhoneAsideVisible>`
+const MobileAsideToggleButton = styled.div<MobileAsideToggleButtonProps>`
   ${exceptPhone} {
     display: none;
   }

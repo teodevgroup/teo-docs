@@ -215,11 +215,11 @@ const SidebarWithToc: (props: { item: TocItem, path: string, phoneOpen?: boolean
   </DocSidebarContainer>
 }
 
-interface isSidebarVisible {
+interface SidebarToggleButtonProps {
   sidebarVisible: boolean;
 }
 
-const SidebarToggleButton = styled.div<isSidebarVisible>`
+const SidebarToggleButton = styled.div<SidebarToggleButtonProps>`
   ${exceptPhone} {
     display: none;
   }
