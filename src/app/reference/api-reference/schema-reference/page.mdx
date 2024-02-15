@@ -1125,11 +1125,11 @@ model MyHiddenModel {
 ## `model` fields
 
 [Fields](/concepts/components/teo-schema/field)
-<span className="concept">CONCEPT</span> are content of models.
+<span className="concept">CONCEPT</span> are contents of a model.
 
 ### Remarks
 
-* A model field contains a field name, a field type, and optionally a list of
+* A model field contains a field name, a field type, and optionaly a list of
 field decorators.
 * Model fields are divided into three categories:
 [fields](/concepts/components/teo-schema/field) <span className="concept">CONCEPT</span>,
@@ -1197,7 +1197,8 @@ Int represents integer number values.
 
 #### Remarks
 
-* By default, `Int` is 32 bits. `Int32` and `Int64` is available for optimization.
+* By default, `Int` is 32 bits. `Int32` and `Int64` are available for 
+optimization.
 
 #### Default type mappings
 
@@ -1214,7 +1215,7 @@ Float represents floating point number values.
 
 #### Remarks
 
-* By default, `Float` is 64 bits. `Float32` and `Float64` is available for
+* By default, `Float` is 64 bits. `Float32` and `Float64` are available for
 optimization.
 
 #### Default type mappings
@@ -1225,6 +1226,23 @@ optimization.
 | PostgreSQL | double precision |
 | SQLite     | REAL             |
 | MongoDB    | Double           |
+
+### `Decimal`
+
+Decimal represents a decimal number which is accurate and safe for math 
+calculating.
+
+#### Remarks
+
+* MongoDB doesn't support `Decimal` type.
+
+#### Default type mappings
+
+| Connector  | Default mapping |
+| :--------- | :-------------- |
+| MySQL      | decimal(32,16)  |
+| PostgreSQL | Decimal(65,30)  |
+| SQLite     | DECIMAL         |
 
 ### `Date`
 
@@ -1251,6 +1269,20 @@ DateTime represents date time values.
 | PostgreSQL | timestamp(3)    |
 | SQLite     | String          |
 | MongoDB    | Date            |
+
+### `ObjectId`
+
+ObjectId represents a Bson `ObjectId` type.
+
+#### Remarks
+
+* This is MongoDB only data type.
+
+#### Default type mappings
+
+| Connector | Default mapping |
+| :-------- | :-------------- |
+| MongoDB   | ObjectId        |
 
 ## Field decorators
 
