@@ -733,6 +733,104 @@ let user = teo.user().find_first(&teon!({
 })).await?;
 ```
 
+### `count_objects`
+
+Count objects in the model.
+
+#### Signature
+
+```rust
+pub async fn count_objects(&self, query: impl Borrow<Value>) -> Result<usize>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | &Value | The finder  |
+
+#### Examples
+
+##### Count objects
+
+```rust showLineNumbers
+let number_of_objects = teo.user().count_objects(teon!({})).await?;
+```
+
+### `count_fields`
+
+Count fields in the model.
+
+#### Signature
+
+```rust
+pub async fn count_fields(&self, query: impl Borrow<Value>) -> Result<ModelCountAggregateResult>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | &Value | The finder  |
+
+#### Examples
+
+##### Count objects
+
+```rust showLineNumbers
+let count_result = teo.user().count_fields(teon!({})).await?;
+```
+
+### `aggregate`
+
+Aggregate on the model.
+
+#### Signature
+
+```rust
+pub async fn aggregate(&self, query: impl Borrow<Value>) -> Result<ModelAggregateResult>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | &Value | The finder  |
+
+#### Examples
+
+##### Aggregate on the model
+
+```rust showLineNumbers
+let aggregate_result = teo.user().aggregate(teon!({})).await?;
+```
+
+### `group_by`
+
+Group by on the model.
+
+#### Signature
+
+```ts
+pub async fn group_by(&self, query: impl Borrow<Value>) -> Result<Vec<ModelAggregateResult>>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| finder | **Yes**  | &Value | The finder  |
+
+#### Example
+
+##### Group by on the model
+
+```rust showLineNumbers
+let group_by_result = teo.record().group_by(teon!({
+    "by": "name"
+})).await?;
+```
+
 ### `new`
 
 Create a new model object.
