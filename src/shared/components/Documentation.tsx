@@ -313,6 +313,9 @@ export const DocumentationContent = styled.div`
           ${dark} {
             border-top: 1px solid #3e464f;
           }
+          ${phone} {
+            width: 100vw; // fix table cell width for phone
+          }
           padding: 12px;
           vertical-align: top;
         }
