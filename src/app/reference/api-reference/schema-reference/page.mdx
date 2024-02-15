@@ -731,7 +731,7 @@ This pipeline callback is triggered before an object is being saved.
 #### Signature
 
 ```teo
-@beforeSave(Pipeline<Null, Void>)
+declare unique model decorator beforeSave(pipeline?: Pipeline<Self, Ignored>)
 ```
 
 #### Arguments
@@ -763,7 +763,7 @@ This pipeline callback is triggered after an object is being saved.
 #### Signature
 
 ```teo
-@afterSave(Pipeline<Null, Void>)
+declare unique model decorator afterSave(pipeline?: Pipeline<Null, Ignored>)
 ```
 
 #### Arguments
@@ -795,7 +795,7 @@ This pipeline callback is triggered before an object is being deleted.
 #### Signature
 
 ```teo
-@beforeDelete(Pipeline<Null, Void>)
+declare unique model decorator beforeDelete(pipeline?: Pipeline<Null, Ignored>)
 ```
 
 #### Arguments
@@ -827,7 +827,7 @@ This pipeline callback is triggered after an object is being deleted.
 #### Signature
 
 ```teo
-@afterDelete(Pipeline<Null, Void>)
+declare unique model decorator afterDelete(pipeline?: Pipeline<Null, Ignored>)
 ```
 
 #### Arguments
@@ -852,7 +852,77 @@ model AuthCode {
 }
 ```
 
-### `@disable`
+### `@canRead`
+
+> This api needs revamp. Use this api when we updated the identity system.
+
+This pipeline performs a permission check whether this current identity can
+read this object.
+
+#### Signature
+
+```teo
+declare unique model decorator canRead(pipeline?: Pipeline<Null, Ignored>)
+```
+
+#### Arguments
+
+| Position | Required | Type                                   | Description                              |
+| :------- | :------- | :------------------------------------- | :--------------------------------------- |
+| 0        | **Yes**  | Pipeline<>{"<"}</>Null, Void<>{">"}</> | The pipeline which is used for checking. |
+
+#### Examples
+
+##### Perform a read permission check
+
+```teo showLineNumbers
+@canRead($self.get(.id).eq(1))
+model AuthCode {
+  @id
+  id: Int
+  @unique
+  email: String
+  @internal @onSave($randomDigits(4))
+  code: String
+}
+```
+
+### `@canMutate`
+
+> This api needs revamp. Use this api when we updated the identity system.
+
+This pipeline performs a permission check whether this current identity can
+mutate this object.
+
+#### Signature
+
+```teo
+declare unique model decorator canMutate(pipeline?: Pipeline<Null, Ignored>)
+```
+
+#### Arguments
+
+| Position | Required | Type                                   | Description                              |
+| :------- | :------- | :------------------------------------- | :--------------------------------------- |
+| 0        | **Yes**  | Pipeline<>{"<"}</>Null, Void<>{">"}</> | The pipeline which is used for checking. |
+
+#### Examples
+
+##### Perform a mutating permission check
+
+```teo showLineNumbers
+@canMutate($self.get(.id).eq(1))
+model AuthCode {
+  @id
+  id: Int
+  @unique
+  email: String
+  @internal @onSave($randomDigits(4))
+  code: String
+}
+```
+
+{/* ### `@disable`
 
 Disable actions on the model.
 
@@ -901,9 +971,9 @@ model User {
   id: Int
   name: String
 }
-```
+``` */}
 
-### `@action`
+{/* ### `@action`
 
 Perform action transformers and redirections.
 
@@ -929,6 +999,64 @@ model Number {
   @id
   id: Int
   value: Int
+}
+``` */}
+
+### `@generateClient`
+
+Whether generate this model into query clients. The default is `true`.
+
+#### Signature
+
+```teo
+declare unique model decorator generateClient(generate?: Bool)
+```
+
+#### Arguments
+
+| Name     | Required | Type | Description                                     |
+| :------- | :------- | :--- | :---------------------------------------------- |
+| generate | **Yes**  | Bool | Whether generate this model into query clients. |
+
+#### Examples
+
+##### Do not generate a model into query clients
+
+```teo showLineNumbers
+@generateClient(false)
+model MyHiddenModel {
+  @id
+  id: Int
+  value: String
+}
+```
+
+### `@generateEntity`
+
+Whether generate this model into model entities. The default is `true`.
+
+#### Signature
+
+```teo
+declare unique model decorator generateEntity(generate?: Bool)
+```
+
+#### Arguments
+
+| Name     | Required | Type | Description                                      |
+| :------- | :------- | :--- | :----------------------------------------------- |
+| generate | **Yes**  | Bool | Whether generate this model into model entities. |
+
+#### Examples
+
+##### Do not generate a model into model entities
+
+```teo showLineNumbers
+@generateEntity(false)
+model MyHiddenModel {
+  @id
+  id: Int
+  value: String
 }
 ```
 
