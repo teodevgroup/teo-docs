@@ -296,6 +296,21 @@ app.mainNamespace().defineMiddleware("logBeforeAfter", (args) => {
 })
 ```
 
+### `defineHandler`
+
+Define a custom route handler on a namespace.
+
+#### Example
+
+##### Define a custom route handler
+
+```ts showLineNumbers
+app.mainNamespace().defineHandler("myHandler", async (teo: Teo) => {
+    const user = await teo.user.findFirst({})
+    return Response.teon(await user?.toTeon())
+})
+```
+
 ### `defineHandlerGroup`
 
 Define a handler group on a namespace.

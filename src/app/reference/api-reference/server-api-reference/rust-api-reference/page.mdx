@@ -336,6 +336,21 @@ app.main_namespace_mut().define_middleware("timing", |arguments: Arguments| {
 });
 ```
 
+### `define_handler`
+
+Define a custom route handler on a namespace.
+
+#### Example
+
+##### Define a custom route handler
+
+```rust showLineNumbers
+app.main_namespace_mut().define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
+    let captures = ctx.handler_match().captures();
+    Ok::<Response, path::Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+});
+```
+
 ### `define_handler_group`
 
 Define a handler group on a namespace.

@@ -330,6 +330,21 @@ def my_wrap1(args):
 app.main_namespace().define_middleware("logBeforeAfter", my_middleware)
 ```
 
+### `define_handler`
+
+Define a custom route handler on a namespace.
+
+#### Example
+
+##### Define a custom route handler
+
+```python showLineNumbers
+async def my_handler(_request: Request, _data: MyHandlerInputData, _teo: Teo):
+    return Response.data({"myKey": "myValue"})
+
+app.main_namespace().define_handler("myHandler", my_handler)
+```
+
 ### `define_handler_group`
 
 Define a handler group on a namespace.
@@ -344,7 +359,7 @@ def my_group(group: HandlerGroup):
         return Response.data({"myKey": "myValue"})
     group.define_handler("myHandler", my_handler)
 
-app.main_namespace_mut().define_handler_group("MyHandlerGroup", my_group)
+app.main_namespace().define_handler_group("MyHandlerGroup", my_group)
 ```
 
 ### `define_model_handler_group`
@@ -361,7 +376,7 @@ def my_group(group: HandlerGroup):
         return Response.data({"myKey": "myValue"})
     group.define_handler("myHandler", my_handler)
 
-app.main_namespace_mut().define_handler_group("User", my_group)
+app.main_namespace().define_handler_group("User", my_group)
 ```
 
 ## `HandlerGroup`
@@ -382,7 +397,7 @@ def my_group(group: HandlerGroup):
         return Response.data({"myKey": "myValue"})
     group.define_handler("myHandler", my_handler)
 
-app.main_namespace_mut().define_handler_group("MyHandlerGroup", my_group)
+app.main_namespace().define_handler_group("MyHandlerGroup", my_group)
 ```
 
 ## `Request`
