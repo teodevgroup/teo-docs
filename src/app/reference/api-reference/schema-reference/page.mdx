@@ -8,9 +8,9 @@ orderHint: 1
 
 ## `connector`
 
-Defines a database [connector](/concepts/components/teo-server/connector)
+Defines a database [connector](/concepts/components/teo-schema/connector)
 <span className="concept">CONCEPT</span> in the 
-[namespace](/concepts/components/teo-server/namespace)
+[namespace](/concepts/components/teo-schema/namespace)
 <span className="concept">CONCEPT</span>. Each namespace has 1 connector at 
 most. The connector of current namespace is inherited from the  parent 
 namespace. Teo supports multiple databases. Each connector represents a pool of 
@@ -167,9 +167,11 @@ connector {
 
 ## `server`
 
-Defines a [server](/concepts/components/teo-server/server)
-<span className="concept">CONCEPT</span> in the Teo schema. This config block is
-required.
+Defines a [server](/concepts/components/teo-schema/server)
+<span className="concept">CONCEPT</span> in the Teo schema. This config block 
+is required. You must define this in the main
+[namespace](/concepts/components/teo-schema/namespace)
+<span className="concept">CONCEPT</span>.
 
 ### Fields
 
@@ -178,13 +180,12 @@ A `server` config block accepts the following fields:
 | Name         | Required | Type          | Description                                           |
 | :----------- | :------- | :------------ | :---------------------------------------------------- |
 | `bind`       | **Yes**  | (String, Int) | Describes which IP and port this Teo server binds to. |
-| `jwtSecret`  | No       | String?       | The JWT token used for user authentication.           |
-| `pathPrefix` | No       | String?       | The path prefix to prepend to the request URL.        |
+| `pathPrefix` | No       | String?       | The path prefix to be prepended to the request URL.   |
 
 ### Remarks
 
 * A `server` config block is required for Teo server to start.
-* You can only have one `server` config block in a schema.
+* You must have one `server` config block in the main namespace.
 * You can give `server` a name just like any other config blocks - for example,
 `server http` or `server myServer`.
 
@@ -192,36 +193,12 @@ A `server` config block accepts the following fields:
 
 #### Listening on port X
 
-This example introduces how to write `server` config block in order to run a
-Teo server. In this example, this server is running on port 5100.
+This example introduces how to write a `server` config block in order to run a
+Teo server. In this example, this server is listening on port 5100.
 
 ```teo showLineNumbers
-server http {
-  bind ("0.0.0.0", 5100)
-}
-```
-
-#### Specify a JWT secret
-
-If your server supports user sessions and permissions, `jwtSecret` should not
-be omitted. In this example, its value is set to a long random string.
-
-```teo showLineNumbers
-server http {
-  bind      ("0.0.0.0", 5100)
-  jwtSecret "1234567890_+~qwertyuiopasdfghjklzxcvbnm<>?"
-}
-```
-
-#### Specify a JWT secret with environment variable
-
-You can use an environment variable to secure your server secrets from being
-read by others.
-
-```teo showLineNumbers
-server http {
-  bind      ("0.0.0.0", 5100)
-  jwtSecret ENV["JWT_SECRET"]
+server {
+  bind: ("0.0.0.0", 5100)
 }
 ```
 
@@ -541,7 +518,7 @@ entity rust {
 
 ## `model`
 
-Defines a Teo [model](/concepts/components/teo-server/model)
+Defines a Teo [model](/concepts/components/teo-schema/model)
 <span className="concept">CONCEPT</span>.
 
 ### Remarks
@@ -728,7 +705,7 @@ model Person {
 
 ### `@virtual`
 
-Defines a [virtual model](/concepts/components/teo-server/model#virtual-model)
+Defines a [virtual model](/concepts/components/teo-schema/model#virtual-model)
 <span className="concept">CONCEPT</span>.
 
 #### Remarks
@@ -763,7 +740,7 @@ model User {
 
 ### `@identity`
 
-Defines an [identity model](/concepts/components/teo-server/model#identity-model)
+Defines an [identity model](/concepts/components/teo-schema/model#identity-model)
 <span className="concept">CONCEPT</span>.
 
 #### Remarks
@@ -1006,7 +983,7 @@ model Number {
 
 ## `model` fields
 
-[Fields](/concepts/components/teo-server/field)
+[Fields](/concepts/components/teo-schema/field)
 <span className="concept">CONCEPT</span> are content of models.
 
 ### Remarks
@@ -1014,9 +991,9 @@ model Number {
 * A model field contains a field name, a field type, and optionally a list of
 field decorators.
 * Model fields are divided into three categories:
-[fields](/concepts/components/teo-server/field) <span className="concept">CONCEPT</span>,
-[relations](/concepts/components/teo-server/relation) <span className="concept">CONCEPT</span>, and
-[properties](/concepts/components/teo-server/property) <span className="concept">CONCEPT</span> in nature.
+[fields](/concepts/components/teo-schema/field) <span className="concept">CONCEPT</span>,
+[relations](/concepts/components/teo-schema/relation) <span className="concept">CONCEPT</span>, and
+[properties](/concepts/components/teo-schema/property) <span className="concept">CONCEPT</span> in nature.
 
 #### Naming convensions
 
@@ -2201,7 +2178,7 @@ model User {
 
 ## `enum`
 
-Defines an [enum](/concepts/components/teo-server/enum)
+Defines an [enum](/concepts/components/teo-schema/enum)
 <span className="concept">CONCEPT</span>.
 
 ### Remarks
