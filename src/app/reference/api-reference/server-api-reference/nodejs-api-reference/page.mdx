@@ -426,9 +426,33 @@ Create an empty response.
 Response.empty()
 ```
 
+### `string`
+
+Create a string response.
+
+#### Example
+
+##### Create a string response
+
+```ts showLineNumbers
+Response.string("Hello, world!", "text/plain")
+```
+
 ### `teon`
 
 Create a Teon response.
+
+### `html`
+
+Create an HTML response.
+
+#### Example
+
+##### Create an HTML response
+
+```ts showLineNumbers
+Response.html("<html><body>Hello, world!</body></html>")
+```
 
 ### `data`
 
@@ -442,6 +466,30 @@ Create a Teon response which contains a `data` field and a `meta` field.
 
 Create an error response.
 
+### `file`
+
+Create a file response.
+
+#### Example
+
+##### Create a file response
+
+```ts showLineNumbers
+Response.file("a.txt")
+```
+
+### `redirect`
+
+Create a redirect response.
+
+#### Example
+
+##### Create a redirect response
+
+```ts showLineNumbers
+Response.redirect("https://example.com")
+```
+
 ### `setCode`
 
 Set the response code.
@@ -453,6 +501,37 @@ Retrieve the response code.
 ### `headers`
 
 Retrieve the response headers.
+
+### `isEmpty`
+
+Whether the response body is empty.
+
+### `isFile`
+
+Whether the response body is a file.
+
+### `getFile`
+
+Retrieve the response file path. If the response' type is not file, `undefined` 
+is returned.
+
+### `isText`
+
+Whether the response body is text.
+
+### `getText`
+
+Retrieve the response text. If the response' type is not text, `undefined` is 
+returned.
+
+### `isTeon`
+
+Whether the response body is a teon object.
+
+### `getTeon`
+
+Retrieve the response Teon value. If the response' type is not Teon, 
+`undefined` is returned.
 
 ## `ReadWriteHeaderMap`
 

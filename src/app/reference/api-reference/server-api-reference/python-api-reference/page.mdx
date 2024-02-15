@@ -460,9 +460,33 @@ Create an empty response.
 Response.empty()
 ```
 
+### `string`
+
+Create a string response.
+
+#### Example
+
+##### Create a simple text response
+
+```python showLineNumbers
+Response.string("Hello, world!", "text/plain")
+```
+
 ### `teon`
 
 Create a Teon response.
+
+### `html`
+
+Create an HTML response.
+
+#### Example
+
+##### Create an HTML response
+
+```python showLineNumbers
+Response.html("<html><body>Hello, world!</body></html>")
+```
 
 ### `data`
 
@@ -476,6 +500,30 @@ Create a Teon response which contains a `data` field and a `meta` field.
 
 Create an error response.
 
+### `file`
+
+Create a file response.
+
+#### Example
+
+##### Create a file response
+
+```python showLineNumbers
+Response.file("a.txt")
+```
+
+### `redirect`
+
+Create a redirect response.
+
+#### Example
+
+##### Create a redirect response
+
+```python showLineNumbers
+Response.redirect("https://example.com")
+```
+
 ### `set_code`
 
 Set the response code.
@@ -487,6 +535,36 @@ Retrieve the response code.
 ### `headers`
 
 Retrieve the response headers.
+
+### `is_empty`
+
+Whether the response body is empty.
+
+### `is_file`
+
+Whether the response body is a file.
+
+### `get_file`
+
+Retrieve the response file path. If the response' type is not file, None is 
+returned.
+
+### `is_text`
+
+Whether the response body is text.
+
+### `get_text`
+
+Retrieve the response text. If the response' type is not text, None is returned.
+
+### `is_teon`
+
+Whether the response body is a teon object.
+
+### `get_teon`
+
+Retrieve the response Teon value. If the response' type is not Teon, None is 
+returned.
 
 ## `ReadWriteHeaderMap`
 

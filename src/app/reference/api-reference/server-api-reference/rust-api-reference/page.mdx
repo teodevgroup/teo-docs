@@ -466,9 +466,33 @@ Create an empty response.
 Response::empty()
 ```
 
+### `string`
+
+Create a string response.
+
+#### Example
+
+##### Create a simple text response
+
+```rust showLineNumbers
+Response::string("Hello, world!", "text/plain")
+```
+
 ### `teon`
 
 Create a Teon response.
+
+### `html`
+
+Create an HTML response.
+
+#### Example
+
+##### Create an HTML response
+
+```rust showLineNumbers
+Response::html("<html><body>Hello, world!</body></html>")
+```
 
 ### `data`
 
@@ -482,6 +506,30 @@ Create a Teon response which contains a `data` field and a `meta` field.
 
 Create an error response.
 
+### `file`
+
+Create a file response.
+
+#### Example
+
+##### Create a file response
+
+```rust showLineNumbers
+Response::file(PathBuf::from("a.txt"))
+```
+
+### `redirect`
+
+Create a redirect response.
+
+#### Example
+
+##### Create a redirect response
+
+```rust showLineNumbers
+Response::redirect("https://example.com")
+```
+
 ### `set_code`
 
 Set the response code.
@@ -493,6 +541,10 @@ Retrieve the response code.
 ### `headers`
 
 Retrieve the response headers.
+
+### `body`
+
+Retrieve the response body.
 
 ## `readwrite::HeaderMap`
 
@@ -517,6 +569,38 @@ Retrieve the value of a header entry by `key`.
 ### `set`
 
 Set a new value of a header entry at `key`.
+
+## `Body`
+
+Represents a response body.
+
+### `is_empty`
+
+Whether this response body is empty.
+
+### `is_file`
+
+Whether this response body is a file.
+
+### `as_file`
+
+Retrieve the file response path.
+
+### `is_text`
+
+Whether this response body is text.
+
+### `as_text`
+
+Retrieve the text response string.
+
+### `is_teon`
+
+Whether this response body is teon.
+
+### `as_teon`
+
+Retrieve the response teon value.
 
 ## `teon!`
 
