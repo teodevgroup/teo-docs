@@ -132,7 +132,7 @@ export const DocumentationContent = styled.div`
       display: block !important;
     }
     ${phone} {
-      z-index: 1000;
+      z-index: 3000;
       position: fixed;
       left: -1em;
       top: 0;
@@ -774,7 +774,11 @@ export const Pre = (props: PreProps) => {
   </pre>
 }
 
-const MobileAsideToggleButton = styled.div`
+interface MobileAsideToggleButtonProps {
+  phoneAsideVisible: boolean;
+}
+
+const MobileAsideToggleButton = styled.div<MobileAsideToggleButtonProps>`
   ${exceptPhone} {
     display: none;
   }
@@ -783,7 +787,7 @@ const MobileAsideToggleButton = styled.div`
     position: fixed;
     top: 29px;
     right: calc(1em + 40px);
-    z-index: 2000;
+    z-index: ${props => (props.phoneAsideVisible ? '4000' : '2000')};
     align-items: center;
     justify-content: center;
   }
@@ -851,7 +855,7 @@ export const Aside = (props: AsideProps) => {
     }
   })
   return <AsideContentContainer>
-    <MobileAsideToggleButton onClick={() => setPhoneAsideVisible(!phoneAsideVisible)}>
+    <MobileAsideToggleButton onClick={() => setPhoneAsideVisible(!phoneAsideVisible)} phoneAsideVisible={phoneAsideVisible}>
       <FileIcon />
     </MobileAsideToggleButton>
     <aside style={{ display: phoneAsideVisible ? 'block' : 'none' }}>

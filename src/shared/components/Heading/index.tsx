@@ -13,7 +13,11 @@ import SlackIcon from './SlackIcon'
 import XIcon from './XIcon'
 import PatreonIcon from './PatreonIcon'
 
-const HeadingMenuButton = styled.button`
+interface HeadingMenuButtonProps {
+  showMenu: boolean;
+}
+
+const HeadingMenuButton = styled.button<HeadingMenuButtonProps>`
   color: ${tintColor};
   border: none;
   user-select: none;
@@ -25,7 +29,22 @@ const HeadingMenuButton = styled.button`
   display: none;
   
   ${phone} {
-    display: block;
+    display: flex;
+    position: fixed;
+    top: 29px;
+    right: calc(1em + 0px);
+    z-index: ${props => (props.showMenu ? '4000' : '2000')};
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+  }
+
+  ${light} {
+    background-color: #f8f8fa;
+  }
+
+  ${dark} {
+    background-color: ${darkHeadingBackgroundColor};
   }
 `
 
@@ -52,7 +71,6 @@ const HeadingContentContainer = styled.div`
     background-color: ${darkHeadingBackgroundColor};
   }
   box-shadow: 0 0 10px rgb(0 0 0 / 7%);
-  position: relative;
   height: 92px;
 `
 
@@ -76,6 +94,12 @@ const HeadingMenuContainer = styled.div`
   right: 0;
   left: 0;
   display: none;
+  ${phone} {
+    position: fixed;
+    top: 0%;
+    height: 100vh;
+    z-index: 3000;
+  }
   ${light} {
     background-color: white;
   }
@@ -127,6 +151,8 @@ const HeadingNavItems = styled.ul`
   ${phone} {
     ${flexColumn('center')}
     align-items: flex-start;
+    position: absolute;
+    top: 92px;
   }
   ${exceptPhone} {
     ${flexRow('stretch')}
@@ -355,7 +381,7 @@ const Heading = () => {
           <HeadingIconLinks>
             <HeadingGitHubButton />
           </HeadingIconLinks>
-          <HeadingMenuButton onClick={() => setShowMenu(!showMenu)}>
+          <HeadingMenuButton onClick={() => setShowMenu(!showMenu)} showMenu={showMenu}>
             <Menu size={20} />
           </HeadingMenuButton>
         </HeadingRight>
