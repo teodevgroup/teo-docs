@@ -5,7 +5,9 @@ import { styled } from '@linaria/react'
 import { globals } from '../styles/app.linaria.global'
 
 
-const LayoutContainer = styled.div``
+const LayoutContainer = styled.div`
+  overflow-y: hidden;
+`
 
 type LayoutProps = {
   children?: ReactNode

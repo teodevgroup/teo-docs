@@ -13,6 +13,7 @@ import { FastTripleSelector } from './Selector'
 import FileIcon from './FileIcon'
 
 export const DocumentationContainer = styled.div`
+  overflow-y: hidden;
   ${light} {
     color: #40404c;
   }

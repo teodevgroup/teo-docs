@@ -49,6 +49,7 @@ const HeadingMenuButton = styled.button<HeadingMenuButtonProps>`
 `
 
 const HeadingContainer = styled.div`
+  overflow-y: hidden;
   ${light} {
     border-bottom: 1px solid #e2e8f0;
   }
