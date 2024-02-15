@@ -778,7 +778,11 @@ pub async fn count_fields(&self, query: impl Borrow<Value>) -> Result<ModelCount
 ##### Count objects
 
 ```rust showLineNumbers
-let count_result = teo.user().count_fields(teon!({})).await?;
+let count_result = teo.user().count_fields(teon!({
+    "select": {
+        "createdAt": true
+    }
+})).await?;
 ```
 
 ### `aggregate`
@@ -811,7 +815,7 @@ Group by on the model.
 
 #### Signature
 
-```ts
+```rust
 pub async fn group_by(&self, query: impl Borrow<Value>) -> Result<Vec<ModelAggregateResult>>
 ```
 

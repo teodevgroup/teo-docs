@@ -608,7 +608,7 @@ async def find_many(self, query: ModelFindManyArgs, /) -> list[ModelName]:
 
 | Name   | Required | Type   | Description |
 | :----- | :------- | :----- | :---------- |
-| finder | **Yes**  | ModelFindManyArgs | The finder  |
+| query | **Yes**  | ModelFindManyArgs | The finder  |
 
 #### Examples
 
@@ -662,7 +662,7 @@ async def find_unique(self, query: ModelFindUniqueArgs, /) -> Optional[Model]
 
 | Name   | Required | Type   | Description |
 | :----- | :------- | :----- | :---------- |
-| finder | **Yes**  | ModelFindUniqueArgs | The finder  |
+| query | **Yes**  | ModelFindUniqueArgs | The finder  |
 
 #### Examples
 
@@ -690,7 +690,7 @@ async def find_unique(self, query: ModelFindFirstArgs, /) -> Optional[Model]
 
 | Name   | Required | Type   | Description |
 | :----- | :------- | :----- | :---------- |
-| finder | **Yes**  | &Value | The finder  |
+| query | **Yes**  | ModelFindFirstArgs | The finder  |
 
 #### Examples
 
@@ -704,11 +704,107 @@ user = await teo.user.find_first({
 })
 ```
 
-### `count`
+### `count_objects`
+
+Count objects in the model.
+
+#### Signature
+
+```py
+async def count_objects(self, query: ModelCountArgs, /) -> usize
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| query | **Yes**  | ModelCountArgs | The finder  |
+
+#### Examples
+
+##### Count objects
+
+```python showLineNumbers
+number_of_objects = await teo.user.count_objects({})
+```
+
+### `count_fields`
+
+Count fields in the model.
+
+#### Signature
+
+```python
+async def count_objects(self, query: ModelCountArgs, /) -> ModelCountAggregateResult
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| query | **Yes**  | ModelCountArgs | The finder  |
+
+#### Examples
+
+##### Count objects
+
+```python showLineNumbers
+count_result = await teo.user.count_fields({
+    "select": {
+        "createdAt": true
+    }
+})
+```
 
 ### `aggregate`
 
+Aggregate on the model.
+
+#### Signature
+
+```python
+async def aggregate(self, query: ModelAggregateArgs, /) -> ModelAggregateResult
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| query | **Yes**  | &Value | The finder  |
+
+#### Examples
+
+##### Aggregate on the model
+
+```python showLineNumbers
+aggregate_result = await teo.user.aggregate({})
+```
+
 ### `group_by`
+
+Group by on the model.
+
+#### Signature
+
+```python
+async def aggregate(self, query: ModelGroupByArgs, /) -> list[ModelAggregateResult]
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| query | **Yes**  | &Value | The finder  |
+
+#### Example
+
+##### Group by on the model
+
+```python showLineNumbers
+group_by_result = await teo.record.group_by({
+    "by": "name"
+})
+```
 
 ### `create`
 
