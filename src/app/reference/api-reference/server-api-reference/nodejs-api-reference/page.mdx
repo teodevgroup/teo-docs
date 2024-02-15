@@ -246,7 +246,7 @@ Define a callback pipeline item. This is a shortcut to `definePipelineItem`.
 ##### Define a custom callback pipeline item
 
 ```ts showLineNumbers
-app.mainNamespace().defineCallbackPipelineItem("myCallback", (user: User) => {
+app.mainNamespace().defineCallbackPipelineItem("myCallback", (_value: any, user: User) => {
     // do something with the user object...
 })
 ```
@@ -254,7 +254,7 @@ app.mainNamespace().defineCallbackPipelineItem("myCallback", (user: User) => {
 ##### Define a custom callback pipeline item which errors
 
 ```ts showLineNumbers
-app.mainNamespace().defineCallbackPipelineItem("myCallback", (user: User) => {
+app.mainNamespace().defineCallbackPipelineItem("myCallback", (_value: any, user: User) => {
     if (user.email.endsWith('.com')) {
         throw Error("value is invalid")
     }
@@ -478,7 +478,7 @@ Retrieve the value of a header entry by `key`.
 
 Set a new value of a header entry at `key`.
 
-## Entity
+## Entity model
 
 API documentation for generated model entities.
 
@@ -615,6 +615,8 @@ static async function create(input: ModelCreateArgs): Promise<Model>
 ```ts showLineNumbers
 const post = await teo.post.create({ title: "Post 1" })
 ```
+
+## Entity object
 
 ### `isNew`
 

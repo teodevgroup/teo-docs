@@ -274,7 +274,7 @@ Define a callback pipeline item. This is a shortcut to `define_pipeline_item`.
 ##### Define a custom callback pipeline item
 
 ```python showLineNumbers
-def my_custom_callback(_args: Any, _object: Any, _teo: Teo):
+def my_custom_callback(value: Any, _args: Any, _object: Any, _teo: Teo):
     # do something with the value
     return None
 
@@ -512,7 +512,7 @@ Retrieve the value of a header entry by `key`.
 
 Set a new value of a header entry at `key`.
 
-## Entity
+## Entity model
 
 API documentation for generated model entities.
 
@@ -649,6 +649,8 @@ async def create(self, input: ModelCreateInput, /) -> Model
 ```python showLineNumbers
 post = await Post.create({ "title": "Post 1" })
 ```
+
+## Entity object
 
 ### `is_new`
 
