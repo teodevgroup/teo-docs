@@ -673,12 +673,77 @@ const user = await teo.user.findFirst({
 
 ### `count`
 
+Count objects or fields in the model.
 
+#### Signature
 
+```ts
+async function count(query: ModelCountArgs) -> Promise<number | ModelCountResult>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| query | **Yes**  | ModelCountArgs | The finder  |
+
+#### Examples
+
+##### Count objects
+
+```ts showLineNumbers
+const count_result = await teo.user.count({})
+```
 
 ### `aggregate`
 
+Aggregate on the model.
+
+#### Signature
+
+```ts
+async function aggregate(query: ModelAggregateArgs): Promise<ModelAggregateResult>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| query | **Yes**  | &Value | The finder  |
+
+#### Examples
+
+##### Aggregate on the model
+
+```ts showLineNumbers
+const aggregate_result = await teo.user.aggregate({})
+```
+
 ### `groupBy`
+
+Group by on the model.
+
+#### Signature
+
+```ts
+async function aggregate(query: ModelGroupByArgs) -> Promise<ModelAggregateResult[]>
+```
+
+#### Arguments
+
+| Name   | Required | Type   | Description |
+| :----- | :------- | :----- | :---------- |
+| query | **Yes**  | &Value | The finder  |
+
+#### Example
+
+##### Group by on the model
+
+```ts showLineNumbers
+const group_by_result = await teo.record.group_by({
+    "by": "name"
+})
+```
 
 ### `create`
 
