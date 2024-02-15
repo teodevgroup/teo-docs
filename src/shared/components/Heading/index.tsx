@@ -25,14 +25,14 @@ const HeadingMenuButton = styled.button<HeadingMenuButtonProps>`
   cursor: pointer;
   width: 40px;
   height: 40px;
-  margin-right: -10px;
+  margin-right: 0;
   display: none;
   
   ${phone} {
     display: flex;
     position: fixed;
     top: 29px;
-    right: calc(1em + 0px);
+    right: 1em;
     z-index: ${props => (props.showMenu ? '4000' : '2000')};
     align-items: center;
     justify-content: center;
@@ -97,8 +97,9 @@ const HeadingMenuContainer = styled.div`
   ${phone} {
     position: fixed;
     top: 0%;
-    height: 100vh;
+    min-height: 100vh;
     z-index: 3000;
+    overflow: hidden;
   }
   ${light} {
     background-color: white;
@@ -106,13 +107,8 @@ const HeadingMenuContainer = styled.div`
   ${dark} {
     background-color: ${darkHeadingBackgroundColor};
   }
-  box-shadow: 0 0 10px rgb(0 0 0 / 7%);
   z-index: 1;
   flex-direction: column;
-`
-
-const show = css`
-  display: flex;
 `
 
 const HeadingLogoContainer = styled.div`
@@ -364,7 +360,11 @@ const Heading = () => {
   return <HeadingContainer>
     <HeadingBorderLine />
     <HeadingContentContainer>
-      <HeadingMenuContainer className={showMenu ? show : ''}>
+      <HeadingMenuContainer className={showMenu ? css`
+        display: flex;
+      ` : css`
+        display: none;
+      `}>
         <HeadingNavItemsReused />
         <HeadingIconLinks>
           <HeadingGitHubButton />

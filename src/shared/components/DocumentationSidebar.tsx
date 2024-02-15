@@ -227,7 +227,7 @@ const SidebarToggleButton = styled.div<SidebarToggleButtonProps>`
     display: flex;
     position: fixed;
     top: 29px;
-    right: calc(1em + 96px);
+    right: calc(1em + 40px + 8px + 40px + 8px);
     z-index: ${props => (props.sidebarVisible ? '4000' : '2000')};
     align-items: center;
     justify-content: center;

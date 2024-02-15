@@ -786,7 +786,7 @@ const MobileAsideToggleButton = styled.div<MobileAsideToggleButtonProps>`
     display: flex;
     position: fixed;
     top: 29px;
-    right: calc(1em + 40px);
+    right: calc(1em + 40px + 8px - 1px);
     z-index: ${props => (props.phoneAsideVisible ? '4000' : '2000')};
     align-items: center;
     justify-content: center;
