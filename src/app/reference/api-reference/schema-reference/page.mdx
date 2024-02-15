@@ -1060,6 +1060,68 @@ model MyHiddenModel {
 }
 ```
 
+### `@showInStudio`
+
+Whether show this model in the Teo Studio app.
+
+> The Teo Studio app is currently under developing. It will be a database 
+viewer and request sender for debugging and user experience.
+
+#### Signature
+
+```teo
+declare unique model decorator showInStudio(show?: Bool)
+```
+
+#### Arguments
+
+| Name | Required | Type | Description                                |
+| :--- | :------- | :--- | :----------------------------------------- |
+| show | **Yes**  | Bool | Whether show this model in Teo Studio app. |
+
+#### Examples
+
+##### Do not show a model in Teo Studio
+
+```teo showLineNumbers
+@showInStudio(false)
+model MyHiddenModel {
+  @id
+  id: Int
+  value: String
+}
+```
+
+### `@synthesizeShapes`
+
+Whether synthesize this model's [shapes](/concepts/components/teo-schema/shape)
+<span className="concept">CONCEPT</span>.
+
+#### Signature
+
+```teo
+declare unique model decorator synthesizeShapes(synthesize?: Bool)
+```
+
+#### Arguments
+
+| Name       | Required | Type | Description                                    |
+| :--------- | :------- | :--- | :--------------------------------------------- |
+| synthesize | **Yes**  | Bool | Whether synthesize this model's shapes or not. |
+
+#### Examples
+
+##### Do not synthesize a model's shapes
+
+```teo showLineNumbers
+@synthesizeShapes(false)
+model MyHiddenModel {
+  @id
+  id: Int
+  value: String
+}
+```
+
 ## `model` fields
 
 [Fields](/concepts/components/teo-schema/field)
