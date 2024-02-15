@@ -22,19 +22,22 @@ following parts:
 
 - **Teo Schema**: Intuitive and innovative schema language which is descriptive
 and readable
-- **Teo Server**: High performance server core written in Rust
-- **Teo Query Client**: Auto-generated and type-safe query builder for multiple
+- **Teo Core**: A high performance core written in Rust and API bindings for
+Node.js, Python and Rust
+- **Teo CLI**: A CLI tool that reads schema and perform jobs including running
+server and seeding data
+- **Teo Query Client**: Auto-generated type-safe query builder for multiple
 platforms and languages
 
 ## How does Teo work?
 
-Like any other server frameworks, developers write code, start server and
+Like any other web server frameworks, developers write code, start server and
 deploy. What is unique to Teo is most of the coding can be done with the
 intuitive schema language. For features Teo schema language doesn't provide,
-Teo allows developers to generate model entities and write code in most common
-backend server languages.
+Teo allows developers to generate ORM model entities and write custom code and 
+route handlers in backend languages.
 
-### The Teo schema
+### Teo schema
 
 Developers declare configurations, enums and models all within these schema
 files. These files can be splitted and included. Here is an example of a
@@ -42,20 +45,20 @@ minimalist Teo schema.
 
 ```teo showLineNumbers
 connector {
-  provider .mysql
-  url "mysql://127.0.0.1:3306/hello"
+  provider: .mysql,
+  url: "mysql://127.0.0.1:3306/hello"
 }
 
 server {
-  bind ("0.0.0.0", 5001)
+  bind: ("0.0.0.0", 5001)
 }
 
 client ts {
-  provider .typeScript
-  dest "../hello-client/"
-  package true
-  host "http://127.0.0.1:5001"
-  gitCommit true
+  provider: .typeScript,
+  dest: "../hello-client/"
+  package: true,
+  host: "http://127.0.0.1:5001",
+  gitCommit: true
 }
 
 model User {
@@ -71,7 +74,7 @@ With this schema, Teo synthesizes HTTP request handlers for the model entity
 `User`. When server is running, the frontend apps can send request to create,
 update, delete and read users.
 
-### The Teo server
+### Teo server
 
 The schema accepts custom callback functions on both primitive types and model
 entities. Teo generate model entities for developers to write custom logic and

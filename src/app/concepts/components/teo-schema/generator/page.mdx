@@ -5,14 +5,28 @@ orderHint: 25
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, GoDoc, JavaDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Generator
 
-Developers use generated model entities if Teo schema language cannot provide
-that functionality. Query clients are generated for frontend access with
-auto-completion.
+Teo has its own schema language. Models and interfaces are described clearly 
+with this schema language. To write custom code with Teo, we need to transform
+these Teo schema into developer's handy programming language. Teo generator
+is a builtin tool to generate programming files.
+
+The generators fall into two main categories:
+* Model entities are used for backend programming
+* Query clients are for simplifying frontend interaction with Teo server
 
 ## Model entity generator
+
+Model entity generator generates model entities and interfaces directly into 
+the project in which the schema files live. These entity files provide ORM apis
+and interfaces for writing custom backend server app.
 
 Declare a model entity generator in schema is deadly simple.
 
@@ -24,35 +38,67 @@ entity {
 ```
 
 In this example, a Rust entity generator is declared. Use the `generate entity`
-command to generate the files onto `dest` directory.
+command to generate the files into the directory defined with `dest` key.
 
+<RustDoc>
+```sh
+cargo teo generate entity
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate entity
+```
+</NodeJSDoc>
+<PythonDoc>
 ```sh
 teo generate entity
 ```
+</PythonDoc>
 
-Teo entity behaves just like a class in other ORM frameworks. Developers can
-`findMany`, `update` or `save` an object.
+Teo model entities behave just like classes and objects in other ORM 
+frameworks. Developers can `findMany` objects, `update`, `save` or `delete` an 
+object. Transactions are supported with the `teo.transaction` call.
+
+The generated interfaces are for custom handlers. Developers can fetch data 
+from HTTP request body with type-safe guards and auto-completion.
 
 ## Query client generator
+
+While model entity generator is for backend. The query client generator is for
+the frontend. Frontend developers don't need to declare interfaces and DAOs 
+anymore. Let Teo do this boring and redundant job.
 
 Declare a query client generator in schema is deadly simple, too.
 
 ```teo showLineNumbers
-client {
-  provider  .typeScript
-  dest      "../hello-teo-client"
-  host      "http://127.0.0.1:5300"
-  package   true
-  gitCommit true
+client ts {
+  provider:  .typeScript,
+  dest:      "../hello-teo-client",
+  host:      "http://127.0.0.1:5300",
+  package:   true,
+  gitCommit: true
 }
 ```
 
 Run `generate client` to have a query client generated. Teo query client is
 type-safe and performant.
 
+<RustDoc>
+```sh
+cargo teo generate client
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate client
+```
+</NodeJSDoc>
+<PythonDoc>
 ```sh
 teo generate client
 ```
+</PythonDoc>
 
 ## Going next
 

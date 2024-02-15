@@ -215,9 +215,12 @@ server http {
 
 ## `entity`
 
-Defines an [entity generator](/concepts/)
-<span className="concept">CONCEPT</span> in the Teo schema. This config block is
-optional.
+Defines an
+[entity generator](/concepts/components/teo-schema/generator#model-entity-generator)
+<span className="concept">CONCEPT</span> in the Teo schema. This config block 
+is optional. Normally, only one entity generator is needed for a project. Which
+programming language is used for writing server code, which language's entities
+are generated. The `entity` config block must be placed at the main namespace.
 
 ### Fields
 
@@ -225,20 +228,20 @@ A `entity` config block accepts the following fields:
 
 | Name       | Required | Type           | Description                                                                      |
 | :--------- | :------- | :------------- | :------------------------------------------------------------------------------- |
-| `provider` | **Yes**  | EntityProvider | Describes which server programming language to use for generated model entities. |
+| `provider` | **Yes**  | [Runtime](#runtime) | Describes which server end programming language to use for generated model entities. |
 | `dest`     | **Yes**  | String (Path)  | Into which directory the model entities are generated.                           |
 
 ### Types
 
 A `entity` config block defines the following types:
 
-#### `EntityProvider`
+#### `Runtime`
 
-`EntityProvider` is an enum describes which server programming language to use
-for generated model entities.
+`Runtime` is an interface enum describes which server programming language to 
+use for generated model entities.
 
 ```teo showLineNumbers
-enum EntityProvider {
+interface enum Runtime {
   rust
   node
   python
@@ -249,8 +252,9 @@ enum EntityProvider {
 
 * You can have zero or more `entity` config blocks in a schema. But normally
 only one is needed.
-* You need to give `entity` a name if there are more than one entity generators
-- for example, `entity rust` or `entity js`.
+* You need to give `entity` a name if there are more than one entity 
+generators. For example, `entity rust` or `entity nodejs`.
+* The `entity` config block must be placed at the main namespace.
 
 ### Examples
 
@@ -261,8 +265,8 @@ generates model entities for the current working Rust project.
 
 ```teo showLineNumbers
 entity rust {
-  provider .rust
-  dest "./src/entities"
+  provider: .rust,
+  dest: "./src/entities"
 }
 ```
 
@@ -272,9 +276,9 @@ This example demostrates how to declare an entity generator config block which
 generates model entities for the current working javaScript or TypeScript project.
 
 ```teo showLineNumbers
-entity rust {
-  provider .node
-  dest "./src/entities"
+entity nodejs {
+  provider: .node,
+  dest: "./src/entities"
 }
 ```
 
@@ -284,23 +288,26 @@ This example demostrates how to declare an entity generator config block which
 generates model entities for the current working Python project.
 
 ```teo showLineNumbers
-entity rust {
-  provider .python
-  dest "./entities"
+entity python {
+  provider: .python,
+  dest: "./entities"
 }
 ```
 
 ## `client`
 
-Defines an [client generator](/concepts/)
-<span className="concept">CONCEPT</span> in the Teo schema. This config block is
-optional.
+Defines an 
+[client generator](/concepts/components/teo-schema/generator#query-client-generator)
+<span className="concept">CONCEPT</span> in the Teo schema. This config block 
+is optional. If multiple clients are specified, each of them should have a 
+unique config block name. `client` config blocks must be placed at the main 
+namespace.
 
 ### Fields
 
 | Name       | Required | Type           | Description                                            |
 | :--------- | :------- | :------------- | :----------------------------------------------------- |
-| `provider` | **Yes**  | ClientProvider | Describes what type of client package to generate.     |
+| `provider` | **Yes**  | ClientLanguage | Describes what type of client package to generate.     |
 | `dest`     | **Yes**  | String (Path)  | Into which directory the client is generated.          |
 | `host`     | **Yes**  | String (URL)   | To which host this client connects to.                 |
 | `package`  | No       | Bool           | Generate a full package or generate just client files. |
@@ -309,13 +316,13 @@ optional.
 
 A `client` config block defines the following types:
 
-#### `ClientProvider`
+#### `ClientLanguage`
 
-`ClientProvider` is an enum describes which client language to use for
-generated query clients.
+`ClientLanguage` is an interface enum describes which client language to use 
+for the generated query client.
 
 ```teo showLineNumbers
-enum ClientProvider {
+interface enum ClientLanguage {
   javaScript
   typeScript
   swift
@@ -327,136 +334,112 @@ enum ClientProvider {
 
 ### Remarks
 
-* You can have zero or more `client` config blocks in a schema. But normally
-only one is needed.
-* You need to give `client` a name if there are more than one entity generators
-- for example, `client swift` or `client kotlin`.
+* You can have zero or more `client` config blocks in a schema. If multiple 
+clients are specified, each of them should have a unique config block name.
+* You need to give `client` a name if there are more than one entity 
+generators. for example, `client swift` or `client kotlin`.
+* The `javaScript` provider and the `typeScript` provider are the same provider
+just with two names.
+* The `client` config blocks must be placed at the main namespace.
 
 ### Examples
-
-#### Generate javaScript client package
-
-This example demostrates how to declare an client generator config block which
-generates client package into a directory.
-
-```teo showLineNumbers
-entity rust {
-  provider .javaScript
-  dest     "../my-client"
-  host     "http://localhost:5100"
-  package  true
-}
-```
-
-#### Generate javaScript client code
-
-This example demostrates how to declare an client generator config block which
-generates client code without a package into a directory.
-
-```teo showLineNumbers
-entity rust {
-  provider .javaScript
-  dest     "../my-website/src/api-client"
-  host     "http://localhost:5100"
-  package  false
-}
-```
 
 #### Generate TypeScript client package
 
 This example demostrates how to declare an client generator config block which
-generates client package into a directory.
+generates TypeScript and javaScript client package into a directory.
 
 ```teo showLineNumbers
-entity rust {
-  provider .typeScript
-  dest     "../my-client"
-  host     "http://localhost:5100"
-  package  true
+client ts {
+  provider: .typeScript,
+  dest:     "../my-client",
+  host:     "http://localhost:5100",
+  package:  true
 }
 ```
 
 #### Generate TypeScript client code
 
 This example demostrates how to declare an client generator config block which
-generates client code without a package into a directory.
+generates TypeScript and javaScript client code without a package into a 
+directory.
 
 ```teo showLineNumbers
-entity rust {
-  provider .typeScript
-  dest     "../my-website/src/api-client"
-  host     "http://localhost:5100"
-  package  false
+client ts {
+  provider: .typeScript,
+  dest:     "../my-website/src/api-client",
+  host:     "http://localhost:5100",
+  package:  false
 }
 ```
 
 #### Generate Swift client package
 
 This example demostrates how to declare an client generator config block which
-generates client package into a directory.
+generates Swift client package into a directory.
 
 ```teo showLineNumbers
-entity rust {
-  provider .swift
-  dest     "../my-client"
-  host     "http://localhost:5100"
-  package  true
+client swift {
+  provider: .swift,
+  dest:     "../my-client",
+  host:     "http://localhost:5100",
+  package:  true
 }
 ```
 
 #### Generate Swift client code
 
 This example demostrates how to declare an client generator config block which
-generates client code without a package into a directory.
+generates Swift client code without a package into a directory.
 
 ```teo showLineNumbers
-entity rust {
-  provider .swift
-  dest     "../my-website/src/api-client"
-  host     "http://localhost:5100"
-  package  false
+client swift {
+  provider: .swift,
+  dest:     "../my-website/src/api-client",
+  host:     "http://localhost:5100",
+  package:  false
 }
 ```
 
 #### Generate Kotlin client package
 
 This example demostrates how to declare an client generator config block which
-generates client package into a directory.
+generates Kotlin client package into a directory.
 
 ```teo showLineNumbers
-entity rust {
-  provider .kotlin
-  dest     "../my-client"
-  host     "http://localhost:5100"
-  package  true
+client kotlin {
+  provider: .kotlin,
+  dest:     "../my-client",
+  host:     "http://localhost:5100",
+  package:  true
 }
 ```
 
 #### Generate Kotlin client code
 
 This example demostrates how to declare an client generator config block which
-generates client code without a package into a directory.
+generates Kotlin client code without a package into a directory.
 
 ```teo showLineNumbers
-entity rust {
-  provider .kotlin
-  dest     "../my-website/src/api-client"
-  host     "http://localhost:5100"
-  package  false
+client kotlin {
+  provider: .kotlin,
+  dest:     "../my-website/src/api-client",
+  host:     "http://localhost:5100",
+  package:  false
 }
 ```
 
 #### Generate C# client package
 
 This example demostrates how to declare an client generator config block which
-generates client package into a directory.
+generates C# client package into a directory.
 
 ```teo showLineNumbers
-entity rust {
-  provider .cSharp
-  dest     "../my-client"
-  host     "http://localhost:5100"
-  package  true
+client cs {
+  provider: .cSharp,
+  dest:     "../my-client",
+  host:     "http://localhost:5100",
+  package:  true
 }
 ```
 
@@ -466,7 +449,7 @@ This example demostrates how to declare an client generator config block which
 generates client code without a package into a directory.
 
 ```teo showLineNumbers
-entity rust {
+client cs {
   provider .cSharp
   dest     "../my-website/src/api-client"
   host     "http://localhost:5100"
@@ -477,10 +460,10 @@ entity rust {
 #### Generate Dart client package
 
 This example demostrates how to declare an client generator config block which
-generates client package into a directory.
+generates Dart and Flutter client package into a directory.
 
 ```teo showLineNumbers
-entity rust {
+client dart {
   provider .dart
   dest     "../my-client"
   host     "http://localhost:5100"
@@ -491,10 +474,10 @@ entity rust {
 #### Generate Dart client code
 
 This example demostrates how to declare an client generator config block which
-generates client code without a package into a directory.
+generates Dart and Flutter client code without a package into a directory.
 
 ```teo showLineNumbers
-entity rust {
+client dart {
   provider .dart
   dest     "../my-website/src/api-client"
   host     "http://localhost:5100"
@@ -504,13 +487,14 @@ entity rust {
 
 #### Use environment variable to specify client code directory
 
-Different developers generate client into different directories. Use an
-environment variable to have each developer generate to their own directory.
+If different developers generate client into different directories or 
+integarting with CI, use an environment variable to specify the environment 
+specific destination.
 
 ```teo showLineNumbers
 entity rust {
   provider .dart
-  dest     ENV["CLIENT_DIR"]
+  dest     ENV["CLIENT_DIR"]!
   host     "http://localhost:5100"
   package  false
 }
@@ -529,7 +513,8 @@ fields to achieve a compound identifier.
 
 #### Model naming convension
 
-* Model names must start with a letter and are typically spelled in PascalCase.
+* Model names must start with a capitalized letter and are typically spelled in 
+PascalCase.
 * Model names should use the singular pascal case form (for example, `User`
 instead of `user`, `users` or `Users`)
 
@@ -569,21 +554,23 @@ Defines a multi-field composite ID on the model.
 
 #### Remarks
 
-* This is `PRIMARY KEY` for SQL databases. For MongoDB, a compound unique index
-is used and `_id` becomes a hidden field.
+* This is `PRIMARY KEY` for SQL databases. For MongoDB, unless the only primary 
+field maps to `"_id"`, a compound unique index is used.
 * Can be defined on string and number types.
+* For MongoDB, it can be defined on `ObjectId` type, too.
 
 #### Signature
 
 ```teo
-@id(ScalarFieldEnum<Self>[])
+declare unique model decorator id(fields?: FieldIndexes<Self>[], map?: String?)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                      | Description            |
-| :------- | :------- | :---------------------------------------- | :--------------------- |
-| 0        | **Yes**  | ScalarFieldEnum<>{"<"}</>Self<>{">"}</>[] | A list of field names. |
+| Name   | Required | Type                                   | Description                     |
+| :----- | :------- | :------------------------------------- | :------------------------------ |
+| fields | **Yes**  | FieldIndexes<>{"<"}</>Self<>{">"}</>[] | A list of field names.          |
+| map    | No       | String?                                | The database index name to map. |
 
 #### Examples
 
@@ -612,14 +599,15 @@ is created.
 #### Signature
 
 ```teo
-@unique(ScalarFieldEnum<Self>[])
+declare unique model decorator id(fields?: FieldIndexes<Self>[], map?: String?)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                      | Description            |
-| :------- | :------- | :---------------------------------------- | :--------------------- |
-| 0        | **Yes**  | ScalarFieldEnum<>{"<"}</>Self<>{">"}</>[] | A list of field names. |
+| Name   | Required | Type                                   | Description                     |
+| :----- | :------- | :------------------------------------- | :------------------------------ |
+| fields | **Yes**  | FieldIndexes<>{"<"}</>Self<>{">"}</>[] | A list of field names.          |
+| map    | No       | String?                                | The database index name to map. |
 
 #### Examples
 
@@ -648,14 +636,15 @@ Defines a multi-field composite index on the model.
 #### Signature
 
 ```teo
-@index(ScalarFieldEnum<Self>[])
+declare model decorator index(fields?: FieldIndexes<Self>[], map?: String?)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                      | Description            |
-| :------- | :------- | :---------------------------------------- | :--------------------- |
-| 0        | **Yes**  | ScalarFieldEnum<>{"<"}</>Self<>{">"}</>[] | A list of field names. |
+| Name   | Required | Type                                   | Description                     |
+| :----- | :------- | :------------------------------------- | :------------------------------ |
+| fields | **Yes**  | FieldIndexes<>{"<"}</>Self<>{">"}</>[] | A list of field names.          |
+| map    | No       | String?                                | The database index name to map. |
 
 #### Examples
 
@@ -674,20 +663,20 @@ model Album {
 
 ### `@map`
 
-Maps the Teo schema model name to a different table name. By default, plural
-form is used.
+Maps the Teo schema model name to a different table name. By default, the 
+original name is used.
 
 #### Signature
 
 ```teo
-@map(String)
+declare unique model decorator map(tableName?: String)
 ```
 
 #### Arguments
 
-| Position | Required | Type   | Description                            |
-| :------- | :------- | :----- | :------------------------------------- |
-| 0        | **Yes**  | String | The database table or collection name. |
+| Name      | Required | Type   | Description                            |
+| :-------- | :------- | :----- | :------------------------------------- |
+| tableName | **Yes**  | String | The database table or collection name. |
 
 #### Examples
 
