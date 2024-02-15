@@ -743,3 +743,21 @@ async def delete(self) -> None
 ```python showLineNumbers
 await post.delete()
 ```
+
+### `to_teon`
+
+Convert the object to a teon result value.
+
+#### Signature
+
+```python
+async def to_teon(self: Model) -> ModelResult
+```
+
+#### Examples
+
+##### Convert an object to its result type
+
+```python showLineNumbers
+value = await object.to_teon()
+```

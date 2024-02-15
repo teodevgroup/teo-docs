@@ -725,3 +725,21 @@ async function delete(): void
 ```ts showLineNumbers
 await post.delete()
 ```
+
+### `toTeon`
+
+Convert the object to a teon result value.
+
+#### Signature
+
+```ts
+async function to_teon() -> ModelResult
+```
+
+#### Examples
+
+##### Convert an object to its result type
+
+```ts showLineNumbers
+const value = await object.toTeon()
+```

@@ -812,3 +812,21 @@ pub async fn delete(&self) -> Result<()>
 ```rust showLineNumbers
 post.delete().await?;
 ```
+
+### `to_teon`
+
+Convert the object to a teon `Value`.
+
+#### Signature
+
+```rust
+pub async fn to_teon(&self) -> Result<Value>
+```
+
+#### Examples
+
+##### Convert an object to teon
+
+```rust showLineNumbers
+let value = object.to_teon().await?;
+```
