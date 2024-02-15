@@ -692,6 +692,38 @@ model Person {
 }
 ```
 
+### `@migration`
+
+Give auto migration instructions on how this model should be handled.
+
+#### Signature
+
+```teo
+declare unique model decorator migration(renamed: Enumerable<String>?, version: String?, drop: Bool?)
+```
+
+#### Arguments
+
+| Name    | Required | Type                                  | Description                                                                                            |
+| :------ | :------- | :------------------------------------ | :----------------------------------------------------------------------------------------------------- |
+| renamed | No       | Enumerable<>{'<'}</>String<>{'>'}</>? | The names that this model previously used.                                                             |
+| version | No       | String?                               | Annotate this model with a version number.                                                             |
+| drop    | No       | Bool?                                 | When new unique records are added and existing records are presented, drop the table instead of panic. |
+
+#### Examples
+
+##### Perfrom auto renaming a table
+
+```teo showLineNumbers
+@map("people") @migration(renamed: ["peoples", "person", "Person"])
+model Person {
+  @id
+  id: Int
+  name: String
+  age: Int
+}
+```
+
 ### `@beforeSave`
 
 This pipeline callback is triggered before an object is being saved.
