@@ -8,41 +8,50 @@ orderHint: 1
 
 ## `connector`
 
-Defines a [connector](/concepts/components/teo-server/connector)
-<span className="concept">CONCEPT</span> in the Teo schema. This config block is
-required.
+Defines a database [connector](/concepts/components/teo-server/connector)
+<span className="concept">CONCEPT</span> in the 
+[namespace](/concepts/components/teo-server/namespace)
+<span className="concept">CONCEPT</span>. Each namespace has 1 connector at 
+most. The connector of current namespace is inherited from the  parent 
+namespace. Teo supports multiple databases. Each connector represents a pool of 
+connections to one database. If a namespace doesn't have a connector, model 
+definitions are not vailable. Teo can be used without database connections.
 
 ### Fields
 
 A `connector` config block accepts the following fields:
 
-| Name       | Required | Type             | Description                                   |
-| :--------- | :------- | :--------------- | :-------------------------------------------- |
-| `provider` | **Yes**  | DatabaseProvider | Describes which database connector to use.    |
-| `url`      | **Yes**  | String (URL)     | Connection URL including authentication info. |
+| Name       | Required | Type                  | Description                                   |
+| :--------- | :------- | :-------------------- | :-------------------------------------------- |
+| `provider` | **Yes**  | [Database](#database) | Describes which database connector to use.    |
+| `url`      | **Yes**  | String (URL)          | Connection URL including authentication info. |
 
 ### Types
 
 A `connector` config block defines the following types:
 
-#### `DatabaseProvider`
+#### `Database`
 
-`DatabaseProvider` is an enum describes which database connector to use.
+`Database` is an enum describes what type of database connector to use.
 
 ```teo showLineNumbers
-enum DatabaseProvider {
-  mysql
-  postgres
-  sqlite
-  mongo
+interface enum Database {
+    mongo
+    mysql
+    postgres
+    sqlite
 }
 ```
 
 ### Remarks
 
-* You can only have one `connector` config block in a schema.
+* You can have zero or one `connector` config block in a namespace.
 * You can give `connector` a name just like any other config blocks - for
 example, `connector mysql` or `connector db`.
+* If not connectors are defined in a namespace, connector from parent namespace
+is inherited.
+* If no connectors are specified in the schema, Teo runs without a database 
+connection.
 
 ### Examples
 
@@ -59,9 +68,9 @@ target database is available with the following credentials:
 * Schema name: public
 
 ```teo showLineNumbers
-connector db {
-  provider .postgres
-  url      "postgresql://johndoe:mypassword@localhost:5432/mydb?schema=public"
+connector {
+  provider: .postgres,
+  url:      "postgresql://johndoe:mypassword@localhost:5432/mydb?schema=public"
 }
 ```
 
@@ -70,9 +79,9 @@ connector db {
 In this example, the target database is available with an environment variable:
 
 ```teo showLineNumbers
-connector db {
-  provider .postgres
-  url      ENV["DATABASE_URL"]
+connector {
+  provider: .postgres,
+  url:      ENV["DATABASE_URL"]!
 }
 ```
 
@@ -99,9 +108,9 @@ the target database is available with the following credentials:
 * Database name: mydb
 
 ```teo showLineNumbers
-connector db {
-  provider .mysql
-  url      "mysql://johndoe:mypassword@localhost:3306/mydb"
+connector {
+  provider: .mysql,
+  url:      "mysql://johndoe:mypassword@localhost:3306/mydb"
 }
 ```
 
@@ -111,9 +120,18 @@ This example introduces how to connect to a SQLite database. In this example,
 the target database is located in a file called dev.db:
 
 ```teo showLineNumbers
-connector db {
-  provider .sqlite
-  url      "file:./dev.db"
+connector {
+  provider: .sqlite,
+  url:      "sqlite:./dev.db" // or "file:./dev.db"
+}
+```
+
+#### Specify a SQLite in memory connector
+
+```teo showLineNumbers
+connector {
+  provider: .sqlite,
+  url:      "sqlite::memory:"
 }
 ```
 
@@ -129,9 +147,9 @@ the target database is available with the following credentials:
 * Database name: testing
 
 ```teo showLineNumbers
-connector db {
-  provider .mongo
-  url      "mongodb+srv://root:password@cluster1.test1.mongodb.net/testing?retryWrites=true&w=majority"
+connector {
+  provider: .mongo,
+  url:      "mongodb+srv://root:password@cluster1.test1.mongodb.net/testing?retryWrites=true&w=majority"
 }
 ```
 
@@ -141,9 +159,9 @@ Teo schema language supports nullish coalescing. A database url can be provided
 with a default value when environment variable is not defined.
 
 ```teo showLineNumbers
-connector db {
-  provider .mongo
-  url      ENV["MONGO_URL"] ?? "mongodb://127.0.0.1:27017/testing"
+connector {
+  provider: .mongo,
+  url:      ENV["MONGO_URL"] ?? "mongodb://127.0.0.1:27017/testing"
 }
 ```
 
