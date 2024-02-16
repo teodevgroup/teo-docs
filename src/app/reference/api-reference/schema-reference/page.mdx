@@ -26,23 +26,6 @@ A `connector` config block accepts the following fields:
 | `provider` | **Yes**  | [Database](#database) | Describes which database connector to use.    |
 | `url`      | **Yes**  | String (URL)          | Connection URL including authentication info. |
 
-### Types
-
-A `connector` config block defines the following types:
-
-#### `Database`
-
-`Database` is an enum describes what type of database connector to use.
-
-```teo showLineNumbers
-interface enum Database {
-    mongo
-    mysql
-    postgres
-    sqlite
-}
-```
-
 ### Remarks
 
 * You can have zero or one `connector` config block in a namespace.
@@ -226,27 +209,10 @@ are generated. The `entity` config block must be placed at the main namespace.
 
 A `entity` config block accepts the following fields:
 
-| Name       | Required | Type           | Description                                                                      |
-| :--------- | :------- | :------------- | :------------------------------------------------------------------------------- |
+| Name       | Required | Type                | Description                                                                          |
+| :--------- | :------- | :------------------ | :----------------------------------------------------------------------------------- |
 | `provider` | **Yes**  | [Runtime](#runtime) | Describes which server end programming language to use for generated model entities. |
-| `dest`     | **Yes**  | String (Path)  | Into which directory the model entities are generated.                           |
-
-### Types
-
-A `entity` config block defines the following types:
-
-#### `Runtime`
-
-`Runtime` is an interface enum describes which server programming language to 
-use for generated model entities.
-
-```teo showLineNumbers
-interface enum Runtime {
-  rust
-  node
-  python
-}
-```
+| `dest`     | **Yes**  | String (Path)       | Into which directory the model entities are generated.                               |
 
 ### Remarks
 
@@ -312,25 +278,6 @@ namespace.
 | `host`     | **Yes**  | String (URL)   | To which host this client connects to.                 |
 | `package`  | No       | Bool           | Generate a full package or generate just client files. |
 
-### Types
-
-A `client` config block defines the following types:
-
-#### `ClientLanguage`
-
-`ClientLanguage` is an interface enum describes which client language to use 
-for the generated query client.
-
-```teo showLineNumbers
-interface enum ClientLanguage {
-  javaScript
-  typeScript
-  swift
-  kotlin
-  cSharp
-  dart
-}
-```
 
 ### Remarks
 
@@ -2853,4 +2800,310 @@ model User {
   @default(.USER)
   role: Role
 }
+```
+
+## Data structures
+
+### `Database`
+
+`Database` is an enum describes what type of database connector to use.
+
+```teo showLineNumbers
+interface enum Database {
+    mongo
+    mysql
+    postgres
+    sqlite
+}
+```
+
+### `ClientLanguage`
+
+`ClientLanguage` is an interface enum describes which client language to use 
+for the generated query client.
+
+```teo showLineNumbers
+interface enum ClientLanguage {
+  javaScript
+  typeScript
+  swift
+  kotlin
+  cSharp
+  dart
+}
+```
+
+### `Runtime`
+
+`Runtime` is an interface enum describes which server programming language to 
+use for generated model entities.
+
+```teo showLineNumbers
+interface enum Runtime {
+  rust
+  node
+  python
+}
+```
+
+### `MySQLDatabaseType`
+
+`MySQLDatabaseType` represents available MySQL database types to be used with 
+the [`@db`](#db) decorator.
+
+```teo
+#if available(mysql)
+interface enum MySQLDatabaseType {
+  varChar(len?: Int)
+  text
+  char(len?: Int)
+  tinyText
+  mediumText
+  longText
+  bit(len?: Int)
+  tinyInt(len?: Int, signed: Bool)
+  int(signed: Bool)
+  smallInt(signed: Bool)
+  mediumInt(signed: Bool)
+  bigInt(signed: Bool)
+  year
+  float
+  double
+  decimal(precision?: Int, scale?: Int)
+  dateTime(len?: Int)
+  date
+  time(len?: Int)
+  timestamp(len?: Int)
+  json
+  longBlob
+  binary
+  varBinary
+  tinyBlob
+  blob
+  mediumBlob
+}
+#end
+```
+
+### `PostgreSQLDatabaseType`
+
+`PostgreSQLDatabaseType` represents available PostgreSQL database types to be 
+used with the [`@db`](#db) decorator.
+
+```teo
+#if available(postgres)
+interface enum PostgreSQLDatabaseType {
+  text
+  char(len?: Int)
+  varChar(len?: Int)
+  bit(len?: Int)
+  varBit
+  uuid
+  xml
+  inet
+  boolean
+  integer
+  smallInt
+  int
+  bigInt
+  oid
+  doublePrecision
+  real
+  decimal(precision?: Int, scale?: Int)
+  money
+  timestamp(len?: Int)
+  timestampTz(len?: Int)
+  date
+  time
+  timeTz
+  json
+  jsonB
+  byteA
+}
+#end
+```
+
+### `SQLiteDatabaseType`
+
+`SQLiteDatabaseType` represents available SQLite database types to be used with 
+the [`@db`](#db) decorator.
+
+```teo
+#if available(sqlite)
+interface enum SQLiteDatabaseType {
+  text
+  integer
+  real
+  decimal
+  blob
+}
+#end
+```
+
+### `MongoDBDatabaseType`
+
+`MongoDBDatabaseType` represents available MongoDB database types to be used 
+with the [`@db`](#db) decorator.
+
+```teo
+#if available(mongo)
+interface enum MongoDBDatabaseType {
+  string
+  bool
+  int
+  long
+  double
+  date
+  timestamp
+  binData
+}
+#end
+```
+
+### `Method`
+
+`Method` represents the HTTP request method.
+
+```teo
+interface enum Method {
+  get
+  post
+  put
+  patch
+  delete
+}
+```
+
+### `Delete`
+
+`Delete` represents the delete rule for relation mutation.
+
+```teo
+interface enum Delete {
+  noAction
+  nullify
+  cascade
+  deny
+  default
+}
+```
+
+### `Update`
+
+`Update` represents the update rule for relation mutation.
+
+```teo
+interface enum Update {
+  noAction
+  nullify
+  update
+  delete
+  deny
+  default
+}
+```
+
+### `Sort`
+
+`Sort` represents the sorting order.
+
+```teo
+enum Sort {
+  asc
+  desc
+}
+```
+
+### `Action`
+
+The type of [actions](/concepts/components/teo-schema/action)
+<span className="concept">CONCEPT</span>.
+
+```teo
+interface option enum Action {
+  create = 1
+  update = 1 << 1
+  delete = 1 << 2
+  copy = 1 << 3
+  find = 1 << 4
+  first = 1 << 5
+  connect = 1 << 6
+  disconnect = 1 << 7
+  set = 1 << 8
+  join = 1 << 9
+  count = 1 << 10
+  aggregate = 1 << 11
+  groupBy = 1 << 12
+  codeName = 1 << 13
+  upsert = .create | .update
+  connectOrCreate = .connect | .create
+  joinCreate = .join | .create
+  joinDelete = .join | .delete
+  findFirst = .find | .first
+  entry = 1 << 14
+  nested = 1 << 15
+  codePosition = 1 << 16
+  single = 1 << 17
+  many = 1 << 18
+  codeAmount = 1 << 19
+}
+```
+
+### `Data`
+
+`Data` represents a normal Teo response interface with only a data field.
+
+```teo
+interface Data<T> {
+  data: T
+}
+```
+
+### `DataMeta`
+
+`DataMeta` represents a normal Teo response interface with a data field and a 
+meta field.
+
+```teo
+interface DataMeta<T, U> {
+  data: T
+  meta: U
+}
+```
+
+### `PagingInfo`
+
+`PagingInfo` represents a paging info response entry in a `findMany` handler.
+
+```teo
+interface PagingInfo {
+  count: Int64
+  numberOfPages: Int64?
+}
+```
+
+### `ResponseError`
+
+`ResponseError` represents the typical shape of an error response in Teo.
+
+```teo
+interface ResponseError {
+  type: String
+  message: String
+  fields: String{} | Null
+}
+```
+
+## Constants
+
+### `ENV`
+
+The `ENV` object represents environment variables.
+
+#### Examples
+
+##### Retrieve a environment variable
+
+```teo showLineNumbers
+let dbUrl: String? = ENV["DATABASE_URL"]
 ```
