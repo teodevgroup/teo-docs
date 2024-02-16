@@ -2776,6 +2776,36 @@ model Album {
 }
 ```
 
+## Handler decorators
+
+### `@map`
+
+Specify the custom handler's HTTP request method, path and URL path arguments.
+
+#### Signature
+
+```teo
+declare unique handler decorator map(method?: Method?, path?: String?, ignorePrefix: Bool?, interface: String?)
+```
+
+#### Arguments
+
+| Name         | Required | Type    | Description                                                       |
+| :----------- | :------- | :------ | :---------------------------------------------------------------- |
+| method       | No       | Method? | The HTTP request method. Default to `.post`.                      |
+| path         | No       | String? | The URL path.                                                     |
+| ignorePrefix | No       | Bool?   | Whether ignore the namespace and handler group prefix.            |
+| interface    | No       | String? | The generated interface name in query clients and model entities. |
+
+#### Examples
+
+##### Specify custom HTTP method and request path for a handler
+
+```teo
+@map(.patch, "/api/v1/:id", interface: "MyCustomAPIPathArgs")
+declare handler myCustomHandler(MyCustomInput): MyCustomOutput
+```
+
 ## `enum`
 
 Defines an [enum](/concepts/components/teo-schema/enum)
