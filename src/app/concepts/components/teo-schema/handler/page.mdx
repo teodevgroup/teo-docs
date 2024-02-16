@@ -12,7 +12,7 @@ Traditional HTTP frameworks expose endpoints. Handlers are Teo's HTTP endpoints.
 Handlers are different from [Actions](/docs/concepts/components/teo-schema/action).
 Each predefined handler correspond to a predefined root level [action](/docs/concepts/components/teo-schema/action) <span className="concept">CONCEPT</span>.
 
-## HTTP request handlers
+## The URL path of the handler
 
 When working with HTTP requests, the requests are mapped into handlers
 with predefined rules.
@@ -20,6 +20,8 @@ with predefined rules.
 When Teo's frontend packages are building a request url, they use a form of
 `/{server path prefix}/{namespacePaths}/{ModelName}/{actionName}`. For example, to access
 `findMany` on `User`, we request this url: `/User/findMany`.
+
+## Builtin auto-synthesized handlers
 
 The builtin handlers supported by Teo are:
 
@@ -39,9 +41,14 @@ The builtin handlers supported by Teo are:
 * `aggregate` view statistics data on this model
 * `groupBy` view grouped statistics data on this model
 
-## Disabling
+## Disabling auto-synthesized handlers
 
-Some of the handlers exposed by Teo may not be needed for your business
+> This feature is currently working in progress. We used to have this feature,
+> but when we refactored our core in version 0.0.58, this feature is missing
+> from the framework. We will add back this feature soon and update this 
+> documentation here.
+
+{/* Some of the handlers exposed by Teo may not be needed for your business
 requirements. You can disable some of them with `@action` decorator.
 
 ```teo showLineNumbers
@@ -52,7 +59,7 @@ model Demo {
 ```
 
 In this example, objects of this model cannot be updated or deleted. Once
-created, it is what it is.
+created, it is what it is. */}
 
 ## Going next
 

@@ -14,37 +14,21 @@ Teo provides a unified way to specify server configurations.
 
 Teo server's IP and port are binded through `server.bind` config item.
 
-```rust showLineNumbers
+```teo showLineNumbers
 server {
   bind: ("0.0.0.0", 5100)
 }
 ```
 
-## Url prefix
+## URL prefix
 
-Teo server can have a url path prefix. All urls are prefixed with this prefix.
+Teo server can have a URL path prefix. All request paths are prefixed with this 
+prefix.
 
 ```teo showLineNumbers
 server {
   pathPrefix "/v1"
 }
 ```
-
-## JWT secret
-
-Teo uses JWT for authentication. If identities and guards are used, developer
-need to provide a secure and unguessable secret inside server config block.
-
-```teo showLineNumbers
-server {
-  jwtSecret ENV["JWT_SECRET"] ?? "top-secret"
-}
-```
-
-## Going next
-
-Thank you for reaching here with us. You've already learned the concepts of Teo
-schema, feel free to start
-[Teo client concepts](/concepts/components/teo-client). ☕️
 
 <PrevNext />

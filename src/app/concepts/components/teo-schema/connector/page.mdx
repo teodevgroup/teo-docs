@@ -8,14 +8,16 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Connector
 
-The connector specifies which database to connect. A Teo app can have only
-one connector. Teo currently supports MySQL, PostgreSQL, SQLite and MongoDB.
+The connector specifies which database to connect. Each 
+[namespace](/concepts/components/teo-schema/namespace) can have zero or one 
+connector. Teo currently supports MySQL, PostgreSQL, SQLite and MongoDB.
 
-## Example
+## Declaring
 
 To connect to a database, specify a
-[provider](/reference/api-reference/teo-schema-reference#types) <span className="concept">REFERENCE</span>
-value and a connection URL.
+[provider](/reference/api-reference/schema-reference#database)
+<span className="concept">REFERENCE</span>
+type and a connection URL.
 
 ```teo
 connector {
@@ -24,10 +26,8 @@ connector {
 }
 ```
 
-## Going next
-
-The next topic introduces
-[**Model**](/concepts/components/teo-schema/model), the foundation and
-core which represents database table and request resource.
+There are [examples](/reference/api-reference/schema-reference#examples) of how 
+to specify a database URL in the 
+[schema reference](/reference/api-reference/schema-reference). 
 
 <PrevNext />

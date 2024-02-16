@@ -11,16 +11,19 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 > This guide introduces the concept of model used in Teo server implementation.
 > To understand how to define a model to suit your business requirements, read
 > our guide article [Data modeling](/guides/server-guides/data-modeling).
-> To get a list of model APIs, check our API documentation.
+> To get a list of model APIs, check our 
+> [API documentation](/reference/api-reference).
 
 A model is mapped into a table or collection in the underlying database, with
 each of its fields mapped to a table column. This is similar to the ORM
-concepts. Besides, a model has a list of handlers which is equivalent to HTTP
-endpoints in traditional HTTP frameworks.
+concepts. Besides, a model has a list of auto 
+[handlers](/concepts/components/teo-schema/handler) which is equivalent to HTTP 
+endpoints in traditional HTTP frameworks. Developers can declare custom request 
+handlers under the model.
 
 ## Declare a model
 
-A model is defined in Teo schema language like this.
+A model is declared in Teo schema like this:
 
 ```teo showLineNumbers
 /// @name Platform User
@@ -37,35 +40,81 @@ model User {
 }
 ```
 
-A model has a primary index, at least a primary field. It optionally has a
-documented `@name`. It can have any number of [indexes](/concepts/components/teo-schema/index) <span className="concept">CONCEPT</span>.
+## Model content
 
-## Virtual Model
+A model has a name, optionally a documented readable name, optionally a 
+documented description, a list of fields, optionally a list of custom 
+[handlers](/concepts/components/teo-schema/handler), optionally a list of 
+model level [decorators](/concepts/components/teo-schema/decorator), a primary
+index, and optionally a list of [indexes](/concepts/components/teo-schema/index) 
+and unique indexes.
 
-A virtual model is a model which don't have a database table. It only supports
-`create` and `createMany` action. If it has identity defined, `signIn` and
-`identity` are also supported. To understand actions, check
-[Action](/concepts/components/teo-schema/action)
-<span className="concept">CONCEPT</span> topic.
+## Fields
 
-A virtual model cannot have relationships since it's not existing in the
-database. A virtual model also doesn't need a primary key.
+Model fields fall into 3 main categories:
 
-```teo showLineNumbers
-@virtual @beforeSave($self.validate("custom-programming-validator"))
+  * [Model scalar field](/concepts/components/teo-schema/model-field)
+  * [Model relation](/concepts/components/teo-schema/model-relation)
+  * [Model property](/concepts/components/teo-schema/model-property)
+
+## Primary index
+
+A model must have one primary index. It can be a on single scalar field, or a 
+compound index of some scalar fields.
+
+### A single field primary index
+
+An `@id` decorator can be placed on a scalar number or string field.
+
+```teo
 model User {
+  @id
+  id: Int
+  @unique
   email: String
-  password: String
 }
 ```
 
-In this example, the virtual users are created with custom code, and
-authenticated with custom code, too.
+### A compound primary index
 
-## Going next
+Place the `@id` decorator on the model level to create a compound primary 
+index.
 
-The next topic in this episode introduces
-[**model field**](/concepts/components/teo-schema/model-field), which 
-represents database table column.
+```teo
+@id([.id, .email])
+model User {
+  id: Int
+  email: String
+}
+```
+
+## Handlers
+
+Handlers are custom HTTP API endpoints. Except auto handlers synthesized by Teo
+for models to perform basic CRUD and aggregation, developers must provide the
+implementation with the server API.
+
+### Auto-synthesized handlers
+
+Teo synthesizes common CRUD and aggregate handlers for models. See 
+[Builtin auto-synthesized handlers](/concepts/components/teo-schema/handler#builtin-auto-synthesized-handlers) 
+for a list of auto-synthesized handlers.
+
+### Custom handlers
+
+A custom handler can be placed within the model block.
+
+```teo
+model User {
+  @id
+  id: Int
+  name: String
+
+  declare handler myCustomCreate(input: MyCustomInput): MyCustomOutput
+}
+```
+
+See [handler](/concepts/components/teo-schema/handler) 
+<span className="concept">CONCEPT</span> to learn more about handlers.
 
 <PrevNext />
