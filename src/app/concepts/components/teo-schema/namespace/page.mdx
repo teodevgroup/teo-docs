@@ -14,14 +14,14 @@ same namespace declared.
 
 Namespace looks like this in schema:
 
-```teo
+```teo showLineNumbers {7-13}
 model User {
     @id @autoIncrement @readonly
     id: Int
     email: String
 }
 
-declare namespace admin {
+namespace admin {
     model User {
         @id @autoIncrement @readonly
         id: Int
