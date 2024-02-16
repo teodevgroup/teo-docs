@@ -21,6 +21,9 @@ const prevNext = () => {
             !prevNextData.prev ? {
                 type: 'element',
                 tagName: 'div',
+                properties: {
+                    class: 'flex-grow-extend'
+                }
             } : {
                 type: 'element',
                 tagName: 'a',

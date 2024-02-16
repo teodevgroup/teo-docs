@@ -37,7 +37,7 @@ export function fetchPrevNext(urlPath) {
         return undefined
     }
     const thisIndex = parentItem.children.findIndex((child) => child.urlPath === pureUrlPath)
-    if (!thisIndex) {
+    if (thisIndex === undefined) {
         return undefined
     }
     return {

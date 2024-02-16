@@ -8,4 +8,87 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Namespace
 
+A namespace is a declarative region that provides a scope to the identifiers 
+and contents. Namespace is block level element. Different files can have the
+same namespace declared.
+
+Namespace looks like this in schema:
+
+```teo
+model User {
+    @id @autoIncrement @readonly
+    id: Int
+    email: String
+}
+
+declare namespace admin {
+    model User {
+        @id @autoIncrement @readonly
+        id: Int
+        email: String
+    }
+}
+```
+
+In this piece of schema, `User` and `admin.User` are two different models.
+
+## Preventing name conflicts
+
+If two different models share the same name in any reason, namespace can be 
+used to prevent name conflicts. In the future, when packages are supported by
+Teo, each package must declare a unique namespace to wrap its contents 
+including [models](/concepts/components/teo-schema/model), 
+[enums](/concepts/components/teo-schema/enum) and 
+[pipeline items](/concepts/components/teo-schema/pipeline#pipeline-item).
+
+## URL path
+
+Each namespace has different namespace prefixes in request URLs. To access APIs
+for `User` in previous code snippet, post to `/User/{handlerName}`, to access 
+APIs for `admin.User`, post to `/User/{handlerName}`.
+
+## Connector inheritance
+
+Teo supports multiple databases. Each namespace can have zero or one 
+[connector](/concepts/components/teo-schema/connector). If a namespace doesn't 
+have a database `connector` defined, the one from the parent namespace is 
+inherited. Teo can be used without any database connections. When used without
+namespaces, [model](/concepts/components/teo-schema/model) definitions are not 
+available.
+
+## Main namespace
+
+The root level namespace, although without any namespace declarations, is the 
+main namespace. If developer doesn't declare any namespaces in the schema 
+files, every element is defined in the main namespace. In the previous code,
+the outer level `User` is defined in the main namespace.
+
+## `std` namespace
+
+The standard library of Teo resides in the `std` namespace. This namespace has
+a special resolving rule that any identifier doesn't exist in the namespace 
+tree will be finally resolved in the `std` namespace. That is, everything from
+this core library namespace doesn't need to be prefixed. In the previous 
+code snippet, the decorators `@id`, `@readonly` and `@autoIncrement` are from
+the `std` namespace and defined by the core library.
+
+## Reserved namespace names
+
+The name `main` and `std` are reserved. `main` is for the outer most level 
+namespace, aka user's main namespace. `std` is the name of the namespace where 
+core library is in. Any other names are allowed as long as it doesn't conflict
+with other [constants](/concepts/components/teo-schema/constant), 
+[models](/concepts/components/teo-schema/model), 
+[enums](/concepts/components/teo-schema/enum), 
+[interfaces](/concepts/components/teo-schema/interface) and 
+[configs](/concepts/components/teo-schema/cofnig-block).
+
+## Why namespace?
+
+Teo request handlers are accessible by HTTP requests, and Teo models represent
+a table or collection in the namespace. The traditional Node.js and Python way
+of importing can solve name conflicts for constants and variables. It cannot 
+solve handler URL and database table name problem. That's why we decide to use
+this C++ or TypeScript style namespace.
+
 <PrevNext />

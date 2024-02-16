@@ -646,6 +646,9 @@ export const DocumentationContent = styled.div`
         line-height: 1.4 !important;
         text-decoration: none !important;
       }
+      .flex-grow-extend {
+        flex-grow: 1;
+      }
     }
     a.prev {
       display: flex;
