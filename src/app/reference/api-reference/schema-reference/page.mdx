@@ -2568,23 +2568,23 @@ model Perform {
 
 ## Model property decorators
 
-Relation decorators modify the behavior of a model property field.
+Property decorators define and modify the behavior of a model property field.
 
 ### `@getter`
 
-Define a property getter.
+Define a property getter and mark the field as a property.
 
 #### Signature
 
 ```teo
-@getter(Pipeline<Null, Type<Field>>)
+declare unique model property decorator getter(pipeline?: Pipeline<Self, ThisFieldType>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                        | Description                         |
-| :------- | :------- | :------------------------------------------ | :---------------------------------- |
-| 0        | **Yes**  | Pipeline&#60;Null, Type&#60;Field&#62;&#62; | A pipeline to get property's value. |
+| Name     | Required | Type                                  | Description                                  |
+| :------- | :------- | :------------------------------------ | :------------------------------------------- |
+| pipeline | **Yes**  | Pipeline&#60;Self, ThisFieldType&#62; | A pipeline to retrieve the property's value. |
 
 #### Examples
 
@@ -2603,19 +2603,19 @@ model User {
 
 ### `@setter`
 
-Define a property setter.
+Define a property setter and mark the field as a property.
 
 #### Signature
 
 ```teo
-@setter(Pipeline<Null, Any>)
+declare unique model property decorator setter(pipeline?: Pipeline<Self, Ignored>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                        | Description                                |
-| :------- | :------- | :-------------------------- | :----------------------------------------- |
-| 0        | **Yes**  | Pipeline&#60;Null, Any&#62; | A pipeline to assign values to the object. |
+| Name     | Required | Type                            | Description                                      |
+| :------- | :------- | :------------------------------ | :----------------------------------------------- |
+| pipeline | **Yes**  | Pipeline&#60;Self, Ignored&#62; | A pipeline to assign values to the model object. |
 
 #### Examples
 
@@ -2642,6 +2642,12 @@ Define a cached property.
 * Unlike a field, cached property's value is calculated.
 * [`@dependencies`](#dependencies) must be specified
 
+#### Signature
+
+```teo
+declare unique model property decorator cached
+```
+
 #### Examples
 
 ##### Define a cached property
@@ -2658,22 +2664,21 @@ model User {
 }
 ```
 
-### `@dependencies`
+### `@deps`
 
-Define field dependencies for a property.
+Define field dependencies for a cached property.
 
 #### Signature
 
 ```teo
-@dependencies(ScalarFieldEnum<Self>[])
+declare unique model property decorator deps(deps?: Enumerable<SerializableScalarFields<Self>>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                            | Description        |
-| :------- | :------- | :------------------------------ | :----------------- |
-| 0        | **Yes**  | ScalarFieldEnum&#60;Self&#62;[] | Dependency fields. |
-
+| Name | Required | Type                                                       | Description        |
+| :--- | :------- | :--------------------------------------------------------- | :----------------- |
+| deps | **Yes**  | Enumerable&#60;SerializableScalarFields&#60;Self&#62;&#62; | Dependency fields. |
 
 #### Examples
 
@@ -2688,6 +2693,86 @@ model User {
   @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
   @dependencies([.firstName, .lastName])
   name: String
+}
+```
+
+### `@unique`
+
+Defines a unique constraint on the cached property.
+
+#### Remarks
+
+* This is `UNIQUE` for SQL databases. For MongoDB, a unique index is created.
+* Can be defined on string, bool, date and number types.
+
+#### Signature
+
+```teo
+declare unique model property decorator unique(sort: Sort?, length: Int?, map: String?)
+```
+
+#### Arguments
+
+| Name   | Required | Type    | Description                     |
+| :----- | :------- | :------ | :------------------------------ |
+| sort   | No       | Sort?   | The index sorting order.        |
+| length | No       | Int?    | The index length.               |
+| map    | No       | String? | The index name in the database. |
+
+#### Examples
+
+##### Specify a unique constraint on a cached property
+
+```teo showLineNumbers
+model Album {
+  @id
+  id: Int
+  name: String
+  @index
+  year: Int
+  @getter($self.get(.year)) @cached @deps(.year) @unique
+  yearProperty: Int
+  artist: String
+}
+```
+
+### `@index`
+
+Defines an index on the cached property.
+
+#### Remarks
+
+* This is `INDEX` for SQL databases. For MongoDB, an index is created.
+* Can be defined on string, bool, date and number types.
+
+#### Signature
+
+```teo
+declare unique model property decorator index(sort: Sort?, length: Int?, map: String?)
+```
+
+#### Arguments
+
+| Name   | Required | Type    | Description                     |
+| :----- | :------- | :------ | :------------------------------ |
+| sort   | No       | Sort?   | The index sorting order.        |
+| length | No       | Int?    | The index length.               |
+| map    | No       | String? | The index name in the database. |
+
+#### Examples
+
+##### Specify an index on a cached property
+
+```teo showLineNumbers
+model Album {
+  @id
+  id: Int
+  name: String
+  @index
+  year: Int
+  @getter($self.get(.year)) @cached @deps(.year) @index
+  yearProperty: Int
+  artist: String
 }
 ```
 
