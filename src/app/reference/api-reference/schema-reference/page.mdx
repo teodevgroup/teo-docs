@@ -1284,30 +1284,71 @@ ObjectId represents a Bson `ObjectId` type.
 | :-------- | :-------------- |
 | MongoDB   | ObjectId        |
 
-## Field decorators
+## Model field decorators
 
 Field decorators modify the behavior of a model data field.
 
 ### `@id`
 
-Defines an unique ID on the field.
+Defines an primary key on the field.
 
 #### Remarks
 
-* This is `PRIMARY KEY` for SQL databases. For MongoDB, a unique index is used
-and `_id` becomes a hidden field.
-* Can be defined on string and number types.
+* This is `PRIMARY KEY` for SQL databases. For MongoDB, If the field doesn't 
+map to `_id`, a unique index is used and `_id` becomes a hidden field.
+* Can be defined on string and number types. For MongoDB database, `ObjectId` 
+is also supported.
 * Most of the times, you want the database to generate an ID and make it
 readonly.
 
+#### Signature
+
+```teo
+declare exclusive model field decorator id(sort: Sort?, length: Int?, map: String?)
+```
+
+#### Arguments
+
+| Name   | Required | Type    | Description                     |
+| :----- | :------- | :------ | :------------------------------ |
+| sort   | No       | Sort?   | The index sorting order.        |
+| length | No       | Int?    | The index length.               |
+| map    | No       | String? | The index name in the database. |
+
 #### Examples
 
-##### Specify an readonly auto generated unique ID
+##### Specify a SQL readonly auto generated ID
 
 ```teo showLineNumbers
 model Student {
   @id @autoIncrement @readonly
   id: Int
+  class: String
+  name: String
+  email: String?
+  age: Int?
+}
+```
+
+##### Specify a MongoDB readonly auto generated ID
+
+```teo showLineNumbers
+model Student {
+  @id @auto @map("_id") @readonly
+  id: ObjectId
+  class: String
+  name: String
+  email: String?
+  age: Int?
+}
+```
+
+##### Specify a readonly UUID ID
+
+```teo showLineNumbers
+model Student {
+  @id @readonly @default($uuid)
+  id: String
   class: String
   name: String
   email: String?
@@ -1323,6 +1364,20 @@ Defines a unique constraint on the field.
 
 * This is `UNIQUE` for SQL databases. For MongoDB, a unique index is created.
 * Can be defined on string, bool, date and number types.
+
+#### Signature
+
+```teo
+declare unique model field decorator index(sort: Sort?, length: Int?, map: String?)
+```
+
+#### Arguments
+
+| Name   | Required | Type    | Description                     |
+| :----- | :------- | :------ | :------------------------------ |
+| sort   | No       | Sort?   | The index sorting order.        |
+| length | No       | Int?    | The index length.               |
+| map    | No       | String? | The index name in the database. |
 
 #### Examples
 
@@ -1345,6 +1400,20 @@ Defines an index on the field.
 
 * This is `INDEX` for SQL databases. For MongoDB, an index is created.
 * Can be defined on string, bool, date and number types.
+
+#### Signature
+
+```teo
+declare unique model field decorator unique(sort: Sort?, length: Int?, map: String?)
+```
+
+#### Arguments
+
+| Name   | Required | Type    | Description                     |
+| :----- | :------- | :------ | :------------------------------ |
+| sort   | No       | Sort?   | The index sorting order.        |
+| length | No       | Int?    | The index length.               |
+| map    | No       | String? | The index name in the database. |
 
 #### Examples
 
@@ -1369,14 +1438,14 @@ original field name is used as is.
 #### Signature
 
 ```teo
-@map(String)
+declare unique model field decorator map(columnName?: String)
 ```
 
 #### Arguments
 
-| Position | Required | Type   | Description                     |
-| :------- | :------- | :----- | :------------------------------ |
-| 0        | **Yes**  | String | The database table column name. |
+| Name       | Required | Type   | Description                     |
+| :--------- | :------- | :----- | :------------------------------ |
+| columnName | **Yes**  | String | The database table column name. |
 
 #### Examples
 
@@ -1391,12 +1460,63 @@ model Person {
 }
 ```
 
+### `@db`
+
+Specify the database type to use.
+
+#### Remarks
+
+* The parameter depends on the current connector provider type. Different 
+databases have different database types.
+
+#### Signature
+
+```teo
+#if available(mysql)
+declare unique model field decorator db(type?: MySQLDatabaseType)
+#end
+#if available(postgres)
+declare unique model field decorator db(type?: PostgreSQLDatabaseType)
+#end
+#if available(sqlite)
+declare unique model field decorator db(type?: SQLiteDatabaseType)
+#end
+#if available(mongo)
+declare unique model field decorator db(type?: MongoDBDatabaseType)
+#end
+```
+
+#### Arguments
+
+| Name | Required | Type                                                                               | Description                          |
+| :--- | :------- | :--------------------------------------------------------------------------------- | :----------------------------------- |
+| type | **Yes**  | MySQLDatabaseType, PostgreSQLDatabaseType, SQLiteDatabaseType, MongoDBDatabaseType | The database specific database type. |
+
+#### Examples
+
+##### Custom MySQL text type
+
+```teo
+model Person {
+  @id
+  id: Int
+  @db(.text)
+  name: String
+}
+```
+
 ### `@auto`
 
 Defines a field which value is auto generated by the underlying database.
 
-> This modifier only exists for MongoDB connector. Use [`@autoIncrement`](#autoincrement) for SQL
-> databases.
+> This modifier only exists for MongoDB connector. Use 
+> [`@autoIncrement`](#autoincrement) for SQL databases.
+
+#### Signature
+
+```teo
+declare unique model field decorator auto
+```
 
 #### Examples
 
@@ -1417,6 +1537,12 @@ underlying database.
 
 > This modifier only exists for SQL connectors. Use [`@auto`](#auto) if you are
 > using MongoDB.
+
+#### Signature
+
+```teo
+declare unique model field decorator autoIncrement
+```
 
 #### Examples
 
@@ -1444,15 +1570,14 @@ database to generate a default value
 #### Signature
 
 ```teo
-@default(Type<Field>|Pipeline<Any, Type<Field>>>)
+declare unique model field decorator default(value?: ThisFieldType | Pipeline<Null, ThisFieldType>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                                      | Description                         |
-| :------- | :------- | :-------------------------------------------------------- | :---------------------------------- |
-| 0        | **Yes**  | Type<>{"<"}</>Field<>{">"}</>                             | A default value.                    |
-| 0        | **Yes**  | Pipeline<>{"<"}</>Any, Type<>{"<"}</>Field<>{">"}</><>{">"}</> | A pipeline returns a default value. |
+| Name | Required | Type                                                             | Description                                                  |
+| :--- | :------- | :--------------------------------------------------------------- | :----------------------------------------------------------- |
+| name | **Yes**  | ThisFieldType \| Pipeline<>{"<"}</>Null, ThisFieldType<>{">"}</> | A default value or a pipeline which returns a default value. |
 
 #### Examples
 
@@ -1491,6 +1616,12 @@ foreign key relationships when delete and update.
 records.
 * A foreign key should be used in a relationship.
 
+#### Signature
+
+```teo
+declare unique model field decorator foreignKey
+```
+
 #### Examples
 
 ##### Declare a foreign key used in a relationship
@@ -1512,8 +1643,14 @@ Defines a readonly field.
 
 #### Remarks
 
-* You can use a [`@default`](#default) to apply a default value to a readonly
-field.
+* You can use a [`@default`](#default) decorator to apply a default value to a 
+readonly field.
+
+#### Signature
+
+```teo
+declare unique model field decorator readonly
+```
 
 #### Examples
 
@@ -1523,12 +1660,20 @@ field.
 model User {
   @id @readonly @autoIncrement
   id: Int
+  @default($now) @readonly
+  createdAt: DateTime
 }
 ```
 
 ### `@writeonly`
 
 Defines a writeonly field.
+
+#### Signature
+
+```teo
+declare unique model field decorator writeonly
+```
 
 #### Examples
 
@@ -1545,12 +1690,20 @@ model User {
 
 ### `@internal`
 
-Defines an internal field aka [`@readonly`](#readonly) and
-[`@writeonly`](#writeonly).
+Defines an internal field. `@internal` is equivalent to 
+[`@readonly`](#readonly) and [`@writeonly`](#writeonly).
 
 #### Remarks
 
 * Use pipelines and callbacks to set a value to be internally used.
+* Use custom handlers to access the ORM api in order to read and write the 
+value.
+
+#### Signature
+
+```teo
+declare unique model field decorator internal
+```
 
 #### Examples
 
@@ -1574,6 +1727,12 @@ Defines a readwrite field. This is the default behavior.
 * Readwrite is the default field behavior. Only use this decorator when you
 want to stress on its accessibility.
 
+#### Signature
+
+```teo
+declare unique model field decorator readwrite
+```
+
 #### Examples
 
 ##### Define a field marked with readwrite
@@ -1589,7 +1748,14 @@ model AuthCode {
 
 ### `@writeNonnull`
 
-Defines a write nonnull field.
+Defines a write nonnull field. Initially, the field value can be null. Only 
+non null value could be updated on this field.
+
+#### Signature
+
+```teo
+declare unique model field decorator writeNonNull
+```
 
 #### Examples
 
@@ -1615,7 +1781,13 @@ model User {
 
 ### `@writeOnCreate`
 
-Defines a write on create field.
+Defines a write on create field. When updating, this field becomes readonly.
+
+#### Signature
+
+```teo
+declare unique model field decorator writeOnCreate
+```
 
 #### Examples
 
@@ -1643,7 +1815,14 @@ model User {
 
 ### `@writeOnce`
 
-Defines a write once field.
+Defines a write once field. As long as the current value is null, this field 
+can be updated.
+
+#### Signature
+
+```teo
+declare unique model field decorator writeOnce
+```
 
 #### Examples
 
@@ -1673,14 +1852,14 @@ Defines a field which is readable in some cases.
 #### Signature
 
 ```teo
-@readIf(Pipeline<Type<Field>, Any>)
+declare unique model field decorator readIf(cond?: Pipeline<Self, Ignored>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                                           | Description                |
-| :------- | :------- | :------------------------------------------------------------- | :------------------------- |
-| 0        | **Yes**  | Pipeline<>{"<"}</>Type<>{"<"}</>Field<>{">"}</>, Any<>{">"}</> | A pipeline that validates. |
+| Name | Required | Type                                      | Description                |
+| :--- | :------- | :---------------------------------------- | :------------------------- |
+| cond | **Yes**  | Pipeline<>{"<"}</>Self, Ignored<>{">"}</> | A pipeline that validates. |
 
 #### Examples
 
@@ -1703,14 +1882,14 @@ Defines a field which is writable in some cases.
 #### Signature
 
 ```teo
-@writeIf(Pipeline<Type<Field>, Any>)
+declare unique model field decorator writeIf(cond?: Pipeline<Self, Ignored>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                                           | Description                |
-| :------- | :------- | :------------------------------------------------------------- | :------------------------- |
-| 0        | **Yes**  | Pipeline<>{"<"}</>Type<>{"<"}</>Field<>{">"}</>, Any<>{">"}</> | A pipeline that validates. |
+| Name | Required | Type                                      | Description                |
+| :--- | :------- | :---------------------------------------- | :------------------------- |
+| cond | **Yes**  | Pipeline<>{"<"}</>Self, Ignored<>{">"}</> | A pipeline that validates. |
 
 #### Examples
 
@@ -1729,6 +1908,12 @@ model Article {
 ### `@virtual`
 
 Defines a virtual field.
+
+#### Signature
+
+```teo
+declare unique model field decorator virtual
+```
 
 #### Examples
 
@@ -1754,6 +1939,12 @@ Defines an atomic field.
 * An atomic field cannot have [`@onSet`](#onset) and [`@onSave`](#onsave)
 pipeline callbacks.
 
+#### Signature
+
+```teo
+declare unique model field decorator atomic
+```
+
 #### Examples
 
 ##### Define an atomic field
@@ -1776,6 +1967,12 @@ Defines a nonatomic field.
 * This is the default field behavior.
 * Only use this decorator when you want to stress on its atomicity.
 
+#### Signature
+
+```teo
+declare unique model field decorator nonatomic
+```
+
 #### Examples
 
 ##### Define an nonatomic field
@@ -1797,15 +1994,14 @@ Defines a field which is required when some other field value is present.
 #### Signature
 
 ```teo
-@presentWith(ScalarFieldEnum<Self>|ScalarFieldEnum<Self>[]...)
+declare unique model field decorator presentWith(fields?: Enumerable<ScalarFields<Self>>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                      | Description       |
-| :------- | :------- | :---------------------------------------- | :---------------- |
-| (any)    | **Yes**  | ScalarFieldEnum<>{"<"}</>Self<>{">"}</>   | A field name.     |
-| (any)    | **Yes**  | ScalarFieldEnum<>{"<"}</>Self<>{">"}</>[] | Some field names. |
+| Name   | Required | Type                                                               | Description                            |
+| :----- | :------- | :----------------------------------------------------------------- | :------------------------------------- |
+| fields | **Yes**  | Enumerable<>{'<'}</>ScalarFields<>{'<'}</>Self<>{'>'}</><>{'>'}</> | A field name or a list of field names. |
 
 #### Examples
 
@@ -1828,15 +2024,14 @@ Defines a field which is required when some other field value is missing.
 #### Signature
 
 ```teo
-@presentWithout(ScalarFieldEnum<Self>|ScalarFieldEnum<Self>[]...)
+declare unique model field decorator presentWithout(fields?: Enumerable<ScalarFields<Self>>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                      | Description       |
-| :------- | :------- | :---------------------------------------- | :---------------- |
-| (any)    | **Yes**  | ScalarFieldEnum<>{"<"}</>Self<>{">"}</>   | A field name.     |
-| (any)    | **Yes**  | ScalarFieldEnum<>{"<"}</>Self<>{">"}</>[] | Some field names. |
+| Name   | Required | Type                                                               | Description                      |
+| :----- | :------- | :----------------------------------------------------------------- | :------------------------------- |
+| fields | **Yes**  | Enumerable<>{'<'}</>ScalarFields<>{'<'}</>Self<>{'>'}</><>{'>'}</> | A field name or a list of names. |
 
 #### Examples
 
@@ -1860,14 +2055,14 @@ Defines a field which is required in some cases.
 #### Signature
 
 ```teo
-@presentIf(Pipeline<Type<Field>, Any>)
+declare unique model field decorator presentIf(cond?: Pipeline<Self, Ignored>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                                           | Description                |
-| :------- | :------- | :------------------------------------------------------------- | :------------------------- |
-| 0        | **Yes**  | Pipeline<>{"<"}</>Type<>{"<"}</>Field<>{">"}</>, Any<>{">"}</> | A pipeline that validates. |
+| Name | Required | Type                                      | Description                |
+| :--- | :------- | :---------------------------------------- | :------------------------- |
+| cond | **Yes**  | Pipeline<>{"<"}</>Self, Ignored<>{">"}</> | A pipeline that validates. |
 
 #### Examples
 
@@ -1883,7 +2078,57 @@ model Article {
 }
 ```
 
-### `@identity`
+### `@inputOmissible`
+
+Define a field which input marked with optional when the original definition 
+cannot infer.
+
+#### Signature
+
+```teo
+declare unique model field decorator inputOmissible
+```
+
+#### Examples
+
+##### Define an input omissible field
+
+```teo showLineNumbers
+model Article {
+  @id
+  id: Int
+  title: String
+  @inputOmissible
+  content: String
+}
+```
+
+### `@outputOmissible`
+
+Define a field which input is marked with optional when the original definition 
+cannot infer.
+
+#### Signature
+
+```teo
+declare unique model field decorator outputOmissible
+```
+
+#### Examples
+
+##### Define an output omissible field
+
+```teo showLineNumbers
+model Article {
+  @id
+  id: Int
+  title: String
+  @outputOmissible
+  content: String
+}
+```
+
+{/* ### `@identity`
 
 Defines a field which is used as an identity for authentication.
 
@@ -1945,7 +2190,7 @@ model User {
   @identityChecker
   password: String
 }
-```
+``` */}
 
 ### `@onSet`
 
@@ -2115,7 +2360,7 @@ model User {
 }
 ```
 
-## Relation decorators
+## Model relation decorators
 
 Relation decorators modify the behavior of a model relation field.
 
@@ -2224,7 +2469,7 @@ model Perform {
 }
 ```
 
-## Property decorators
+## Model property decorators
 
 Relation decorators modify the behavior of a model property field.
 
