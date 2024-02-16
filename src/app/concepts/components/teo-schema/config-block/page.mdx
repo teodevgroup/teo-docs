@@ -8,4 +8,50 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Config block
 
+Config block is a block level element which contains a schema's config items.
+
+There are several types of config blocks and they look the same way:
+
+```teo showLineNumbers
+connector {
+  provider: .mysql,
+  url: "mysql://localhost:3306/helloteo",
+}
+
+server {
+  bind: ("0.0.0.0", 5300),
+}
+
+client ts {
+  provider: .typeScript,
+  dest: "../hello-teo",
+  host: "http://127.0.0.1:5300",
+  package: true,
+  gitCommit: true,
+}
+
+entity node {
+  provider: .node,
+  dest: "./src/entities",
+}
+```
+
+Each config block can optionally have a name. If there are multiple config 
+blocks of the same type, a unique name is required.
+
+## Types of config blocks
+
+There are currently 4 types of config blocks in use:
+
+* [Connector](/concepts/components/teo-schema/connector)
+* [Server](/concepts/components/teo-schema/server)
+* [Generator](/concepts/components/teo-schema/generator)
+    * [Model entity generator](/concepts/components/teo-schema/generator#model-entity-generator)
+    * [Query client generator](/concepts/components/teo-schema/generator#query-client-generator)
+
+## A note about the future implementation
+
+In the future, more kinds of configs will be added. And package authors may
+declare their own config declaration in the packages.
+
 <PrevNext />
