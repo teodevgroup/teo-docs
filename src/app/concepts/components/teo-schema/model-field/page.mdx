@@ -8,18 +8,25 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Model field
 
-A field represents two things, one on data side, one on API side. Like an ORM,
-a field represents a database column. Thus, it's defined on model, which
-represents a database table. Besides, a field also represents API input fields
-and output data fields.
+> This article introduces model scalar field. Head to 
+> [model relation](/concepts/components/teo-schema/model-relation) or 
+> [model property](/concepts/components/teo-schema/model-property) if you are
+> finding these concepts.
 
-Value of a concrete field is saved into the database. A
-[**virtual field**](#virtual-field) is useful for providing additional information
-through network API.
+A model scalar field represents a database table column, an API input, an API
+output or some of those above.
 
-## Declare a field
+A [**virtual field**](#virtual-field) doesn't have a corresponding table 
+column but it's useful for providing additional information in API. A field
+marked with [`@readonly`](/reference/api-reference/schema-reference#readonly) 
+is not accessible from the API input. Similarly, A field marked with 
+[`@writeonly`](/reference/api-reference/schema-reference#writeonly) is not 
+accessible from the API output.
 
-Fields are declared within model blocks. Let's see some examples of fields.
+## Declare a model scalar field
+
+Model scalar fields are declared within model blocks. Let's see some examples 
+of fields.
 
 ```teo showLineNumbers
 model User {
@@ -32,42 +39,48 @@ This field represents a typical MongoDB primary field.
 
 ```teo showLineNumbers
 model User {
-  @unique @onSet($isEmail) @identity
+  @unique @onSet($isEmail)
   email: String
 }
 ```
 
-This field is a typical email field. It is unique. When setting a value,
-`$isEmail` pipeline item is checked. This field can be used as an identity.
+This field is a typical email field. It is unique. When setting a new value,
+`$isEmail` pipeline item is checked.
 
 ## Field type
 
 A field has a field type. These field types are mapped to programming data
 types and database types. The currently supported field types are:
 
-* String
-* Int
-* Float
-* Bool
-* Date
-* DateTime
-* Array
-* Enum
-
-> The array type is only supported for MongoDB currently, we will update our
-> database connector code to support PostgreSQL soon.
-
-To specify a field type to a field definition, just type the type after the
-colon.
+* `Bool`
+* `String`
+* `Int`
+* `Int64`
+* `Float`
+* `Float32`
+* `Date`
+* `DateTime`
+* `Decimal` (only available in SQL databases)
+* `Array` (only available in PostgreSQL and MongoDB)
+* `ObjectId` (only available in MongoDB)
+* `Enum`
 
 ```teo showLineNumbers
+enum Sex {
+  male
+  female
+}
+
 model Item {
+  @id
+  id: Int
   int32: Int
   int64: Int64
   float64: Float
-  float32: Float32
-  date: Date
+  float32: Float32?
+  date: Date?
   dateTime: DateTime?
+  decimal: Decimal?
   sex: Sex // this field is an enum
   stringArray: String[] // this field is an array of strings
 }
@@ -75,10 +88,10 @@ model Item {
 
 ## Field optionality
 
-In the preceding field definitions, you've already seen the `?`. A field marked
-with `?` is optional. But we have more. Teo has conditionally optional. These
-are optional in the database level, but validated with logics on request level.
-The supported optionalities are:
+In the preceding code snippet, you've already seen the `?` punctuation. A field 
+which type is marked with `?` is optional. But we have more. Teo has 
+conditional optionality. These are optional in the database level. But they are 
+validated with logics on API level. The supported optionalities are:
 
 * `presentWith` field is required if some other field is present
 * `presentWithout` field is required if some other field is not present
@@ -107,9 +120,8 @@ model User {
 
 ## Field accessibility
 
-Field accessibility is an important concept which makes Teo a full-fledged HTTP
-server instead of an next generation ORM. This protects data from being
-accidently accessed by an undesired person. Supported accessibilities are:
+Field accessibility is an important concept in Teo. This protects data from 
+being exposed when not desired. Supported accessibilities are:
 
 * `readonly` prevents value from being passed in from input
 * `writeonly` prevents value from being seen by frontend users
@@ -145,10 +157,13 @@ model User {
 
 A field can have a default value. Use the `@default` decorator on a field to
 specify whether a constant value or a calculated value through
-[**pipeline**](/concepts/components/teo-schema/pipeline).
+[**pipeline**](/concepts/components/teo-schema/pipeline)
+<span className="concept">CONCEPT</span>.
 
 ```teo showLineNumbers
 model Post {
+  @id
+  id: Int
   @default("Untitled")
   title: String
 }
@@ -157,61 +172,39 @@ model Post {
 ## Field database type
 
 Each field type has different default database type for different databases.
-You can also specify your own database type for a field explicitly.
+You can specify a designated database type for a field explicitly.
 
-> This feature will be fully supported when we altered the SQL database
-> connector from sqlx.
-
-## Virtual field
-
-Virtual field is designed to complete API requirements. Value of virtual field
-is not saved into the database. But these values can be used for validation and
-transformation.
-
-In this example, there are a lot of virtual fields which complete the password
-updating feature.
-
-```teo showLineNumbers
-model User {
-  /// @name Reset Password Reset Token
-  /// If this value is true, a new password reset token is generated.
-  @writeonly @virtual @onSet($if($isTrue, then: $self.set(.passwordResetToken, $uuid)))
-  resetPasswordResetToken: Bool?
-
-  /// @name Password Reset Token
-  /// The password reset token.
-  @internal
-  passwordResetToken: String?
-
-  /// @name Password Reset Token from User
-  /// The user provided password reset token. This is used to validate.
-  @writeonly @virtual
-  passwordResetTokenFromUser: String?
-
-  /// @name Old Password
-  /// User's old password.
-  @writeonly @virtual
-  oldPassword: String?
-
-  /// @name Password
-  /// User's password.
-  @writeonly @recordPrevious @identityChecker($bcryptVerify($self.get(.password)))
-  @onSet($hasLength(8...16).isSecurePassword.bcryptSalt.when(.update, $validate($any(
-    $self.get(.oldPassword).exists.bcryptVerify($self.previous(.password)),
-    $self.get(.passwordResetToken).exists.eq($self.get(.passwordResetTokenFromUser).exists).self.set(.passwordResetToken, null)
-  ))))
-  password: String
+```teo
+model Post {
+  @id
+  id: Int
+  @db(.text)
+  title: String
 }
 ```
 
-Although this is a little bit complicated comparing to other simple
-definitions. However, comparing to other HTTP frameworks, to implement password
-updation protection like this is quite concise, readable and advanced.
+For a complete list of supported database types, view:
+  * [MySQL database type](/reference/api-reference/schema-reference#mysqldatabasetype)
+  * [PostgreSQL database type](/reference/api-reference/schema-reference#postgresqldatabasetype)
+  * [SQLite database type](/reference/api-reference/schema-reference#sqlitedatabasetype)
+  * [MongoDB database type](/reference/api-reference/schema-reference#mongodbdatabasetype)
 
-## Going next
+## Virtual field
 
-In the next topic,
-[**model relation**](/concepts/components/teo-schema/model-relation) is introduced.
-Relation is the definition with that models are connected.
+Use the [`@virtual`](/reference/api-reference/schema-reference#virtual) 
+decorator to define a virtual field. Virtual field won't save its value to the 
+database. is designed to complete API requirements. Values of these fields can 
+be used for validation and transformation.
+
+```teo showLineNumbers
+model User {
+  @id
+  id: Int
+  @writeonly
+  password: String
+  @writeonly
+  oldPassword: String?
+}
+```
 
 <PrevNext />
