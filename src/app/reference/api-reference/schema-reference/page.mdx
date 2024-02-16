@@ -2426,13 +2426,39 @@ model Person {
 }
 ```
 
+## `@dropped`
+
+Marks the model field is dropped. This is used for migration. After migration,
+this field can be deleted safely.
+
+#### Signature
+
+```teo
+declare unique model field decorator dropped
+```
+
+#### Example
+
+##### Mark a dropped field
+
+```teo
+model Person {
+  @id
+  id: Int
+  age: Int
+  @dropped
+  oldAge: Int
+}
+```
+
 ## Model relation decorators
 
-Relation decorators modify the behavior of a model relation field.
+Model relation decorators define and modify the behavior of a model relation 
+field.
 
 ### `@relation`
 
-Define a relation.
+Define a model relation.
 
 #### Remarks
 
@@ -2443,18 +2469,23 @@ instead of an array for simplicity.
 #### Signature
 
 ```teo
-@relation(fields: ScalarFieldEnum<Self>[]?, references: ScalarFieldEnum<Other>[]?>, through: Model?, local: RelationEnum<Through>?, foreign: RelationEnum<Through>?)
+declare unique model relation decorator relation {
+  variant(fields: Enumerable<SerializableScalarFields<Self>>, references: Enumerable<SerializableScalarFields<ThisFieldType>>, onUpdate: Update?, onDelete: Delete?)
+  variant<T>(through: T, local: DirectRelations<T>, foreign: DirectRelations<T>, onUpdate: Update?, onDelete: Delete?) where T: Model
+}
 ```
 
 #### Arguments
 
-| Position   | Required | Type                                     | Description                            |
-| :--------- | :------- | :--------------------------------------- | :------------------------------------- |
-| fields     | No       | ScalarFieldEnum<>{"<"}</>Self<>{">"}</>  | Local fields.                          |
-| references | No       | ScalarFieldEnum<>{"<"}</>Other<>{">"}</> | Foreign fields.                        |
-| through    | No       | Model                                    | Model for join table.                  |
-| local      | No       | RelationEnum<>{"<"}</>Through<>{">"}</>  | Relation to this model on join table.  |
-| foreign    | No       | RelationEnum<>{"<"}</>Through<>{">"}</>  | Relation to other model on join table. |
+| Name       | Required | Type                                                                                    | Description                            |
+| :--------- | :------- | :-------------------------------------------------------------------------------------- | :------------------------------------- |
+| fields     | No       | Enumerable<>{"<"}</>SerializableScalarFields<>{"<"}</>Self<>{">"}</><>{">"}</>          | Local fields.                          |
+| references | No       | Enumerable<>{"<"}</>SerializableScalarFields<>{"<"}</>ThisFieldType<>{">"}</><>{">"}</> | Foreign fields.                        |
+| through    | No       | T: Model                                                                                | Model which is used as the join table. |
+| local      | No       | DirectRelations<>{"<"}</>T<>{">"}</>                                                    | Relation to this model on join table.  |
+| foreign    | No       | DirectRelations<>{"<"}</>T<>{">"}</>                                                    | Relation to other model on join table. |
+| onUpdate   | No       | Update?                                                                                 | The update rule.                       |
+| onDelete   | No       | Delete?                                                                                 | The delete rule.                       |
 
 #### Examples
 
