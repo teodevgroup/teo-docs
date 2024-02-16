@@ -261,10 +261,10 @@ const DocHome: NextPage = () => {
         <OverviewSectionItems>
           <OverviewSectionItem href="/concepts/components/teo-schema/connector">Connector</OverviewSectionItem>
           <OverviewSectionItem href="/concepts/components/teo-schema/model">Model</OverviewSectionItem>
-          <OverviewSectionItem href="/concepts/components/teo-schema/field">Field</OverviewSectionItem>
-          <OverviewSectionItem href="/concepts/components/teo-schema/relation">Relation</OverviewSectionItem>
-          <OverviewSectionItem href="/concepts/components/teo-schema/property">Property</OverviewSectionItem>
-          <OverviewSectionItem href="/concepts/components/teo-schema/action">Action</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/model-field">Model field</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/model-relation">Model relation</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/model-property">Model property</OverviewSectionItem>
+          <OverviewSectionItem href="/concepts/components/teo-schema/handler">Handler</OverviewSectionItem>
         </OverviewSectionItems>
       </OverviewSection>
       <OverviewSection>
