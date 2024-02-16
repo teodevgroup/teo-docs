@@ -8,15 +8,16 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Model relation
 
-> This topic introduces the concept of relation. To learn how to write relation
-> input through frontend clients or raw HTTP requests, head over to client API
-> documentation.
+> This topic introduces the concept of model relation. To learn how to write 
+> relation input through frontend clients or raw HTTP requests, head over to 
+> [relation queries](/guides/query-client-guides/relation-queries)
+> <span className="concept">GUIDE</span>.
 
-A relation connects two models by foreign keys or join table. Relations are
-categorized into 1-to-1, 1-to-many and many-to-many depending on the nature of
-how the relationship is implemented. They also fall in two main categories:
-intrinsic relation and coincidence relation, depending on whether a foreign key
-is declared.
+A relation connects two models and setup their relationship by foreign keys or 
+join table. Relations are categorized into 1-to-1, 1-to-many and many-to-many 
+depending on the nature of how the relationship is implemented. They also fall 
+in two main categories: intrinsic relation and coincidence relation, depending 
+on whether a foreign key is declared.
 
 Fields which has a primary index or unique index can be used as foreign key
 reference. If a compound unique index is used, multiple keys should be
@@ -160,42 +161,83 @@ model View {
 A city has views, but the person who is typing this may type wrongly. If he
 modify the `cityName` with an updation, the related city will not be updated.
 
-{/* ## Update rule
+## Update rule
 
-> Update rule is not implemented. We plan to implement this after the Teo
-> schema feature.
+Update rule designates what to happen to this object if the related object
+is being updated.
+
+To specify an update rule, add a labeled argument `onUpdate:` to the 
+[`@relation`](/reference/api-reference/schema-reference#relation) decorator.
+
+```teo
+model Profile {
+  @id
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id, onUpdate: .update)
+  user: User
+}
+
+model User {
+  @id
+  id: Int
+  @unique
+  email: String
+  @relation(fields: .id, references: .userId, onUpdate: .update)
+  profile: Profile
+}
+```
+
+The available update rules are:
+
+* `noAction` doesn't take any actions and leave the data in the database in a 
+broken state
+* `nullify` set the related value to null
+* `update` update the related value to match the related object
+* `delete` delete this object
+* `deny` doesn't allow the value on the field otherside to be updated
+* `default` reset the related value to the default value
 
 ## Delete rule
 
-Delete rule is the action which is triggered when an object in a relation is
-being deleted.
+Delete rule designates what to happen to this object if the related object
+is being deleted.
 
-### Default
+To specify a delete rule, add a labeled argument `onDelete:` to the 
+[`@relation`](/reference/api-reference/schema-reference#relation) decorator.
 
-The delete rule of a relationship is `default` by defualt. No action is taken
-if relation object is deleted. Leave the data in the database in a broken
-state.
+```teo
+model Profile {
+  @id
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id, onDelete: .cascade)
+  user: User
+}
 
-### Nullify
+model User {
+  @id
+  id: Int
+  @unique
+  email: String
+  @relation(fields: .id, references: .userId, onDelete: .cascade)
+  profile: Profile
+}
+```
 
-Set the value of foreign key to `null` on related object deletion. If this
-field is not optional, denies the deletion.
+The available delete rules are:
 
-### Cascade
-
-Delete this object when related object is deleted.
-
-### Deny
-
-Prevent related objects from being deleted.
-
-In this example, a user cannot be deleted unless he has no posts. */}
-
-## Going next
-
-The next topic introduces
-[**model property**](/concepts/components/teo-schema/model-property). Like 
-field and relation, it can be used as input or output. Property is not 
-primitive fields, they are calculated.
+* `noAction` no action is taken and leave the data in the database in a broken
+state
+* `nullify` set the related value to null
+* `cascade` delete this object, too
+* `deny` prevent related objects from being deleted
+* `default` set the related value to the field's default value
 
 <PrevNext />
