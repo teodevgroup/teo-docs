@@ -2194,20 +2194,21 @@ model User {
 
 ### `@onSet`
 
-Define an on set pipeline callback for the field.
+Define an on set pipeline callback for the field. When a new value is set 
+through the `set` ORM api, the `create` input, and the `update` input, this 
+pipeline is triggered.
 
 #### Signature
 
 ```teo
-@onSet(Pipeline<Type<Field>, Any>)
+declare unique model field decorator onSet(pipeline?: Pipeline<ThisFieldType?, ThisFieldType?>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                                           | Description                                                 |
-| :------- | :------- | :------------------------------------------------------------- | :---------------------------------------------------------- |
-| 0        | **Yes**  | Pipeline<>{"<"}</>Type<>{"<"}</>Field<>{">"}</>, Any<>{">"}</> | A pipeline that perform callbacks with value of this field. |
-
+| Name     | Required | Type                                                       | Description                                            |
+| :------- | :------- | :--------------------------------------------------------- | :----------------------------------------------------- |
+| pipeline | **Yes**  | Pipeline<>{'<'}</>ThisFieldType?, ThisFieldType?<>{'>'}</> | A pipeline that is performed with the passed in value. |
 
 #### Examples
 
@@ -2224,19 +2225,21 @@ model User {
 
 ### `@onSave`
 
-Define an on save pipeline callback for the field.
+Define an on save pipeline callback for the field. When this value is created 
+or updated and a new value is going to be written into the database, this 
+pipeline is triggered.
 
 #### Signature
 
 ```teo
-@onSave(Pipeline<Type<Field>, Any>)
+declare unique model field decorator onSave(pipeline?: Pipeline<ThisFieldType?, ThisFieldType>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                                           | Description                                                 |
-| :------- | :------- | :------------------------------------------------------------- | :---------------------------------------------------------- |
-| 0        | **Yes**  | Pipeline<>{"<"}</>Type<>{"<"}</>Field<>{">"}</>, Any<>{">"}</> | A pipeline that perform callbacks with value of this field. |
+| Name     | Required | Type                                                      | Description                                        |
+| :------- | :------- | :-------------------------------------------------------- | :------------------------------------------------- |
+| pipeline | **Yes**  | Pipeline<>{'<'}</>ThisFieldType?, ThisFieldType<>{'>'}</> | A pipeline that is performed with the field value. |
 
 #### Examples
 
@@ -2255,19 +2258,20 @@ model User {
 
 ### `@onOutput`
 
-Define an on output pipeline callback for the field.
+Define an on output pipeline callback for the field. This pipeline is triggered
+when the object is going to be displayed with the `toTeon` ORM api.
 
 #### Signature
 
 ```teo
-@onOutput(Pipeline<Type<Field>, Any>)
+declare unique model field decorator onOutput(pipeline?: Pipeline<ThisFieldType, ThisFieldType>)
 ```
 
 #### Arguments
 
-| Position | Required | Type                                                           | Description                                                 |
-| :------- | :------- | :------------------------------------------------------------- | :---------------------------------------------------------- |
-| 0        | **Yes**  | Pipeline<>{"<"}</>Type<>{"<"}</>Field<>{">"}</>, Any<>{">"}</> | A pipeline that perform callbacks with value of this field. |
+| Name     | Required | Type                                                     | Description                                           |
+| :------- | :------- | :------------------------------------------------------- | :---------------------------------------------------- |
+| pipeline | **Yes**  | Pipeline<>{'<'}</>ThisFieldType, ThisFieldType<>{'>'}</> | A pipeline that is performed when `toTeon` is called. |
 
 #### Examples
 
@@ -2291,6 +2295,12 @@ Define a queryable field.
 * This is the default field behavior. Only use this when you want to stress on
 the query ability of the field.
 
+#### Signature
+
+```teo
+declare unique model field decorator queryable
+```
+
 #### Examples
 
 ##### Define a queryable field
@@ -2307,6 +2317,12 @@ model User {
 ### `@unqueryable`
 
 Define an unqueryable field.
+
+### Signature
+
+```teo
+declare unique model field decorator unqueryable
+```
 
 #### Examples
 
@@ -2330,6 +2346,12 @@ Define a sortable field.
 * This is the default field behavior. Only use this when you want to stress on
 the sort ability of the field.
 
+#### Signature
+
+```teo
+declare unique model field decorator sortable
+```
+
 #### Examples
 
 ##### Define a sortable field
@@ -2347,6 +2369,12 @@ model User {
 
 Define an unsortable field.
 
+#### Signature
+
+```teo
+declare unique model field decorator unsortable
+```
+
 #### Examples
 
 ##### Define a unsortable field
@@ -2356,6 +2384,44 @@ model User {
   @id
   id: Int
   @unsortable
+  age: Int
+}
+```
+
+### `@migration`
+
+Give auto migration instructions on how this model field should be handled.
+
+#### Signature
+
+```teo
+declare unique model field decorator migration(
+  renamed: Enumerable<String>?, 
+  version: String?, 
+  default: ThisFieldType?,
+  priority: Int?
+)
+```
+
+#### Arguments
+
+| Name     | Required | Type                                  | Description                                                    |
+| :------- | :------- | :------------------------------------ | :------------------------------------------------------------- |
+| renamed  | No       | Enumerable<>{'<'}</>String<>{'>'}</>? | The names that this model field previously used.               |
+| version  | No       | String?                               | Annotate this model field with a version number.               |
+| default  | No       | ThisFieldType?                        | Specify a default value for this new model field.              |
+| priority | No       | Int?                                  | Determines the order of fields to modify when doing migration. |
+
+#### Examples
+
+##### Perfrom auto renaming a table column
+
+```teo showLineNumbers
+model Person {
+  @id
+  id: Int
+  @migration(renamed: "fullName")
+  name: String
   age: Int
 }
 ```
