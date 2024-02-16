@@ -271,12 +271,12 @@ namespace.
 
 ### Fields
 
-| Name       | Required | Type           | Description                                            |
-| :--------- | :------- | :------------- | :----------------------------------------------------- |
-| `provider` | **Yes**  | ClientLanguage | Describes what type of client package to generate.     |
-| `dest`     | **Yes**  | String (Path)  | Into which directory the client is generated.          |
-| `host`     | **Yes**  | String (URL)   | To which host this client connects to.                 |
-| `package`  | No       | Bool           | Generate a full package or generate just client files. |
+| Name       | Required | Type                              | Description                                            |
+| :--------- | :------- | :-------------------------------- | :----------------------------------------------------- |
+| `provider` | **Yes**  | [ClientLanguage](#clientlanguage) | Describes what type of client package to generate.     |
+| `dest`     | **Yes**  | String (Path)                     | Into which directory the client is generated.          |
+| `host`     | **Yes**  | String (URL)                      | To which host this client connects to.                 |
+| `package`  | No       | Bool                              | Generate a full package or generate just client files. |
 
 
 ### Remarks
@@ -1256,11 +1256,11 @@ declare exclusive model field decorator id(sort: Sort?, length: Int?, map: Strin
 
 #### Arguments
 
-| Name   | Required | Type    | Description                     |
-| :----- | :------- | :------ | :------------------------------ |
-| sort   | No       | Sort?   | The index sorting order.        |
-| length | No       | Int?    | The index length.               |
-| map    | No       | String? | The index name in the database. |
+| Name   | Required | Type           | Description                     |
+| :----- | :------- | :------------- | :------------------------------ |
+| sort   | No       | [Sort](#sort)? | The index sorting order.        |
+| length | No       | Int?           | The index length.               |
+| map    | No       | String?        | The index name in the database. |
 
 #### Examples
 
@@ -1322,7 +1322,7 @@ declare unique model field decorator index(sort: Sort?, length: Int?, map: Strin
 
 | Name   | Required | Type    | Description                     |
 | :----- | :------- | :------ | :------------------------------ |
-| sort   | No       | Sort?   | The index sorting order.        |
+| sort   | No       | [Sort](#sort)?   | The index sorting order.        |
 | length | No       | Int?    | The index length.               |
 | map    | No       | String? | The index name in the database. |
 
@@ -1358,7 +1358,7 @@ declare unique model field decorator unique(sort: Sort?, length: Int?, map: Stri
 
 | Name   | Required | Type    | Description                     |
 | :----- | :------- | :------ | :------------------------------ |
-| sort   | No       | Sort?   | The index sorting order.        |
+| sort   | No       | [Sort](#sort)?   | The index sorting order.        |
 | length | No       | Int?    | The index length.               |
 | map    | No       | String? | The index name in the database. |
 
@@ -2431,8 +2431,8 @@ declare unique model relation decorator relation {
 | through    | No       | T: Model                                                                                | Model which is used as the join table. |
 | local      | No       | DirectRelations<>{"<"}</>T<>{">"}</>                                                    | Relation to this model on join table.  |
 | foreign    | No       | DirectRelations<>{"<"}</>T<>{">"}</>                                                    | Relation to other model on join table. |
-| onUpdate   | No       | Update?                                                                                 | The update rule.                       |
-| onDelete   | No       | Delete?                                                                                 | The delete rule.                       |
+| onUpdate   | No       | [Update](#update)?                                                                                 | The update rule.                       |
+| onDelete   | No       | [Delete](#delete)?                                                                                 | The delete rule.                       |
 
 #### Examples
 
@@ -2662,7 +2662,7 @@ declare unique model property decorator unique(sort: Sort?, length: Int?, map: S
 
 | Name   | Required | Type    | Description                     |
 | :----- | :------- | :------ | :------------------------------ |
-| sort   | No       | Sort?   | The index sorting order.        |
+| sort   | No       | [Sort](#sort)?   | The index sorting order.        |
 | length | No       | Int?    | The index length.               |
 | map    | No       | String? | The index name in the database. |
 
@@ -2702,7 +2702,7 @@ declare unique model property decorator index(sort: Sort?, length: Int?, map: St
 
 | Name   | Required | Type    | Description                     |
 | :----- | :------- | :------ | :------------------------------ |
-| sort   | No       | Sort?   | The index sorting order.        |
+| sort   | No       | [Sort](#sort)?   | The index sorting order.        |
 | length | No       | Int?    | The index length.               |
 | map    | No       | String? | The index name in the database. |
 
@@ -2737,12 +2737,12 @@ declare unique handler decorator map(method?: Method?, path?: String?, ignorePre
 
 #### Arguments
 
-| Name         | Required | Type    | Description                                                       |
-| :----------- | :------- | :------ | :---------------------------------------------------------------- |
-| method       | No       | Method? | The HTTP request method. Default to `.post`.                      |
-| path         | No       | String? | The URL path.                                                     |
-| ignorePrefix | No       | Bool?   | Whether ignore the namespace and handler group prefix.            |
-| interface    | No       | String? | The generated interface name in query clients and model entities. |
+| Name         | Required | Type               | Description                                                       |
+| :----------- | :------- | :----------------- | :---------------------------------------------------------------- |
+| method       | No       | [Method](#method)? | The HTTP request method. Default to `.post`.                      |
+| path         | No       | String?            | The URL path.                                                     |
+| ignorePrefix | No       | Bool?              | Whether ignore the namespace and handler group prefix.            |
+| interface    | No       | String?            | The generated interface name in query clients and model entities. |
 
 #### Examples
 
