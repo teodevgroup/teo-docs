@@ -2574,7 +2574,7 @@ model User {
   id: Int
   firstName: String
   lastName: String
-  @setter($split(" ").assign(.firstName, $at(0)).assign(.lastName, $at(1)))
+  @setter($split(" ").assign(.firstName, $get(0)).assign(.lastName, $get(1)))
   name: String
 }
 ```
@@ -2587,7 +2587,7 @@ Define a cached property.
 
 * A cached property has a database column.
 * Unlike a field, cached property's value is calculated.
-* [`@dependencies`](#dependencies) must be specified
+* [`@deps`](#dependencies) must be specified
 
 #### Signature
 
@@ -2606,7 +2606,7 @@ model User {
   firstName: String
   lastName: String
   @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
-  @cached @dependencies([.firstName, .lastName])
+  @cached @deps([.firstName, .lastName])
   name: String
 }
 ```
@@ -2638,7 +2638,7 @@ model User {
   firstName: String
   lastName: String
   @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
-  @dependencies([.firstName, .lastName])
+  @deps([.firstName, .lastName])
   name: String
 }
 ```

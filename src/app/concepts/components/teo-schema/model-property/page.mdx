@@ -14,9 +14,9 @@ calculated nature. It's saved into the database if it's cached.
 
 ## Property getter
 
-A readable property has a getter. The getter is a modifier pipeline which
-returns a value of declared data type. Field dependencies should be declared,
-too.
+A readable property has a getter. The getter is a pipeline that returns a value 
+of declared data type. Field dependencies should be declared, too if it's 
+cached.
 
 ```teo showLineNumbers {6-8}
 model Student {
@@ -25,13 +25,13 @@ model Student {
   firstName: String
   lastName: String
   @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
-  @dependencies([.firstName, .lastName])
+  @deps([.firstName, .lastName])
   name: String
 }
 ```
 
 In this example, `name` is calculated with `firstName` and `lastName`. Since
-it depends on `firstName` and `lastName`, the `dependencies` list is also
+it depends on `firstName` and `lastName`, the `deps` list is also
 declared.
 
 ## Property setter
@@ -48,8 +48,8 @@ model Student {
   firstName: String
   lastName: String
   @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
-  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $itemAt(0)).assign(.lastName, $itemAt(1)))
-  @dependencies([.firstName, .lastName])
+  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $get(0)).assign(.lastName, $get(1)))
+  @deps([.firstName, .lastName])
   name: String
 }
 ```
@@ -68,8 +68,8 @@ model Student {
   firstName: String
   lastName: String
   @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
-  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $itemAt(0)).assign(.lastName, $itemAt(1)))
-  @dependencies([.firstName, .lastName]) @cached
+  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $get(0)).assign(.lastName, $get(1)))
+  @deps([.firstName, .lastName]) @cached
   name: String
 }
 ```
@@ -77,10 +77,21 @@ model Student {
 When a property is cached, there is a table column for it. Unless any value of
 its dependency fields are updated, this value won't be recalculated.
 
-## Going next
+## Index
 
-The next topic introduces
-[**index**](/concepts/components/teo-schema/index), which represents
-database index.
+Like model scalar fields, calculated properties can be indexed. The API works
+the same way.
+
+```teo
+model Student {
+  @id @readonly @autoIncrement
+  id: Int
+  firstName: String
+  lastName: String
+  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+  @deps([.firstName, .lastName]) @cached @index
+  name: String
+}
+```
 
 <PrevNext />
