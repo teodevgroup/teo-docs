@@ -8,34 +8,30 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Action
 
-> This article is outdated and it will be updated.
+An action represents a single action to the underlying database record. It's a
+little bit obscure. After the explanation, it's quite easy to understand.
 
-Action can be nested, too. For example, to fetch a user with his posts, nested
-`findMany` on post is also triggered.
+Let's say, to create a new `User`, we trigger the action 
+`.create | .single | .entry` on it. If we create two related `Post` records 
+when creating a user, we trigger the action `.create | .many | .nested` on the
+two post records. Every auto-synthesized 
+[handler](/concepts/components/teo-schema/handler)
+<span className="concept">CONCEPT</span> 
+triggers one or more actions.
+
+## The composition of an action
+
+An action has three parts: behavior, single or many, entry level or nested 
+level.
+
+See [Action](/reference/api-reference/schema-reference#action)
+<span className="concept">REFERENCE</span> for detailed definition.
 
 ## Action transformer
 
-Developers can modify action's passed in parameter with a pipeline.
+> This feature will be added back and this part of documentation will be 
+> updated.
 
-```teo showLineNumbers /@action/
-@action($when(.delete, $set("update", { "deletedAt": $now }).redirect(.update))
-        .when(.find, $set(["where", "deletedAt"], null))
-        .when(.find | .single, $redirect(.find | .first)))
-model User {
-  @id @autoIncrement @readonly
-  id: Int
-  name: String
-  deletedAt: DateTime?
-}
-```
-
-In this example, soft delete is implemented with Teo's powerful action
-transformer.
-
-## Going next
-
-The next topic introduces
-[**pipeline**](/concepts/components/teo-schema/pipeline),
-which brings business logic support for our model definitions and actions.
+Action transformer is used to implement features like soft delete.
 
 <PrevNext />
