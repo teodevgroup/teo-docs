@@ -8,4 +8,37 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Constant
 
+Teo schema supports constants. Use the 'let' keyword to declare a constant.
+
+```teo
+let constant = "Hello, world!" // a string constant
+let int = 5 // an int constant
+```
+
+## Type annotation
+
+Teo's constant can be type annotated. This is useful when the literal cannot
+figure out its correct value type.
+
+```teo
+let int32: Int32 = 5 // a int32 constant
+let male: Sex = .male // a enum constant of Sex type
+```
+
+## Use constant in arguments
+
+When specify arguments such as decorator arguments and pipeline item arguments,
+constant can be used to reduce code duplication.
+
+```teo
+let length = 20
+
+model User {
+  @id
+  id: Int
+  @index(length: length)
+  name: String
+}
+```
+
 <PrevNext />

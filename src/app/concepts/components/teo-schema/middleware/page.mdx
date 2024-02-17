@@ -94,7 +94,17 @@ app.main_namespace().define_middleware("print", my_print)
 
 ## Installation
 
-Middlewares can be applied to namespaces, while the middlewares stack inherit, 
-too.
+Middlewares can be applied to namespaces, while the middlewares stack inherit
+items from the parent namespace, too.
+
+This code snippet demostrates how to install middlewares to a namespace's 
+middleware stack.
+
+```teo
+middlewares [
+  middleware1(arg1: "arg1"), 
+  middleware2
+]
+```
 
 <PrevNext />

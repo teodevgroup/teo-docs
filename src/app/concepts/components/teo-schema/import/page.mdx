@@ -8,4 +8,22 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Import
 
+Teo supports file splitting and loading schema items defined in another file 
+into this file.
+
+Load a file with the 'import' keyword. Relative path is used and the extension
+can be omitted.
+
+```teo
+import "./data" // this loads ./data.teo
+```
+
+## Special case for `index.teo`
+
+If a file is named `index.teo`, the file name can be omitted.
+
+```teo
+import "./myModule" // this loads ./myModule/index.teo
+```
+
 <PrevNext />
