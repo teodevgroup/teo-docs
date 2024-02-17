@@ -14,9 +14,11 @@ const DocSidebarContainer = styled.div`
     display: flex !important;
     max-height: 100vh;
     overflow: scroll;
+    margin-left: -20px;
+    padding-left: 20px;
   }
   ${flexColumn('flex-start')};
-  width: 232px;
+  width: 252px;
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -284,6 +286,7 @@ const firstPathComponent = (path: string) => {
 const DocSideBarInputContainer = styled.div`
   position: relative;
   margin-top: 44px;
+  width: 100%;
 `
 
 const DocSideBarSearchInput = () => {
