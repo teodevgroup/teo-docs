@@ -297,8 +297,6 @@ const MakeDocBlock = (name: string, key: string, indexes: number[]) => {
 export const RustDoc = MakeDocBlock("RustDoc", serverKey, [0])
 export const NodeJSDoc = MakeDocBlock("NodeJSDoc", serverKey, [1])
 export const PythonDoc = MakeDocBlock("PythonDoc", serverKey, [2])
-export const GoDoc = MakeDocBlock("GoDoc", serverKey, [3])
-export const JavaDoc = MakeDocBlock("JavaDoc", serverKey, [4])
 
 export const MySQLDoc = MakeDocBlock("MySQLDoc", databaseKey, [0])
 export const PostgreSQLDoc = MakeDocBlock("PostgreSQLDoc", databaseKey, [1])

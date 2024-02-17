@@ -5,18 +5,23 @@ orderHint: 37
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Pipeline
 
-Pipeline is an innovative and powerful tool and it provides data validation,
-transformation, and custom callbacks. Developers can attach pipelines both to
-models and to fields.
+Pipeline is an innovative and powerful tool invented by us. It provides data 
+validation, transformation, and custom callbacks. Developers can attach 
+pipelines to both models and to model fields.
 
 ## A simple pipeline
 
-Let's see a simple pipeline. This is field's `@onSet` pipeline. When a new
-value is set on this field, firstly, it trims leading and trailing whitespaces.
-Then validates its content against an email regular expression.
+Let's see a simple pipeline. This is a model field's `@onSet` pipeline. When a 
+new value is set on this field, firstly, it trims leading and trailing 
+whitespaces. Then it validates its content against an email regular expression.
 
 ```teo showLineNumbers
 model Demo {
@@ -25,7 +30,7 @@ model Demo {
 }
 ```
 
-## Stages
+## Common stages
 
 There are various stages to trigger pipelines, common stages include:
 
@@ -34,7 +39,7 @@ There are various stages to trigger pipelines, common stages include:
   * `afterSave` after this object is saved into the database
   * `beforeDelete` before this object is deleted from the database
   * `afterDelete` after this object is deleted from the database
-* Field stages
+* Model field stages
   * `onSet` when a new value is set
   * `onSave` when this object is being saved into the database
   * `identityChecker` is for identity checker fields only
@@ -42,45 +47,55 @@ There are various stages to trigger pipelines, common stages include:
 
 ## Pipeline item
 
-Must add here as its linked by namespace.
+A pipeline is composed of one or more pipeline items. Each pipeline item do
+exactly one thing. Pipeline items can be piped in any orders as long as the
+input of next item matches the output of previous item.
 
-## Items
+### Kinds of pipeline items
 
-For a list of supported pipeline items, view
-[Pipeline](/reference/api-reference/schema-reference#pipeline)
-<span className="concept">REFERENCE</span>.
+Although a pipeline item can do transform, validation and callback. Normally
+there are four main kinds of pipeline items:
 
-## Custom functions
+* Transform pipeline item transforms value
+* Validator pipeline item validates value
+* Callback pipeline item performs custom code callback
+* Compare pipeline item compares the old and the new value, when the value is
+updated, perform callback and return a validating result
 
-A custom function can be provided to transform or validate values.
+### Declare a pipeline item
 
-## Logical modifiers
+Use the 'declare' keyword to declare a pipeline item. Argument types, input
+type, and output type are required. The argument list can be omitted.
 
-A simple modifier is not enough sometimes when your logic goes complicated.
-There are a lot of builtin modifiers such as `if` and `any`.
-
-```teo showLineNumbers
-/// @name Password
-/// User's password.
-@writeonly @recordPrevious @identityChecker($bcryptVerify($self.get(.password)))
-@onSet($hasLength(8...16).isSecurePassword.bcryptSalt.when(.update, $validate($any(
-  $self.get(.oldPassword).exists.bcryptVerify($self.previous(.password)),
-  $self.get(.passwordResetToken).exists.eq($self.get(.passwordResetTokenFromUser).exists).self.set(.passwordResetToken, null)
-))))
-password: String
+```teo
+declare pipeline item identical<T>: T -> T
 ```
 
-In this example, `$validate` restores context value after validation. `$any`
-is valid if one of its modifiers is valid.
+### Implement a pipeline item
 
-## Choose a modifier
+Use the server API to implement a pipeline item:
 
-Teo provides a lot of builtin modifiers, use them when there is one that suits
-your need. Check server API documentation for a full list of modifiers.
+<RustDoc>
+```rust showLineNumbers
+app.main_namespace_mut().define_pipeline_item("identical", |value: Value| async move {
+  Ok(value)
+});
+```
+</RustDoc>
+<NodeJSDoc>
+```ts showLineNumbers
+app.mainNamespace().definePipelineItem("identical", (value: any) => {
+  return value
+})
+```
+</NodeJSDoc>
+<PythonDoc>
+```python showLineNumbers
+def identical(value: Any, args: Any, _object, _teo):
+  return value
 
-## Going next
-
-In the next article, [**identity**](/concepts/components/teo-schema/identity)
-is introduced. Teo allows users of different models to sign in.
+app.main_namespace().define_pipeline_item("identical", identical)
+```
+</PythonDoc>
 
 <PrevNext />
