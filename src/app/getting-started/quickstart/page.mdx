@@ -5,16 +5,18 @@ orderHint: 1
 time: 5 min
 ---
 
+import { setPriority } from 'os'
 import CodeResult from '../../../shared/components/CodeResult'
 import {
     TripleSelector, RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
     PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
     SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
 } from '../../../shared/components/Selector'
+import { setgroups } from 'process'
 
 # Quickstart
 
-In this Quickstart guide, you'll learn the typical workflow with Teo from
+In this quickstart guide, you'll learn the typical workflow with Teo from
 creating an empty project, setting up a connection with a local database to
 sending HTTP requests with the generated query client.
 
@@ -30,16 +32,16 @@ preferences are preserved and restored for you.
 ## Prerequisites
 
 <RustDoc>
-You need Rust 1.67.0 or higher for this guide. If you don't have Rust
+You need Rust 1.75.0 or higher for this guide. If you don't have Rust
 installed, see this
 [installation guide](https://www.rust-lang.org/tools/install) from Rust.
 </RustDoc>
 <NodeJSDoc>
-You need Node.js 18.4.0 or higher for this guide. If you don't have Node.js
+You need Node.js 20.0.0 or higher for this guide. If you don't have Node.js
 installed, download it from [official Node.js website](https://nodejs.org/en/).
 </NodeJSDoc>
 <PythonDoc>
-You need Python 3.11.1 or higher for this guide. If you don't have Python
+You need Python 3.12.1 or higher for this guide. If you don't have Python
 installed, download it from
 [official download page](https://www.python.org/downloads/).
 </PythonDoc>
@@ -54,7 +56,7 @@ cargo new hello-teo --bin
 cd hello-teo
 ```
 
-Next, install Teo command line tool with this command:
+Next, install Teo command line tool globally with this command:
 
 ```sh
 cargo install teo
@@ -95,9 +97,25 @@ Next, install the `@teocloud/teo` package with this command:
 npm install @teocloud/teo
 ```
 
+This command installs Teo locally.
 </NodeJSDoc>
 <PythonDoc>
-Python is not supported yet.
+As a first step, create a blank directory and setup a new Python project in it:
+
+```sh
+mkdir hello-teo
+cd hello-teo
+python3.12 -m venv .venv
+source .venv/bin/activate
+```
+
+Next, install teo `teo` package with this command:
+
+```sh
+pip install teo
+```
+
+This installs Teo to the local virtual environment.
 </PythonDoc>
 
 ## 2. Connect to database and set up server
@@ -139,8 +157,8 @@ connector {
 </MongoDBDoc>
 
 Within this `connector` config block, we specified which database to use. Next,
-let's declare a `server` block to specify on which port this HTTP server should
-be listening.
+let's declare a `server` block to specify which port this HTTP server should
+be listening on.
 
 ```teo showLineNumbers title="schema.teo"
 server {
@@ -298,6 +316,11 @@ cargo teo generate client
 npx teo generate client
 ```
 </NodeJSDoc>
+<PythonDoc>
+```sh
+teo generate client
+```
+</PythonDoc>
 
 ## 5. Send HTTP requests with query client
 
@@ -312,6 +335,11 @@ cargo teo serve
 npx teo serve
 ```
 </NodeJSDoc>
+<PythonDoc>
+```sh
+teo serve
+```
+</PythonDoc>
 
 Now navigate to the generated client and write some code to perform HTTP
 requests.
@@ -394,16 +422,17 @@ Teo to do a lot of heavy work for us.
 
 ## 6. Next steps
 
-In this Quickstart guide, you have a brief overview and understand how Teo works.
-To learn further, read our [Beginner tutorial](#).
+In this Quickstart guide, you have a brief overview and understand how Teo 
+works. To learn further, read our 
+[Beginner tutorial](/getting-started/beginner-tutorial/write-a-schema-only-app).
 Feel free to explore the server & clients API a bit more on your own, e.g. by
 including filtering, sorting, and pagination options in the `findMany`
 requests or exploring more operations like update and delete objects.
 
 ### Join the Teo community 💚
 
-Teo is great and needs your support. Join us on Slack or ask questions via
-GitHub Discussions.
+Teo is great and needs your support. Join us on 
+[Discord](https://teocloud.io/discord) or ask questions via GitHub Discussions.
 
 {/* - We've defined two models: `User` and `Post`. Each represents:
   1. A database table or collection
