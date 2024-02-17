@@ -8,35 +8,45 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Teon
 
-Tson is Teo extended Json for working with Teo. Teo has data types such as
-`ObjectId`, `Date` and `DateTime` which Json cannot express. The usage is
-almost the same as rust's famous
-[`serde_json`](https://github.com/serde-rs/json). Most of the times, developers
-don't need to interact with Tson APIs. But if custom callbacks are provided,
-developers need to call object methods and tson APIs are exposed.
+Teon is Teo extended Json. Teo has data types such as `ObjectId`, `Date`, 
+`DateTime`, `Decimal` and other types that Json cannot express. 
 
-## Usages
+The Teon value is quite trivial in Node.js and Python bindings. Just pass a
+normal object with the value that Teon supports in Node.js. For Python, a 
+normal dict is used. The rust version has nearly the same API with Rust's
+famous [`serde_json`](https://github.com/serde-rs/json) library. Most of the 
+times, developers don't need to interact with Teon APIs.
 
-A tson hashmap is declared with `tson!({})`.
+## Usage
 
-```rust
-tson!({"key": 1, "value": 1})
+To declare a Teon object in Node.js, just write a normal object.
+
+```ts showLineNumbers
+const myTeonValue = {
+    decimal: Decimal("5.20"),
+    int: 5,
+    float: 5.20
+}
 ```
 
-A tson vec is declared with `tson!([])`.
+To declare a Teon object in Python, just write a normal `dict`.
 
-```rust
-tson!([true, false])
+```python showLineNumbers
+my_teon_value = {
+    "decimal": Decimal("5.20"),
+    "int": 5,
+    "float": 5.20
+}
 ```
 
-A tson null is declared with `tson!(null)`.
+To declare a Teon object in Rust, use the `teon!` macro.
 
-```rust
-tson!(null)
+```rust showLineNumbers
+let my_teon_value = teon!({
+    "decimal": BigDecimal::from_str("5").unwrap(),
+    "int": 5,
+    "float": 5.20
+});
 ```
-
-## Going next
-
-The next topic in this episode is plugin.
 
 <PrevNext />
