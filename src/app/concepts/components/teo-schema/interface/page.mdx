@@ -8,4 +8,41 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Interface
 
+Interface is similar to TypeScript's interface. Internally it's a `Dictionary` 
+schema type with each field being typed. Interface supports type generics and
+it's useful for custom [handlers](/concepts/components/teo-schema/handler)
+<span className="concept">CONCEPT</span>, generated model entities and 
+generated query clients.
+
+The interface declaration feels like TypeScript, too:
+
+```teo showLineNumbers
+interface DataMeta<T, U> {
+  data: T
+  meta: U
+}
+```
+
+## Multiple inheritance
+
+Interface can be extended.
+
+```teo showLineNumbers
+interface Triple<T> {
+    single: T
+    double: (T, T) 
+}
+
+interface Description {
+    description: String
+}
+
+interface TripleInt extends Triple<Int>, Description {
+    sum: Int
+}
+```
+
+In the code snippet above, the `TripleInt` interface contains 4 fields while 3
+of them are inherited.
+
 <PrevNext />

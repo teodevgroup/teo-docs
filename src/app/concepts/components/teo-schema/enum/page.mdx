@@ -8,4 +8,64 @@ import PrevNext from '../../../../../shared/components/PrevNext'
 
 # Enum
 
+Enum is a Teo schema data type which represents limited amount of 
+possibilities. It is declared with the `enum` keyword.
+
+```teo
+enum Sex {
+  male
+  female
+}
+```
+
+Enum type can be used as model field type. Like any other types, enums can be
+used in interfaces, decorator arguments, pipeline arguments and middleware 
+arguments.
+
+When using the enum value, instead of typing the full value path, prefix the 
+value with a dot is more concise.
+
+```teo
+enum Sex {
+  male
+  female
+}
+
+let a = Sex.male // Sex.male
+let b: Sex = .female // Sex.female
+```
+
+## Interface enum
+
+Interface enum can't be used as a model field type. It can optionally take 
+arguments.
+
+```teo
+interface enum MySQLDatabaseType {
+  varChar(len?: Int)
+  text
+  char(len?: Int)
+  // ...
+}
+```
+
+## Option enum
+
+This is a seldomly used type. The internal value isn't a string but a positive 
+integer. It can perform bitwise operations.
+
+```teo
+interface option enum Action {
+  create = 1
+  update = 1 << 1
+  delete = 1 << 2
+  copy = 1 << 3
+  find = 1 << 4
+  first = 1 << 5
+}
+
+let a: Action = .create | .update
+let b: Action = ~.copy
+```
+
 <PrevNext />
