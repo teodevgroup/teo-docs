@@ -12,9 +12,8 @@ import BookIcon from './BookIcon'
 const DocSidebarContainer = styled.div`
   ${exceptPhone} {
     display: flex !important;
-    overflow-y: scroll;
     max-height: 100vh;
-    padding-bottom: 58px;
+    overflow: scroll;
   }
   ${flexColumn('flex-start')};
   width: 232px;

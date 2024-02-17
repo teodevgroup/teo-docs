@@ -5,12 +5,16 @@ orderHint: 27
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, GoDoc, JavaDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Handler
 
-Traditional HTTP frameworks expose endpoints. Handlers are Teo's HTTP endpoints.
-Handlers are different from [Actions](/docs/concepts/components/teo-schema/action).
-Each predefined handler correspond to a predefined root level [action](/docs/concepts/components/teo-schema/action) <span className="concept">CONCEPT</span>.
+Traditional HTTP frameworks expose endpoints. Handlers are Teo's HTTP 
+endpoints. 
 
 ## The URL path of the handler
 
@@ -18,8 +22,8 @@ When working with HTTP requests, the requests are mapped into handlers
 with predefined rules.
 
 When Teo's frontend packages are building a request url, they use a form of
-`/{server path prefix}/{namespacePaths}/{ModelName}/{actionName}`. For example, to access
-`findMany` on `User`, we request this url: `/User/findMany`.
+`/{server path prefix}/{namespacePaths}/{ModelName}/{actionName}`. For example, 
+to access `findMany` on `User`, we request this url: `/User/findMany`.
 
 ## Builtin auto-synthesized handlers
 
@@ -61,10 +65,82 @@ model Demo {
 In this example, objects of this model cannot be updated or deleted. Once
 created, it is what it is. */}
 
-## Going next
+## Custom handler
 
-The next topic introduces
-[**action**](/concepts/components/teo-schema/action),
-which is exactly what it going on when database mutation is triggered.
+Besides auto-synthesized handlers, developers can declare custom handlers with
+the `declare handler` syntax.
+
+```teo
+declare handler myHandler(MyInput): MyOutput
+```
+
+## Non-api handler
+
+Some of the handlers may return HTML pages, images or something else which 
+should not be exposed into Teo query client. Use the `nonapi` keyword to 
+declare handlers of these types.
+
+```teo
+@map(.get, "/")
+declare nonapi handler myHomePage(): Any
+```
+
+## Custom handler group
+
+Handlers can be declared directly in namespaces and models. It's great to group
+APIs together. Use `declare handler group` to declare a handler group to place
+handlers of the same group. The handler group takes a part in the request URL
+just like a model.
+
+```teo
+declare handler group Auth {
+  declare handler myAuth(MyAuthInput): MyAuthOutput
+}
+```
+
+## Handler implementation
+
+To implement custom handlers, use server APIs. See:
+
+<RustDoc>
+* [Namespace](/reference/api-reference/server-api-reference/rust-api-reference#namespace)
+<span className="concept">REFERENCE</span>
+* [handler::Group](/reference/api-reference/server-api-reference/rust-api-reference#handlergroup)
+<span className="concept">REFERENCE</span>
+* [Request](/reference/api-reference/server-api-reference/rust-api-reference#request)
+<span className="concept">REFERENCE</span>
+* [Response](/reference/api-reference/server-api-reference/rust-api-reference#response)
+<span className="concept">REFERENCE</span>
+
+```rust showLineNumbers
+
+```
+</RustDoc>
+<NodeJSDoc>
+* [Namespace](/reference/api-reference/server-api-reference/nodejs-api-reference#namespace)
+<span className="concept">REFERENCE</span>
+* [HandlerGroup](/reference/api-reference/server-api-reference/nodejs-api-reference#handlergroup)
+<span className="concept">REFERENCE</span>
+* [Request](/reference/api-reference/server-api-reference/nodejs-api-reference#request)
+<span className="concept">REFERENCE</span>
+* [Response](/reference/api-reference/server-api-reference/nodejs-api-reference#response)
+<span className="concept">REFERENCE</span>
+
+```ts showLineNumbers
+```
+</NodeJSDoc>
+<PythonDoc>
+* [Namespace](/reference/api-reference/server-api-reference/python-api-reference#namespace)
+<span className="concept">REFERENCE</span>
+* [HandlerGroup](/reference/api-reference/server-api-reference/python-api-reference#handlergroup)
+<span className="concept">REFERENCE</span>
+* [Request](/reference/api-reference/server-api-reference/python-api-reference#request)
+<span className="concept">REFERENCE</span>
+* [Response](/reference/api-reference/server-api-reference/python-api-reference#response)
+<span className="concept">REFERENCE</span>
+
+```python showLineNumbers
+```
+</PythonDoc>
 
 <PrevNext />
