@@ -113,7 +113,9 @@ To implement custom handlers, use server APIs. See:
 <span className="concept">REFERENCE</span>
 
 ```rust showLineNumbers
-
+app.main_namespace_mut().define_handler("hello", || async move {
+  Ok::<Response, path::Error>(Response::data(teon!({ "hello": "world!" })))
+});
 ```
 </RustDoc>
 <NodeJSDoc>
@@ -127,6 +129,9 @@ To implement custom handlers, use server APIs. See:
 <span className="concept">REFERENCE</span>
 
 ```ts showLineNumbers
+app.mainNamespace().defineHandler("myHandler", async (_request: Request, _teo: Teo) => {
+  return Response.data({ "hello": "world!" })
+})
 ```
 </NodeJSDoc>
 <PythonDoc>
@@ -140,6 +145,10 @@ To implement custom handlers, use server APIs. See:
 <span className="concept">REFERENCE</span>
 
 ```python showLineNumbers
+async def my_handler(_, __, ___):
+  return Response.data({ "hello": "world!" })
+
+app.main_namespace().define_handler("myHandler", my_handler)
 ```
 </PythonDoc>
 
