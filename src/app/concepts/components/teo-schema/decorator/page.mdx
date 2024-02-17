@@ -65,7 +65,7 @@ app.main_namespace_mut().define_model_field_decorator("markSpecial", |arguments:
 
 ```ts showLineNumbers
 app.mainNamespace().defineModelDecorator("markSpecial", (args: { [key: string]: any }, model: Model) => {
-    model.setData("altName", args.altName)
+  model.setData("altName", args.altName)
 })
 ```
 </NodeJSDoc>

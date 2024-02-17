@@ -4,13 +4,15 @@ author: Victor Teo
 orderHint: 2
 ---
 
+import PrevNext from '../../../../shared/components/PrevNext'
+
 # Why Teo?
 
-On this page, you'll learn about the motivation for Teo and how it compares to
-other server frameworks and database tools like ORMs and SQL query builders.
+In this article, you'll learn about the motivation for Teo and how it compares 
+to other server frameworks and database tools like ORMs and SQL query builders.
 
 With the traditional web frameworks, developers need to declare each route,
-write a lot of boilerplate code to just hook things up. Common required
+write a lot of boilerplate code to just hook things up. Commonly required
 features such as filtering, sorting and paging are not provided. Developers
 need to figure out a way to implement it. The more functions developers write,
 the more duplications developers would found. Debugging SQL queries or MongoDB
@@ -44,25 +46,26 @@ server frameworks, database tools and query languages.
 ### Performance and development cost
 
 Frameworks written in Ruby, Python and Node.js are not performant, but faster
-to develop than framework with compiling languages. Frameworks written in Go
+to develop than frameworks of compiling languages. Frameworks written in Go
 and Java are more performant but it's slow to develop. There aren't great ORMs
 in the ecosystem due to the traits of the languages. C++ has better
 performance, but almost each company that uses it has it's own frameworks and
 implementations.
 
-Teo server core is written in Rust. It's performance excels those in Java and
+Teo server core is written in Rust. Its performance excels those in Java and
 Go. Thanks to Teo schema language, developing a Teo app is even faster than
-scripting languages. This makes Teo almost a perfect choice for API
+scripting languages. This makes Teo almost a perfect choice for API 
 development.
 
 ### Low abstraction on the process
 
-When a HTTP request comes, developers find a matched route, validate arguments,
-perform some trasformations and set some default values. Then developers save
-the data into the database. After that, developers may send out an email or
-start some service through message queues. This is quite the way how an HTTP
-request are handled. This process can be abstracted and reused. However, even
-gigantic frameworks like Ruby on Rails and Django don't handle this for you.
+When an HTTP request comes, developers write code to find a matched route, 
+validate arguments, perform some trasformations and set some default values. 
+Then the code save the data into the database. After that, the code may perform 
+some jobs like send out an email or start some service through message queues. 
+This is quite the way how an HTTP request are handled. This process can be 
+abstracted and reused. However, even gigantic frameworks like Ruby on Rails and 
+Django don't handle this for you.
 
 Teo abstract this into object modifications. Let's say, you want to send out an
 email when a new user is created. But how about creating users in a batch? With
@@ -140,7 +143,7 @@ It's easy to write and easy to debug.
 
 ## Does Teo have limitations?
 
-Teo is an web server, not an ORM mapper. With Teo, you can do input
+Teo is a web server, not an ORM mapper. With Teo, you can do input
 sanitization, validation and transformation. You can control which field can be
 seen or queried by which one. You can define permission rules on CRUD actions.
 Teo supports **pipeline**, custom URL prefix, action disabling and user
@@ -153,3 +156,5 @@ don't suit your needs.
 
 Teo makes developer productive by introduced innovative concepts. To learn
 them, head to [**Concepts**](/concepts).
+
+<PrevNext />

@@ -4,6 +4,13 @@ author: Victor Teo
 orderHint: 1
 ---
 
+import PrevNext from '../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../shared/components/Selector'
+
 # What is Teo?
 
 This article gives a high-level overview of what Teo is and how it works.
@@ -17,16 +24,15 @@ To learn more about the motivation for Teo, check out the
 
 ## What is Teo?
 
-Teo is an open source next-generation web framework. It consists of the
-following parts:
+Teo is a next-generation web framework. It consists of the following parts:
 
-- **Teo Schema**: Intuitive and innovative schema language which is descriptive
+- **Teo schema**: Intuitive and innovative schema language which is descriptive
 and readable
-- **Teo Core**: A high performance core written in Rust and API bindings for
+- **Teo server**: A high performance core written in Rust and API bindings for
 Node.js, Python and Rust
-- **Teo CLI**: A CLI tool that reads schema and perform jobs including running
-server and seeding data
-- **Teo Query Client**: Auto-generated type-safe query builder for multiple
+- **Teo CLI**: A CLI tool that reads schema and perform jobs including database 
+migration, running server and seeding data
+- **Teo query client**: Auto-generated type-safe query builder for multiple
 platforms and languages
 
 ## How does Teo work?
@@ -34,7 +40,7 @@ platforms and languages
 Like any other web server frameworks, developers write code, start server and
 deploy. What is unique to Teo is most of the coding can be done with the
 intuitive schema language. For features Teo schema language doesn't provide,
-Teo allows developers to generate ORM model entities and write custom code and 
+Teo allows developers to generate ORM model entities, write custom code and 
 route handlers in backend languages.
 
 ### Teo schema
@@ -43,7 +49,7 @@ Developers declare configurations, enums and models all within these schema
 files. These files can be splitted and included. Here is an example of a
 minimalist Teo schema.
 
-```teo showLineNumbers
+```teo showLineNumbers title="schema.teo"
 connector {
   provider: .mysql,
   url: "mysql://127.0.0.1:3306/hello"
@@ -64,7 +70,7 @@ client ts {
 model User {
   @id @autoIncrement @readonly
   id: Int
-  @unique @onSet($isEmail)
+  @unique @onSet($if($presents, $isEmail))
   email: String
   name: String?
 }
@@ -76,26 +82,48 @@ update, delete and read users.
 
 ### Teo server
 
-The schema accepts custom callback functions on both primitive types and model
-entities. Teo generate model entities for developers to write custom logic and
-code that Teo schema language doesn't provided. Let's see an example in Rust:
+Developers can declare custom route handlers in the schema and implement it
+with server code. Ruby, Node.js and Python are supported.
 
-```rust
-app_builder.callback("userBeforeSave", |user: User| async move {
-    let first_post = Post::new(teon!({
-        "title": "Untitled"
-    })).await;
-    user.add_to_posts(vec![first_post]).await;
-    Ok(())
-});
+```teo showLineNumbers title="schema.teo"
+interface EmptyInput { }
+
+interface HelloOutput {
+  hello: String
+}
+
+declare handler hello(EmptyInput): HelloOutput
 ```
 
-In this example, developer runs some custom code and create a relation object
-for the user object.
+Depending on the server side programming language that you choose, the 
+implementation to the handler declared above is implemented in below.
 
-### The Teo query client
+<RustDoc>
+```rust showLineNumbers title="src/main.rs"
+app.main_namespace_mut().define_handler("hello", || async move {
+  Ok::<Response, path::Error>(Response::data(teon!({ "hello": "world!" })))
+});
+```
+</RustDoc>
+<NodeJSDoc>
+```ts showLineNumbers title="app.ts"
+app.mainNamespace().defineHandler("myHandler", async (_request: Request, _teo: Teo) => {
+  return Response.data({ "hello": "world!" })
+})
+```
+</NodeJSDoc>
+<PythonDoc>
+```python showLineNumbers title="app.py"
+async def my_handler(_, __, ___):
+  return Response.data({ "hello": "world!" })
 
-Teo cares about developer experience. Instead of copy and paste data transfer
+app.main_namespace().define_handler("myHandler", my_handler)
+```
+</PythonDoc>
+
+### Teo query client
+
+Teo cares about developer experience. Instead of copy and paste data access
 objects into different frontend projects, Teo generate for us. For example, to
 access the aforementioned `User` model, with TypeScript client, we can do:
 
@@ -109,75 +137,15 @@ const createResult = await teo.user.create({
 console.log(createResult.data)
 ```
 
-Teo query client is type-safe. It gives developers a feel of intellisense.
+Teo query client is type-safe and smart.
 
 ## Typical Teo workflows
 
-In a developer's technical stack, Teo's role is serving as both ORM and HTTP
-framework. Teo simplifies the backend server development. Normally developers
-update schemas and generate query clients. On server start, database migration
-is automatically performed. This web server is performant, and reliable.
+Teo simplifies the backend server development. Normally developers
+update schemas and generate query clients. If custom code is required, generate 
+model entities and write custom logic with one of the backend programming 
+languages that Teo supports. On server start, database migration is 
+automatically performed. You can also trigger migration by its own command. 
+Teo web server is performant, and reliable.
 
-{/*
-
-In this file, you configure several things:
-
-- **Connector conf**: Specifies your database connection
-- **Data model**: Defines your models and fields for each model
-- **Server conf**: Specify server configurations
-- **Query client generator**: Indicates what clients you want to generate
-- **Model Entity generator**: Indicates what model entities you want to generate
-
-Let's dive right into the most important part: data modeling.
-
-### The Teo data model
-
-In this section, the focus is on the data model. You can learn more about data
-sources and clients on the respective docs pages.
-
-#### Functions of Teo models
-
-The data model is a collection of models. A model has two major functions:
-
-- Represent a table in relational databases or a collection in MongoDB
-- Represent a resource in the Teo HTTP API
-
-Once a model is defined, you can generate type safe clients which support those
-queries and mutations defined on this model.
-
-#### Fields of Teo models
-
-A field definition looks like this:
-
-```rust
-m.field("published", |f| {
-    f.required().bool().default(false);
-});
-```
-
-A model field represents a column in the database table or collection most of
-the times.
-
-There are also temporary fields which may not represent a real database table
-column. For example, in a typical system that has end users, if a user want to
-change his password, he needs to provide his old password. This old password
-field is temporary and not persisted in the underlying database.
-
-#### Modifier pipelines
-
-The Teo models not only define their database shapes, but also define business
-logics. That's what makes it an HTTP server instead of an ORM. See this
-following code:
-
-```rust
-m.field("email", |f| {
-    f.unique().required().string().on_set(|p| { p.is_email(); });
-});
-m.field("hello", |f| {
-    f.required().string().on_set(|p| { p.transform(|s: String| { s + "!" }); });
-});
-```
-
-- On creating the user object with user provided value, the format of `email`
-is validated.
-- The field value of `hello` is transformed with a custom transformer. */}
+<PrevNext />
