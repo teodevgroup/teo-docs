@@ -5,7 +5,35 @@ orderHint: 7
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Purge
+
+The purge command is used to clear the database. This won't drop the database,
+delete any tables. Instead, it just clear all existing records.
+
+## Purging table data
+
+Use the `purge` command to wipe out table data.
+
+<RustDoc>
+```sh
+cargo teo purge
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo purge
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo purge
+```
+</PythonDoc>
 
 <PrevNext />

@@ -1,0 +1,125 @@
+---
+title: Migration
+author: Victor Teo
+orderHint: 2
+---
+
+import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
+
+# Migration
+
+Traditionally, an ORM tool performs migration to insert, delete and reshape 
+user's tables and collections in the database. This requires manually creating
+migration instructions and doing the migration.
+
+Teo thinks differently about this. Developers don't need to keep and organize
+a whole list of migration instructions. Teo utilizes the diff algorithm to 
+handle database migrations automatically.
+
+## Auto migration
+
+The auto migration performs the following things:
+
+* Detecting deleted tables and delete them
+* Detecting renamed tables and rename them
+* Detecting newly created tables and create them
+* For modified tables
+    * Detecting deleted fields and indexes, delete them
+    * Detecting renamed fields and indexes, rename them
+    * Detecting newly created fields and indexes, create them
+    * Detecting modified fields and indexes, try to modify them
+
+> Teo takes over the control of the database and delete unused tables. So be 
+> careful when migrating old projects with Teo.
+
+## Resolving conflicts
+
+There are two main categories of conflicts.
+
+### New nonnull field is added to a table with existing records
+
+If a nonnull field is added without a default value, an error will be thrown
+and the process will terminate. There are two ways to resolve this conflict.
+
+#### Provide a migration default value
+
+Add `@migration(default: defaultValue)` to the field.
+
+```teo
+model User {
+    @id
+    id: Int
+    name: String
+    @migration(default: "")
+    nickname: String // new field
+}
+```
+
+#### Drop the table if there are records
+
+Add `@migration(drop: true)` to the model.
+
+```teo
+@migration(drop: true)
+model User {
+    @id
+    id: Int
+    name: String
+    nickname: String // new field
+}
+```
+
+### Value of the old field type cannot transform into the new one
+
+This conflict is when altering a field type of a column, and the new type 
+cannot hold the value of current type. This type of conflict should be avoided.
+
+## Trigger auto migration
+
+Use the `migrate` command to perform the migration.
+
+<RustDoc>
+```sh
+cargo teo migrate
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo migrate
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo migrate
+```
+</PythonDoc>
+
+Unless the command option `--no-migration` is provided, migration is 
+automatically performed when HTTP server starts with the `serve` command.
+
+<RustDoc>
+```sh
+cargo teo serve --no-migration
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo serve --no-migration
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo serve --no-migration
+```
+</PythonDoc>
+
+## Inspecting migration instructions
+
+> This feature will be available in the next new stable version.
+
+<PrevNext />

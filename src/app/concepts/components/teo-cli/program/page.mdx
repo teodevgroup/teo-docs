@@ -5,7 +5,67 @@ orderHint: 11
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Program
+
+A program defines custom program to run with the Teo model entities. The 
+program can be anything from run some scripts and exist to start a server.
+
+The model entity API is exposed to this method. We guarantee the database
+is connected and every model entity API call is valid.
+
+## Define a program
+
+Use the server API to define a program.
+
+<RustDoc>
+```rust showLineNumbers
+app.program("myProgram", |teo: Teo| async move {
+  // do things with teo
+Ok(())
+});
+```
+</RustDoc>
+<NodeJSDoc>
+```ts showLineNumbers
+app.program("myProgram", async (teo: Teo) => {
+  // do things with teo
+})
+```
+</NodeJSDoc>
+<PythonDoc>
+```python showLineNumbers
+async def my_program(teo: Teo):
+  # do things with teo
+  pass
+
+app.program("myProgram", my_program)
+```
+</PythonDoc>
+
+## Run a program
+
+To run a defined program, use the `run` command with the command name.
+
+<RustDoc>
+```sh
+cargo teo run myProgram
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo run myProgram
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo run myProgram
+```
+</PythonDoc>
 
 <PrevNext />

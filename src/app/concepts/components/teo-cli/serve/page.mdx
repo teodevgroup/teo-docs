@@ -5,30 +5,78 @@ orderHint: 3
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Serve
 
+The `serve` command performs necessary database 
+[migration](/concepts/components/teo-cli/migration)
+<span className="concept">CONCEPT</span>, 
+[seeding records](/concepts/components/teo-cli/seed)
+<span className="concept">CONCEPT</span>, and starts the HTTP server.
 
-## Serve
+## Start the server
 
-Use `serve` to start a server.
+Use `serve` command to start the server.
 
+<RustDoc>
+```sh
+cargo teo serve
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo serve
+```
+</NodeJSDoc>
+<PythonDoc>
 ```sh
 teo serve
 ```
+</PythonDoc>
 
-## Generate
+## Skip the migration
 
-`generate client` generates the query client.
+To skip the auto migration, pass the option `--no-migration`.
 
+<RustDoc>
 ```sh
-teo generate client
+cargo teo serve --no-migration
 ```
-
-`generate entity` generates the model entities.
-
+</RustDoc>
+<NodeJSDoc>
 ```sh
-teo generate entity
+npx teo serve --no-migration
 ```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo serve --no-migration
+```
+</PythonDoc>
+
+## Skip the seeding
+
+To skip the auto seeding, pass the option `--no-autoseed`.
+
+<RustDoc>
+```sh
+cargo teo serve --no-autoseed
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo serve --no-autoseed
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo serve --no-autoseed
+```
+</PythonDoc>
 
 <PrevNext />
