@@ -577,9 +577,14 @@ export const DocumentationContent = styled.div`
           border-left: 2px solid #60a5fa;
           padding-left: 14px;
         }
-        .word {
-          background: rgba(200,200,255,.15);
-          padding: 0.25rem;
+        .word, [data-highlighted-chars] {
+          ${light} {
+            background: rgba(200,200,255,.15);
+          }
+          ${dark} {
+            background: rgba(114, 114, 155, 0.15);
+          }
+          padding: 0.16rem 0.2rem;
           border-radius: 0.25rem;
         }
       }
