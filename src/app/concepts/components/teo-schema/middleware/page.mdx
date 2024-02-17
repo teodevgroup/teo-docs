@@ -5,7 +5,96 @@ orderHint: 29
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, GoDoc, JavaDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Middleware
+
+Middleware behaves the same as middlewares in traditional web frameworks. It 
+wraps around the next middleware or handler, access the request data, modify
+ or alter the response data. **The middleware ordering in the stack is first in 
+ last out**.
+
+To declare a middleware, use `declare middleware`.
+
+```teo
+declare middleware print(label?: String)
+```
+
+## Middleware implementation
+
+To implement custom handlers, use server APIs. See:
+
+<RustDoc>
+* [Namespace](/reference/api-reference/server-api-reference/rust-api-reference#namespace)
+<span className="concept">REFERENCE</span>
+* [handler::Group](/reference/api-reference/server-api-reference/rust-api-reference#handlergroup)
+<span className="concept">REFERENCE</span>
+* [request::Ctx](/reference/api-reference/server-api-reference/rust-api-reference#requestctx)
+<span className="concept">REFERENCE</span>
+* [Response](/reference/api-reference/server-api-reference/rust-api-reference#response)
+<span className="concept">REFERENCE</span>
+
+```rust showLineNumbers
+app.main_namespace_mut().define_middleware("print", |arguments: Arguments| async move {
+  let label_str: String = arguments.get("label")?;
+  let label = Box::leak(Box::new(label_str)).as_str();
+  Ok(middleware_wrap_fn(move |ctx: Ctx, next: &'static dyn Next| async move {
+    println!("{}", label);
+    let res = next.call(ctx).await?;
+    return Ok(res);
+  }))
+});
+```
+</RustDoc>
+<NodeJSDoc>
+* [Namespace](/reference/api-reference/server-api-reference/nodejs-api-reference#namespace)
+<span className="concept">REFERENCE</span>
+* [HandlerGroup](/reference/api-reference/server-api-reference/nodejs-api-reference#handlergroup)
+<span className="concept">REFERENCE</span>
+* [RequestCtx](/reference/api-reference/server-api-reference/nodejs-api-reference#requestctx)
+<span className="concept">REFERENCE</span>
+* [Response](/reference/api-reference/server-api-reference/nodejs-api-reference#response)
+<span className="concept">REFERENCE</span>
+
+```ts showLineNumbers
+app.mainNamespace().defineMiddleware("print", (args) => {
+  return async (ctx, next) => {
+    console.log(args.label)
+    const res = await next(ctx)
+      return res
+  }
+})
+```
+</NodeJSDoc>
+<PythonDoc>
+* [Namespace](/reference/api-reference/server-api-reference/python-api-reference#namespace)
+<span className="concept">REFERENCE</span>
+* [HandlerGroup](/reference/api-reference/server-api-reference/python-api-reference#handlergroup)
+<span className="concept">REFERENCE</span>
+* [RequestCtx](/reference/api-reference/server-api-reference/python-api-reference#requestctx)
+<span className="concept">REFERENCE</span>
+* [Response](/reference/api-reference/server-api-reference/python-api-reference#response)
+<span className="concept">REFERENCE</span>
+
+```python showLineNumbers
+def my_print(args):
+  async def middleware(ctx, next):
+    print(args["label"])
+    res = await next(ctx)
+    return res
+  return my_print
+
+app.main_namespace().define_middleware("print", my_print)
+```
+</PythonDoc>
+
+## Installation
+
+Middlewares can be applied to namespaces, while the middlewares stack inherit, 
+too.
 
 <PrevNext />
