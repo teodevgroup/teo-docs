@@ -640,6 +640,7 @@ Let's add some models and perform some model updates from JSON requests.
 
 Replace `schema.teo` with this.
 
+<RustDoc>
 ```teo showLineNumbers {5-8,27-42}
 server {
   bind: ("0.0.0.0", 5051)
@@ -684,6 +685,99 @@ model Record {
   declare handler alterCreatedAt(AlterCreatedAtInput): Data<Result<Record>>
 }
 ```
+</RustDoc>
+<NodeJSDoc>
+```teo showLineNumbers {5-8,27-42}
+server {
+  bind: ("0.0.0.0", 5051)
+}
+
+connector {
+  provider: .sqlite,
+  url: "sqlite::memory:"
+}
+
+entity {
+  provider: .node,
+  dest: "./entities"
+}
+
+@map(.get, "/")
+declare nonapi handler hello(): Any
+
+@map(.get, "/empty")
+declare nonapi handler empty(): Any
+
+@map(.get, "/echo/:data", interface: "EchoPathArguments")
+declare nonapi handler echo(): Any
+
+@map(.get, "/static/*path", interface: "StaticPathArguments")
+declare nonapi handler static(): Any
+
+interface AlterCreatedAtInput {
+  id: Int
+  createdAt: DateTime
+}
+
+model Record {
+  @id @autoIncrement @readonly
+  id: Int
+  value: Int?
+  @onSave($when(.create, $now)) @readonly
+  createdAt: DateTime
+  @onSave($now) @readonly
+  updatedAt: DateTime
+
+  declare handler alterCreatedAt(AlterCreatedAtInput): Data<Result<Record>>
+}
+```
+</NodeJSDoc>
+<PythonDoc>
+```teo showLineNumbers {5-8,27-42}
+server {
+  bind: ("0.0.0.0", 5051)
+}
+
+connector {
+  provider: .sqlite,
+  url: "sqlite::memory:"
+}
+
+entity {
+  provider: .python,
+  dest: "./entities"
+}
+
+@map(.get, "/")
+declare nonapi handler hello(): Any
+
+@map(.get, "/empty")
+declare nonapi handler empty(): Any
+
+@map(.get, "/echo/:data", interface: "EchoPathArguments")
+declare nonapi handler echo(): Any
+
+@map(.get, "/static/*path", interface: "StaticPathArguments")
+declare nonapi handler static(): Any
+
+interface AlterCreatedAtInput {
+  id: Int
+  createdAt: DateTime
+}
+
+model Record {
+  @id @autoIncrement @readonly
+  id: Int
+  value: Int?
+  @onSave($when(.create, $now)) @readonly
+  createdAt: DateTime
+  @onSave($now) @readonly
+  updatedAt: DateTime
+
+  declare handler alterCreatedAt(AlterCreatedAtInput): Data<Result<Record>>
+}
+```
+</PythonDoc>
 
 <RustDoc>
 And replace `src/main.rs` with this.
