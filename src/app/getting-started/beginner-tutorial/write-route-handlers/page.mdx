@@ -64,8 +64,9 @@ Run these commands to create a new project and install dependencies.
 mkdir hello-teo-handlers
 cd hello-teo-handlers
 npm init -y
-npm install @teocloud/teo
 npm install typescript ts-node -D
+npx tsc --init
+npm install @teocloud/teo
 ```
 
 Create a file named `app.ts` with the following content.
@@ -775,10 +776,23 @@ interface UploadOutput {
 
 Generate interfaces.
 
+<RustDoc>
 ```sh
 cargo teo generate entity
 ```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate entity
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo generate entity
+```
+</PythonDoc>
 
+<RustDoc>
 Update `src/main.rs` to be like this.
 
 ```rust showLineNumbers {3,4,8,50-72}
@@ -857,6 +871,79 @@ async fn main() -> Result<()> {
     app.run().await
 }
 ```
+</RustDoc>
+<NodeJSDoc>
+Update `app.ts` to be like this.
+
+```ts showLineNumbers
+import { App, Response, RequestCtx, serveStaticFiles } from '@teocloud/teo'
+import { AlterCreatedAtInput, EchoPathArguments, StaticPathArguments, Teo, UploadInput } from './entities'
+import path from 'path'
+import fs from 'fs'
+
+const app = new App()
+app.mainNamespace().defineHandler("hello", () => {
+    return Response.html(`
+        <html>
+            <head>
+                <title>Hello, Teo handlers</title>
+            </head>
+            <body>
+                <h1>Hello, Teo handlers!</h1>
+            </body>
+        </html>
+    `)
+})
+app.mainNamespace().defineHandler("empty", () => {
+    return Response.empty()
+})
+app.mainNamespace().defineHandler("echo", (ctx: RequestCtx) => {
+    const pathArguments: EchoPathArguments = ctx.pathArguments()
+    return Response.string(pathArguments.data, "text/plain")
+})
+app.mainNamespace().defineHandler("static", (ctx) => {
+    const pathArguments: StaticPathArguments = ctx.pathArguments()
+    return serveStaticFiles("static", pathArguments.path)
+})
+app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
+    group.defineHandler("alterCreatedAt", async (ctx) => {
+        const teo: Teo = ctx.teo()
+        const input: AlterCreatedAtInput = ctx.body()
+        const record = await teo.record.findUnique({
+            "where": {
+                "id": input.id
+            }
+        })
+        if (record) {
+            record.createdAt = input.createdAt
+            await record.save()
+            return Response.data(await record.toTeon())
+        } else {
+            throw Error("not found")
+        }
+    })
+})
+app.mainNamespace().defineHandler("upload", (ctx) => {
+    const input: UploadInput = ctx.body()
+    const extname = path.extname(input.file.filepath)
+    const extension = extname ? `.${extname}` : ""
+    const randomFileName = (Math.random() + 1).toString(36).substring(7)
+    const destination = "static/images/" + randomFileName + extension
+    const resultPath = "/" + destination
+    fs.copyFileSync(input.file.filepath, destination)
+    return Response.data({ path: resultPath })
+})
+
+app.run()
+```
+</NodeJSDoc>
+<PythonDoc>
+Update `app.py` to be like this.
+
+```python showLineNumbers
+
+```
+</PythonDoc>
 
 Start our server again.
 
