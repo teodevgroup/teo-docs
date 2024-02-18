@@ -95,8 +95,8 @@ from asyncio import run
 from teo import App
 
 async def main():
-  app = App()
-  await app.run()
+    app = App()
+    await app.run()
 
 run(main())
 ```
@@ -156,6 +156,7 @@ Append this to the end of `schema.teo`.
 declare nonapi handler hello(): Any
 ```
 
+<RustDoc>
 Replace the content with `src/main.rs` with this.
 
 ```rust showLineNumbers
@@ -181,9 +182,58 @@ async fn main() -> Result<()> {
     app.run().await
 }
 ```
+</RustDoc>
+<NodeJSDoc>
+Replace the content with `app.ts` with this.
+
+```ts showLineNumbers
+import { App, Response } from '@teocloud/teo'
+
+const app = new App()
+app.mainNamespace().defineHandler("hello", () => {
+    return Response.html(`
+        <html>
+            <head>
+                <title>Hello, Teo handlers</title>
+            </head>
+            <body>
+                <h1>Hello, Teo handlers!</h1>
+            </body>
+        </html>
+    `)
+})
+app.run()
+```
+</NodeJSDoc>
+<PythonDoc>
+Replace the content with `app.py` with this.
+
+```python showLineNumbers
+from asyncio import run
+from teo import App, Response
+
+async def main():
+    app = App()
+    def hello_handler(_request, _body, _teo):
+        return Response.html("""
+            <html>
+                <head>
+                    <title>Hello, Teo handlers</title>
+                </head>
+                <body>
+                    <h1>Hello, Teo handlers!</h1>
+                </body>
+            </html>
+        """)
+    app.main_namespace().define_handler("hello", hello_handler)
+    await app.run()
+
+run(main())
+```
+</PythonDoc>
 
 With this updated code, we define a handler named `"hello"` to match what
-we've declared in our schema. Restart our server by compiling again.
+we've declared in our schema. Stop the running server process and restart the server.
 Navigate to `"http://localhost:5051"` in a browser, you will see the 
 new home page that we've just write in HTML.
 
