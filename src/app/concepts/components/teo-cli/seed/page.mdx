@@ -5,7 +5,416 @@ orderHint: 5
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Seed
+
+Teo's model definitons are readable. Teo's data seeding is also readable and 
+visible.
+
+## Declare seeding records
+
+Use the `dataset` syntax to create seeding records in schemas. Given a schema
+like this:
+
+```teo showLineNumbers
+// User & Profile represents an 1 to 1 required relationship
+
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @relation(fields: .id, references: .userId)
+  profile: Profile
+}
+
+model Profile {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+}
+
+// Player & KOFPlayer represents an 1 to 1 optional relationship
+
+model Player {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @relation(fields: .id, references: .playerId)
+  kof: KOFPlayer?
+}
+
+model KOFPlayer {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  playerId: Int?
+  @relation(fields: .playerId, references: .id)
+  player: Player?
+}
+
+// Event & Note represents an 1 optional to 1 required relationship
+
+model Event {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  noteId: Int?
+  @relation(fields: .noteId, references: .id)
+  note: Note?
+}
+
+model Note {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @relation(fields: .id, references: .noteId)
+  event: Event
+}
+
+// Game & CommandList represents an 1 optional to 1 required relationship
+
+model Game {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @relation(fields: .id, references: .gameId)
+  commandList: CommandList?
+}
+
+model CommandList {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  gameId: Int
+  @relation(fields: .gameId, references: .id)
+  game: Game
+}
+
+// Product & Category represents an 1 optional to many relationship
+
+model Product {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  categoryId: Int?
+  @relation(fields: .categoryId, references: .id)
+  category: Category?
+}
+
+model Category {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @relation(fields: .id, references: .categoryId)
+  products: Product[]
+}
+
+// Author & Post represents an 1 required to many relationship
+
+model Author {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @relation(fields: .id, references: .authorId)
+  posts: Post[]
+}
+
+model Post {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @foreignKey
+  authorId: Int
+  @relation(fields: .authorId, references: .id)
+  author: Author
+}
+
+// Artist & Song represents a many to many relationship
+
+model Artist {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @relation(through: Perform, local: .artist, foreign: .song)
+  songs: Song[]
+}
+
+model Song {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique
+  name: String
+  @relation(through: Perform, local: .song, foreign: .artist)
+  artists: Artist[]
+}
+
+@id([.artistId, .songId])
+model Perform {
+  @foreignKey
+  artistId: Int
+  @foreignKey
+  songId: Int
+  @relation(fields: .artistId, references: .id)
+  artist: Artist
+  @relation(fields: .songId, references: .id)
+  song: Song
+}
+```
+
+The seeding records would be like this:
+
+```teo showLineNumbers
+autoseed dataset default {
+  group User {
+    record john {
+      "name": "John",
+      "profile": .johnProfile,
+    }
+    record peter {
+      "name": "Peter",
+    }
+  }
+  group Profile {
+    record johnProfile {
+      "name": "John's profile",
+    }
+    record peterProfile {
+      "name": "Peter's profile",
+      "user": .peter
+    }
+  }
+  group Game {
+    record kof97 {
+      "name": "KOF97"
+    }
+    record kof98 {
+      "name": "KOF98"
+    }
+    record kofxv {
+      "name": "KOFXV"
+    }
+  }
+  group CommandList {
+    record kof97c {
+      "name": "KOF97 Command List",
+      "game": .kof97
+    }
+    record kof98c {
+      "name": "KOF98 Command List",
+      "game": .kof98
+    }
+  }
+  group Player {
+    record justin {
+      "name": "Justin Wong",
+      "kof": .justin
+    }
+    record daigo {
+      "name": "Umehara Daigo",
+    }
+  }
+  group KOFPlayer {
+    record justin {
+      "name": "Justin Wong plays KOF"
+    }
+    record laggia {
+      "name": "Laggia"
+    }
+  }
+  group Author {
+    record paul {
+      "name": "Paul",
+      "posts": [.swift1, .swift2, .swift3]
+    }
+    record david {
+      "name": "David",
+    }
+  }
+  group Post {
+    record swift1 {
+      "name": "Swift 1.0"
+    }
+    record swift2 {
+      "name": "Swift 2.0"
+    }
+    record swift3 {
+      "name": "Swift 3.0"
+    }
+    record rails1 {
+      "name": "Ruby on Rails 1.0",
+      "author": .david
+    }
+    record rails2 {
+      "name": "Ruby on Rails 2.0",
+      "author": .david
+    }
+  }
+  group Artist {
+    record ed {
+      "name": "Ed Sheeran",
+      "songs": [.perfect, .shapeOfYou]
+    }
+    record maroon5 {
+      "name": "Maroon 5",
+    }
+  }
+  group Song {
+    record perfect {
+      "name": "Perfect",
+    }
+    record shapeOfYou {
+      "name": "Shape of You"
+    }
+    record maps {
+      "name": "Maps",
+      "artists": [.maroon5]
+    }
+    record payphone {
+      "name": "Payphone",
+      "artists": [.maroon5]
+    }
+  }
+  group Product {
+    record lipstick {
+      "name": "Lipstick"
+    }
+    record nailPolish {
+      "name": "Nail Polish"
+    }
+    record lipidRestore {
+      "name": "Lipid Restore"
+    }
+    record serum {
+      "name": "Sérum"
+    }
+    record hairJelly {
+      "name": "Hair Jelly"
+    }
+  }
+  group Category {
+    record cosmetics {
+      "name": "Cosmetics",
+      "products": [.lipstick, .nailPolish]
+    }
+    record skincares {
+      "name": "Skincares",
+      "products": [.lipidRestore, .serum]
+    }
+  }
+  group Event {
+    record renaissance {
+      "name": "The Renaissance"
+    }
+    record frenchRevolution {
+      "name": "The French Revolution"
+    }
+    record industrialRevolution {
+      "name": "The Industrial Revolution"
+    }
+  }
+  group Note {
+    record renaissanceNote {
+      "name": "Note of The Renaissance",
+      "event": .renaissance
+    }
+    record frenchRevolutionNote {
+      "name": "Note of The French Revolution",
+      "event": .frenchRevolution
+    }
+  }
+}
+```
+
+## Seed instructions
+
+Depending on the requirements, there are three kind of seeding instructions.
+
+### Seed
+
+Use the `seed` command to seed data into the database. This skips existing 
+records.
+
+<RustDoc>
+```sh
+cargo teo seed
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo seed
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo seed
+```
+</PythonDoc>
+
+### Reseeding
+
+Use the `seed --reseed` command to seed data into the database. If existing
+records are found, replace with the record values.
+
+<RustDoc>
+```sh
+cargo teo seed --reseed
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo seed --reseed
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo seed --reseed
+```
+</PythonDoc>
+
+### Unseeding
+
+To remove the seeding records, use the `seed --unseed` command.
+
+<RustDoc>
+```sh
+cargo teo seed --unseed
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo seed --unseed
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo seed --unseed
+```
+</PythonDoc>
 
 <PrevNext />

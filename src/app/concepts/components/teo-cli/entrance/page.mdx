@@ -13,4 +13,57 @@ import {
 
 # Entrance
 
+The entrance means which server app instance is used to issue Teo commands. By
+default, the Teo CLI provide an barebone empty app. It doesn't have anything 
+user declared in the server API.
+
+There are two entrances:
+
+* CLI entrance
+* APP entrance
+
+A schema only app can be run with the CLI entrance. While for a server code 
+mixed project, always use APP entrance except generating model entities and
+query clients.
+
+## The CLI entrance
+
+Use the teo program to issue commands with CLI entrance.
+
+<RustDoc>
+```sh
+cargo teo --help
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo --help
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo --help
+```
+</PythonDoc>
+
+## The APP entrance
+
+Use the backend language specific program to issue commands with APP entrance.
+
+<RustDoc>
+```sh
+cargo run -- --help
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx ts-node app.ts --help
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+python app.py --help
+```
+</PythonDoc>
+
 <PrevNext />

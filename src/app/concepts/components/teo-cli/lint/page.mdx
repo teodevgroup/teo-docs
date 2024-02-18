@@ -5,7 +5,39 @@ orderHint: 13
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Lint
+
+Use the `lint` command to validate Teo schema files.
+
+<RustDoc>
+```sh
+cargo teo lint
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo lint
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo lint
+```
+</PythonDoc>
+
+If any of the schema files is not valid, errors will be printed on the 
+terminal.
+
+## A note about VSCode plugin
+
+While this command can be issued manually, we highly recommand you to use 
+our [VSCode plugin](https://marketplace.visualstudio.com/items?itemName=yeannylam.teo-vscode).
+The warnings and errors are visualized in the editor in a modern and fancy way.
 
 <PrevNext />
