@@ -72,7 +72,8 @@ v21.6.2
 ```
 </CodeResult>
 
-If you see some outputs like `v21.6.2`, great! Node.js installed successfully.
+If you see some outputs like `v21.6.2`, great! Node.js is installed 
+successfully.
 
 Although now you can install Teo globally with the `npm` package manager. We
 highly recommand you to init a Node.js project and install Teo locally. This
@@ -100,6 +101,48 @@ teo Teo 0.2.4 (Node.js v21.6.2) [CLI]
 If you see this output, congratulations! And let's move on.
 </NodeJSDoc>
 <PythonDoc>
+Install Python if it hasn't been installed. There are several ways to install 
+Python. You may download the installer from the 
+[official website](https://www.python.org/downloads/), or install it with tools 
+like [Homebrew](https://brew.sh/).
+
+After installation, run this command to verify its installation.
+
+<CodeResult name="output" defaultOpen={true}>
+```sh
+python3.12 --version
+```
+```txt
+Python 3.12.2
+```
+</CodeResult>
+
+If you see some outputs like `Python 3.12.2`, great! Python is installed 
+successfully.
+
+Although now you can install Teo globally with the `pip` package manager. We
+highly recommand you to create a virtual environment and install Teo locally. 
+This won't affect other projects that use Teo. To create a directory, create a 
+virtual environment, and install Teo, follow these commands.
+
+```sh showLineNumbers
+mkdir teo-tutorial-01
+cd teo-tutorial-01
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install teo
+```
+
+Use the `teo` command to verify whether Teo is installed successfully.
+
+<CodeResult name="output" defaultOpen={true}>
+```sh
+teo --version
+```
+```txt
+teo Teo 0.2.4 (Python 3.12.2) [CLI]
+```
+</CodeResult>
 </PythonDoc>
 
 ## Editor plugin
@@ -110,13 +153,29 @@ Download our plugin from [VSCode marketplace](https://marketplace.visualstudio.c
 
 ## Write your first schema
 
+<RustDoc>
 Create an empty directory and create a file named `schema.teo`.
 
 ```sh
-mkdir hello-teo
-cd hello-teo
+mkdir teo-tutorial-01
+cd teo-tutorial-01
 touch schema.teo
 ```
+</RustDoc>
+<NodeJSDoc>
+In the current working directory, create a file named `schema.teo`.
+
+```sh
+touch schema.teo
+```
+</NodeJSDoc>
+<PythonDoc>
+In the current working directory, create a file named `schema.teo`.
+
+```sh
+touch schema.teo
+```
+</PythonDoc>
 
 Paste these content into the file.
 
