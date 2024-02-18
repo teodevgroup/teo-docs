@@ -4,4 +4,165 @@ author: Victor Teo
 orderHint: 2
 ---
 
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../shared/components/Selector'
+
 # CLI reference
+
+## Entrance
+
+The TEO CLI commands have two [entrances](/concepts/components/teo-cli/entrance) 
+<span className="concept">CONCEPT</span>. Use the Teo command line tool to 
+access with the CLI entrance. Use the backend programming language specific
+program to access with the APP entrance.
+
+### Use the CLI entrance
+
+To use the CLI entrance, just use the Teo program.
+
+<RustDoc>
+```sh
+cargo teo --help
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo --help
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo --help
+```
+</PythonDoc>
+
+### Use the APP entrance
+
+To use the APP entrance, invoke the entry script or the compiled binary.
+
+<RustDoc>
+```sh
+cargo run -- --help
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx ts-node app.ts --help
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+python app.py --help
+```
+</PythonDoc>
+
+## Shared options
+
+| Option                         | Short | Type   | Description               |
+| :----------------------------- | :---- | :----- | :------------------------ |
+| --schema &#60;SCHEMA_FILE&#62; | -s    | String | The schema file to load   |
+| --version                      | -v    | Bool   | Print version information |
+| --silent                       | -S    | Bool   | Silent outputs            |
+| --help                         | -h    | Bool   | Print help                |
+
+
+## `serve`
+
+Use the serve command to start the HTTP server.
+
+### Options
+
+| Option         | Short | Type | Description                                        |
+| :------------- | :---- | :--- | :------------------------------------------------- |
+| --no-migration | -M    | Bool | Start server without running migration             |
+| --no-autoseed  | -S    | Bool | Start server without auto seeding autoseed dataset |
+
+## `generate`
+
+Use the generate command to generate source code from Teo schema.
+
+### `entity`
+
+Use the generate entity command to generate model entities.
+
+#### Usage
+
+```sh
+generate entity [OPTIONS] [NAME]...
+```
+
+#### Options
+
+| Option | Short | Type | Description           |
+| :----- | :---- | :--- | :-------------------- |
+| --all  | -a    | Bool | Generate all entities |
+
+### `client`
+
+Use the generate client command to generate query clients.
+
+#### Usage
+
+```sh
+generate client [OPTIONS] [NAME]...
+```
+
+#### Options
+
+| Option | Short | Type | Description          |
+| :----- | :---- | :--- | :------------------- |
+| --all  | -a    | Bool | Generate all clients |
+
+## `migrate`
+
+Use the migrate command to perform database migration.
+
+#### Options
+
+| Option | Short | Type | Description |
+| :----- | :---- | :--- | :---------- |
+| --dry  | -d    | Bool | Dry run     |
+
+## `seed`
+
+Use the seed command to seed data to the database.
+
+### Usage
+
+```sh
+seed [OPTIONS] [NAME]...
+```
+
+### Options
+
+| Option   | Short | Type | Description                                                                                            |
+| :------- | :---- | :--- | :----------------------------------------------------------------------------------------------------- |
+| --reseed | -r    | Bool | [Reseed records](/concepts/components/teo-cli/seed#reseeding) <span className="concept">CONCEPT</span> |
+| --unseed | -r    | Bool | [Unseed records](/concepts/components/teo-cli/seed#unseeding) <span className="concept">CONCEPT</span> |
+
+## `purge`
+
+Use the [purge](/concepts/components/teo-cli/purge) <span className="concept">CONCEPT</span> command to clear the database.
+
+### Usage
+
+```sh
+purge
+```
+
+## `lint`
+
+Use the [lint](/concepts/components/teo-cli/lint) <span className="concept">CONCEPT</span> command to validate schemas.
+
+## `run`
+
+Use the run command to run custom [programs](/concepts/components/teo-cli/program) <span className="concept">CONCEPT</span>.
+
+### Usage
+
+```sh
+run [NAME]...
+```
