@@ -6,13 +6,7 @@ orderHint: 1
 
 import PrevNext from '../../../../shared/components/PrevNext'
 import CodeResult from '../../../../shared/components/CodeResult'
-import {
-    TripleSelector, RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
-    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
-    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
-} from '../../../../shared/components/Selector'
-import { json } from 'stream/consumers'
-import { on } from 'events'
+import { RustDoc, NodeJSDoc, PythonDoc } from '../../../../shared/components/Selector'
 
 # Write a schema only app
 
@@ -81,8 +75,8 @@ won't affect other projects that use Teo. To create a directory, init a
 Node.js project, and install Teo, follow these commands.
 
 ```sh showLineNumbers
-mkdir teo-tutorial-01
-cd teo-tutorial-01
+mkdir hello-teo-schema-only
+cd hello-teo-schema-only
 npm init -y
 npm install @teocloud/teo
 ```
@@ -126,8 +120,8 @@ This won't affect other projects that use Teo. To create a directory, create a
 virtual environment, and install Teo, follow these commands.
 
 ```sh showLineNumbers
-mkdir teo-tutorial-01
-cd teo-tutorial-01
+mkdir hello-teo-schema-only
+cd hello-teo-schema-only
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip install teo
@@ -157,8 +151,8 @@ Download our plugin from [VSCode marketplace](https://marketplace.visualstudio.c
 Create an empty directory and create a file named `schema.teo`.
 
 ```sh
-mkdir teo-tutorial-01
-cd teo-tutorial-01
+mkdir hello-teo-schema-only
+cd hello-teo-schema-only
 touch schema.teo
 ```
 </RustDoc>
