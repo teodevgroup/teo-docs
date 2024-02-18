@@ -340,6 +340,7 @@ teo generate entity
 ```
 </PythonDoc>
 
+<RustDoc>
 Replace `src/main.rs` with the following content.
 
 ```rust showLineNumbers {1,5,26-28}
@@ -374,6 +375,44 @@ async fn main() -> Result<()> {
     app.run().await
 }
 ```
+</RustDoc>
+<NodeJSDoc>
+Replace `app.ts` with the following content.
+
+```ts showLineNumbers {1,2,5,20-23}
+import { App, Response, RequestCtx } from '@teocloud/teo'
+import { EchoPathArguments } from './entities'
+
+const app = new App()
+app.mainNamespace().defineHandler("hello", () => {
+    return Response.html(`
+        <html>
+            <head>
+                <title>Hello, Teo handlers</title>
+            </head>
+            <body>
+                <h1>Hello, Teo handlers!</h1>
+            </body>
+        </html>
+    `)
+})
+app.mainNamespace().defineHandler("empty", () => {
+    return Response.empty()
+})
+app.mainNamespace().defineHandler("echo", (ctx: RequestCtx) => {
+    const pathArguments: EchoPathArguments = ctx.pathArguments()
+    return Response.string(pathArguments.data, "text/plain")
+})
+app.run()
+```
+</NodeJSDoc>
+<PythonDoc>
+Replace `app.py` with the following content.
+
+```teo
+
+```
+</PythonDoc>
 
 We've included the generated path arguments into our code and use
 it in our handler.
@@ -417,10 +456,23 @@ declare nonapi handler static(): Any
 
 Repeat the code generation process.
 
+<RustDoc>
 ```sh
 cargo teo generate entity
 ```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate entity
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo generate entity
+```
+</PythonDoc>
 
+<RustDoc>
 Update `src/main.rs` to this.
 
 ```rust showLineNumbers {4,5,29-31}
@@ -458,6 +510,49 @@ async fn main() -> Result<()> {
     app.run().await
 }
 ```
+</RustDoc>
+<NodeJSDoc>
+Update `app.ts` to this.
+
+```ts showLineNumbers {1,2,24-27}
+import { App, Response, RequestCtx, serveStaticFiles } from '@teocloud/teo'
+import { EchoPathArguments, StaticPathArguments } from './entities'
+
+const app = new App()
+app.mainNamespace().defineHandler("hello", () => {
+    return Response.html(`
+        <html>
+            <head>
+                <title>Hello, Teo handlers</title>
+            </head>
+            <body>
+                <h1>Hello, Teo handlers!</h1>
+            </body>
+        </html>
+    `)
+})
+app.mainNamespace().defineHandler("empty", () => {
+    return Response.empty()
+})
+app.mainNamespace().defineHandler("echo", (ctx: RequestCtx) => {
+    const pathArguments: EchoPathArguments = ctx.pathArguments()
+    return Response.string(pathArguments.data, "text/plain")
+})
+app.mainNamespace().defineHandler("static", (ctx) => {
+    const pathArguments: StaticPathArguments = ctx.pathArguments()
+    return serveStaticFiles("static", pathArguments.path)
+})
+
+app.run()
+```
+</NodeJSDoc>
+<PythonDoc>
+Update `app.py` to this.
+
+```python showLineNumbers
+
+```
+</PythonDoc>
 
 Start the server again.
 
@@ -477,8 +572,8 @@ python app.py serve
 ```
 </PythonDoc>
 
-Now navigate to `/` in the browser, and you will see the image. Try typing a non-existing
-file path, 404 is responded.
+Now navigate to `/static/images/girl.jpg` in the browser, and you will see the 
+image. Try typing a non-existing file path, 404 is responded.
 
 <Image alt="Browser screenshot" width={447} height={268} src="/images/docs/browsergirl.png" />
 
@@ -538,6 +633,7 @@ model Record {
 }
 ```
 
+<RustDoc>
 And replace `src/main.rs` with this.
 
 ```rust showLineNumbers {3,5,6,33-47}
@@ -591,15 +687,76 @@ async fn main() -> Result<()> {
     app.run().await
 }
 ```
+</RustDoc>
+<NodeJSDoc>
+And replace `app.ts` with this.
 
-This way, Teo becames a normal ORM and developers can write any code to interact data
-with. The `createdAt` field is readonly, but through custom handlers, it becomes 
-modifiable.
+```ts showLineNumbers {2, 28-45}
+import { App, Response, RequestCtx, serveStaticFiles } from '@teocloud/teo'
+import { AlterCreatedAtInput, EchoPathArguments, StaticPathArguments, Teo } from './entities'
+
+const app = new App()
+app.mainNamespace().defineHandler("hello", () => {
+    return Response.html(`
+        <html>
+            <head>
+                <title>Hello, Teo handlers</title>
+            </head>
+            <body>
+                <h1>Hello, Teo handlers!</h1>
+            </body>
+        </html>
+    `)
+})
+app.mainNamespace().defineHandler("empty", () => {
+    return Response.empty()
+})
+app.mainNamespace().defineHandler("echo", (ctx: RequestCtx) => {
+    const pathArguments: EchoPathArguments = ctx.pathArguments()
+    return Response.string(pathArguments.data, "text/plain")
+})
+app.mainNamespace().defineHandler("static", (ctx) => {
+    const pathArguments: StaticPathArguments = ctx.pathArguments()
+    return serveStaticFiles("static", pathArguments.path)
+})
+app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
+    group.defineHandler("alterCreatedAt", async (ctx) => {
+        const teo: Teo = ctx.teo()
+        const input: AlterCreatedAtInput = ctx.body()
+        const record = await teo.record.findUnique({
+            "where": {
+                "id": input.id
+            }
+        })
+        if (record) {
+            record.createdAt = input.createdAt
+            await record.save()
+            return Response.data(await record.toTeon())
+        } else {
+            throw Error("not found")
+        }
+    })
+})
+
+app.run()
+```
+</NodeJSDoc>
+<PythonDoc>
+And replace `app.py` with this.
+
+```python showLineNumbers
+
+```
+</PythonDoc>
+
+This way, Teo becames a normal ORM and developers can write any code to 
+interact data with. The `createdAt` field is readonly, but through custom 
+handlers, it becomes modifiable.
 
 ### Form request
 
-Let's try some file uploading. Upload an image to the static directory that we've
-created before.
+Let's try some file uploading. Upload an image to the static directory that 
+we've created before.
 
 Append this to the schema.
 
