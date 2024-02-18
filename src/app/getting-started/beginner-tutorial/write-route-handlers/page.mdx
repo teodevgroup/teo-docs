@@ -373,7 +373,7 @@ async fn main() -> Result<()> {
 <NodeJSDoc>
 Replace `app.ts` with the following content.
 
-```ts showLineNumbers {1,2,5,20-23}
+```ts showLineNumbers {1,2,20-23}
 import { App, Response, RequestCtx } from '@teocloud/teo'
 import { EchoPathArguments } from './entities'
 
@@ -403,7 +403,7 @@ app.run()
 <PythonDoc>
 Replace `app.py` with the following content.
 
-```teo
+```teo showLineNumbers {2,3,22-25}
 from asyncio import run
 from teo import App, Response, RequestCtx
 from entities import EchoPathArguments
@@ -570,7 +570,7 @@ app.run()
 <PythonDoc>
 Update `app.py` to this.
 
-```python showLineNumbers
+```python showLineNumbers {2,3,26-29}
 from asyncio import run
 from teo import App, Response, RequestCtx, serve_static_files
 from entities import EchoPathArguments, StaticPathArguments
@@ -890,7 +890,7 @@ app.run()
 <PythonDoc>
 And replace `app.py` with this.
 
-```python showLineNumbers
+```python showLineNumbers {2,3,30-45}
 from asyncio import run
 from teo import App, Response, RequestCtx, serve_static_files, HandlerGroup
 from entities import EchoPathArguments, StaticPathArguments, AlterCreatedAtInput, Teo
@@ -1068,7 +1068,7 @@ async fn main() -> Result<()> {
 <NodeJSDoc>
 Update `app.ts` to be like this.
 
-```ts showLineNumbers
+```ts showLineNumbers {2-4, 48-57}
 import { App, Response, RequestCtx, serveStaticFiles } from '@teocloud/teo'
 import { AlterCreatedAtInput, EchoPathArguments, StaticPathArguments, Teo, UploadInput } from './entities'
 import path from 'path'
@@ -1133,7 +1133,7 @@ app.run()
 <PythonDoc>
 Update `app.py` to be like this.
 
-```python showLineNumbers
+```python showLineNumbers {3-7,50-58}
 from asyncio import run
 from teo import App, Response, RequestCtx, serve_static_files, HandlerGroup
 from entities import EchoPathArguments, StaticPathArguments, AlterCreatedAtInput, Teo, UploadInput
