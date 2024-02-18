@@ -300,16 +300,42 @@ key.
 
 Now run this command to start the server.
 
+<RustDoc>
 <CodeResult name="output" defaultOpen={true}>
 ```sh
 cargo teo serve
 ```
 ```txt
-[2023-12-20 04:58:40] mysql connector connected for `main` at "mysql://127.0.0.1:3306/helloteo"
-[2023-12-20 04:58:40] Teo 0.0.63 (Rust 1.75.0, CLI)
+[2023-12-20 04:58:40] sqlite connector connected for `main` at "sqlite::memory:"
+[2023-12-20 04:58:40] Teo 0.2.4 (Rust 1.76.0, CLI)
 [2023-12-20 04:58:40] listening on port 5050
 ```
 </CodeResult>
+</RustDoc>
+<NodeJSDoc>
+<CodeResult name="output" defaultOpen={true}>
+```sh
+npx teo serve
+```
+```txt
+[2023-12-20 04:58:40] sqlite connector connected for `main` at "sqlite::memory:"
+[2023-12-20 04:58:40] Teo 0.2.4 (Node.js v21.6.2, CLI)
+[2023-12-20 04:58:40] listening on port 5050
+```
+</CodeResult>
+</NodeJSDoc>
+<PythonDoc>
+<CodeResult name="output" defaultOpen={true}>
+```sh
+teo serve
+```
+```txt
+[2023-12-20 04:58:40] sqlite connector connected for `main` at "sqlite::memory:"
+[2023-12-20 04:58:40] Teo 0.2.4 (Python 3.12.2, CLI)
+[2023-12-20 04:58:40] listening on port 5050
+```
+</CodeResult>
+</PythonDoc>
 
 If you see the output likt above, congratulation, it starts successfully.
 If it cannot start successfully, most of the times, the reason is the 
