@@ -891,7 +891,55 @@ app.run()
 And replace `app.py` with this.
 
 ```python showLineNumbers
+from asyncio import run
+from teo import App, Response, RequestCtx, serve_static_files, HandlerGroup
+from entities import EchoPathArguments, StaticPathArguments, AlterCreatedAtInput, Teo
 
+async def main():
+    app = App()
+    def hello_handler(_ctx):
+        return Response.html("""
+            <html>
+                <head>
+                    <title>Hello, Teo handlers</title>
+                </head>
+                <body>
+                    <h1>Hello, Teo handlers!</h1>
+                </body>
+            </html>
+        """)
+    app.main_namespace().define_handler("hello", hello_handler)
+    def empty_handler(_ctx):
+        return Response.empty()
+    app.main_namespace().define_handler("empty", empty_handler)
+    def echo_handler(ctx: RequestCtx):
+        path_arguments: EchoPathArguments = ctx.path_arguments()
+        return Response.string(path_arguments["data"], "text/plain")
+    app.main_namespace().define_handler("echo", echo_handler)
+    def static_handler(ctx: RequestCtx):
+        path_args: StaticPathArguments = ctx.path_arguments()
+        return serve_static_files("static", path_args.path)
+    app.main_namespace().define_handler("static", static_handler)
+    def record_group(group: HandlerGroup):
+        async def alter_created_at_handler(ctx: RequestCtx):
+            input: AlterCreatedAtInput = ctx.body()
+            teo: Teo = ctx.teo()
+            record = await teo.record.find_unique({
+                "where": {
+                    "id": input["id"]
+                }
+            })
+            if record is None:
+                raise Exception("not found")
+            record.created_at = input["createdAt"]
+            await record.save()
+            return Response.data(await record.to_teon())
+        group.define_handler("alterCreatedAt", alter_created_at_handler)
+    app.main_namespace().define_model_handler_group("Record", record_group)
+
+    await app.run()
+
+run(main())
 ```
 </PythonDoc>
 
