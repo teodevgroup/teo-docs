@@ -5,22 +5,58 @@ orderHint: 9
 ---
 
 import PrevNext from '../../../../../shared/components/PrevNext'
+import {
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
+    SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
+} from '../../../../../shared/components/Selector'
 
 # Generate
 
+The `generate` command generate 
+[model entities](/concepts/components/teo-schema/generator#model-entity-generator)
+<span className="concept">CONCEPT</span> and 
+[query clients](/concepts/components/teo-schema/generator#query-client-generator)
+<span className="concept">CONCEPT</span>.
 
-## Generate
+## Model entity
 
-`generate client` generates the query client.
+Use the command `generate entity` to generate model entities.
 
+<RustDoc>
 ```sh
-teo generate client
+cargo teo generate entity
 ```
-
-`generate entity` generates the model entities.
-
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate entity
+```
+</NodeJSDoc>
+<PythonDoc>
 ```sh
 teo generate entity
 ```
+</PythonDoc>
+
+## Query client
+
+Use the command `generate client` generates query clients.
+
+<RustDoc>
+```sh
+cargo teo generate client
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate client
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo generate client
+```
+</PythonDoc>
 
 <PrevNext />
