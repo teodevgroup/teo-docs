@@ -508,7 +508,7 @@ export const DocumentationContent = styled.div`
     [data-rehype-pretty-code-figure] {
       margin: 16px 0;
     }
-    div[data-rehype-pretty-code-title] {
+    [data-rehype-pretty-code-title] {
       font-size: 0.875rem;
       color: rgb(113, 128, 150);
       font-family: ${contentFontStack};
@@ -747,6 +747,8 @@ type CopyButtonProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLButtonEl
 
 type DivProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 
+type FigCaptionProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+
 const CopyButton = (props: CopyButtonProps) => {
   return <button {...props} className={css`
     position: absolute;
@@ -889,15 +891,15 @@ const CodeTitle = (props: DivProps) => {
   </CodeTitleContainer>
 }
 
-export const Div = (props: DivProps) => {
+export const FigCaption = (props: FigCaptionProps) => {
   if ((props as any)['data-rehype-pretty-code-title'] === '') {
     return <CodeTitle {...props}>
       {props.children}
     </CodeTitle>
   } else {
-    return <div {...props}>
+    return <figcaption {...props}>
       {props.children}
-    </div>
+    </figcaption>
   }
 }
 
