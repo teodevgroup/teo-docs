@@ -55,7 +55,12 @@ const onThisPage = () => {
           ]
         },
         h2H3List
-      ] : []
+      ] : [
+        {
+          type: "element",
+          tagName: "triple",
+        }
+      ]
     };
     tree.children = [original, onThisPage]
   }
