@@ -12,6 +12,8 @@ import {
     PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
     SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
 } from '../../../../shared/components/Selector'
+import { appendFile } from 'fs'
+import { contentBackgroundColor } from '../../../../shared/styles/theme'
 
 # Write route handlers
 
@@ -23,6 +25,7 @@ return different kind of responses to the frontend.
 
 Let's create a new project for programming code.
 
+<RustDoc>
 ```sh
 cargo init hello-teo-handlers --bin
 cd hello-teo-handlers
@@ -53,6 +56,51 @@ async fn main() -> Result<()> {
     app.run().await
 }
 ```
+</RustDoc>
+<NodeJSDoc>
+Run these commands to create a new project and install dependencies.
+
+```sh
+mkdir hello-teo-handlers
+cd hello-teo-handlers
+npm init -y
+npm install @teocloud/teo
+npm install typescript ts-node -D
+```
+
+Create a file named `app.ts` with the following content.
+
+```ts showLineNumbers
+import { App } from '@teocloud/teo'
+
+const app = new App()
+app.run()
+```
+</NodeJSDoc>
+<PythonDoc>
+Run these commands to setup a virtual environment and install dependencies.
+
+```sh
+mkdir hello-teo-handlers
+cd hello-teo-handlers
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install teo
+```
+
+Create a file named `app.py` with the following content.
+
+```python showLineNumbers
+from asyncio import run
+from teo import App
+
+async def main():
+  app = App()
+  await app.run()
+
+run(main())
+```
+</PythonDoc>
 
 Now we've just created a barebone Teo server app. Don't forget to create a schema
 file like before. Create a file named `schema.teo` in the root directory of the 
@@ -66,9 +114,21 @@ server {
 
 Run this command to start our server:
 
+<RustDoc>
 ```sh
 cargo run -- serve
 ```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx ts-node app.ts serve
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+python app.py serve
+```
+</PythonDoc>
 
 This time we're not using Teo CLI because we want our custom code to be loaded and
 compiled. Now a barebone server is started with every routes lead to `NotFound` error
