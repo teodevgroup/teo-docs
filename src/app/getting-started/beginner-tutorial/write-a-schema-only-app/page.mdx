@@ -11,6 +11,8 @@ import {
     PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
     SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
 } from '../../../../shared/components/Selector'
+import { json } from 'stream/consumers'
+import { on } from 'events'
 
 # Write a schema only app
 
@@ -20,6 +22,7 @@ and how to write them.
 
 ## Installation
 
+<RustDoc>
 Install Rust if it hasn't been installed. This bash command is copied from its 
 [official site](https://www.rust-lang.org/tools/install). This is the easiest 
 and recommended way to install Rust.
@@ -51,6 +54,53 @@ If you see the output which prints the version number, nice job, Teo is
 successfully installed. If Teo isn't installed successfully and you cannot
 figure it out, leave us an [issue on GitHub](https://github.com/teocloud/teo/issues).
 We'll investigate and handle it for you.
+</RustDoc>
+<NodeJSDoc>
+Install Node.js if it hasn't been installed. There are several ways to install 
+Node.js. You may download the installer from the 
+[official website](https://nodejs.org/), or install it with tools like 
+[NVM](https://github.com/nvm-sh/nvm).
+
+After installation, run this command to verify its installation.
+
+<CodeResult name="output" defaultOpen={true}>
+```sh
+node --version
+```
+```txt
+v21.6.2
+```
+</CodeResult>
+
+If you see some outputs like `v21.6.2`, great! Node.js installed successfully.
+
+Although now you can install Teo globally with the `npm` package manager. We
+highly recommand you to init a Node.js project and install Teo locally. This
+won't affect other projects that use Teo. To create a directory, init a 
+Node.js project, and install Teo, follow these commands.
+
+```sh showLineNumbers
+mkdir teo-tutorial-01
+cd teo-tutorial-01
+npm init -y
+npm install teo
+```
+
+Use the `npx` command to verify whether Teo is installed successfully.
+
+<CodeResult name="output" defaultOpen={true}>
+```sh
+npx teo --version
+```
+```txt
+teo Teo 0.2.4 (Node.js 21.6.2) [CLI]
+```
+</CodeResult>
+
+If you see this output, congratulations! And let's move on.
+</NodeJSDoc>
+<PythonDoc>
+</PythonDoc>
 
 ## Editor plugin
 
