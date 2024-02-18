@@ -253,11 +253,27 @@ Add these to the schema and the source code file.
 declare nonapi handler empty(): Any
 ```
 
+<RustDoc>
 ```rust showLineNumbers
 app.main_namespace_mut().define_handler("empty", || async {
     Ok::<Response, path::Error>(Response::empty())
 });
 ```
+</RustDoc>
+<NodeJSDoc>
+```ts showLineNumbers
+app.mainNamespace().defineHandler("empty", () => {
+    return Response.empty()
+})
+```
+</NodeJSDoc>
+<PythonDoc>
+```python showLineNumbers
+    def empty_handler(_request, _body, _teo):
+        return Response.empty()
+    app.main_namespace().define_handler("empty", empty_handler)
+```
+</PythonDoc>
 
 Restart our server and request to `/empty`.
 
@@ -272,7 +288,7 @@ The output is blank since this is an empty response.
 Let's write a text response which echos user's url segment input.
 
 Add these to our schema.
-
+<RustDoc>
 ```teo showLineNumbers
 entity {
   provider: .rust,
@@ -282,12 +298,47 @@ entity {
 @map(.get, "/echo/:data", interface: "EchoPathArguments")
 declare nonapi handler echo(): Any
 ```
+</RustDoc>
+<NodeJSDoc>
+```teo showLineNumbers
+entity {
+  provider: .node,
+  dest: "./entities"
+}
+
+@map(.get, "/echo/:data", interface: "EchoPathArguments")
+declare nonapi handler echo(): Any
+```
+</NodeJSDoc>
+<PythonDoc>
+```teo showLineNumbers
+entity {
+  provider: .python,
+  dest: "./entities"
+}
+
+@map(.get, "/echo/:data", interface: "EchoPathArguments")
+declare nonapi handler echo(): Any
+```
+</PythonDoc>
 
 Run this command to generate interfaces.
 
+<RustDoc>
 ```sh
 cargo teo generate entity
 ```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate entity
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo generate entity
+```
+</PythonDoc>
 
 Replace `src/main.rs` with the following content.
 
@@ -329,9 +380,21 @@ it in our handler.
 
 Start our server again.
 
+<RustDoc>
 ```sh
 cargo run -- serve
 ```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx ts-node app.ts serve
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+python app.py serve
+```
+</PythonDoc>
 
 Now navigate to `/echo/hello` in the browser. The path argument is printed out.
 
@@ -398,9 +461,21 @@ async fn main() -> Result<()> {
 
 Start the server again.
 
+<RustDoc>
 ```sh
 cargo run -- serve
 ```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx ts-node app.ts serve
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+python app.py serve
+```
+</PythonDoc>
 
 Now navigate to `/` in the browser, and you will see the image. Try typing a non-existing
 file path, 404 is responded.
@@ -628,9 +703,21 @@ async fn main() -> Result<()> {
 
 Start our server again.
 
+<RustDoc>
 ```sh
 cargo run -- serve
 ```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx ts-node app.ts serve
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+python app.py serve
+```
+</PythonDoc>
 
 Now send a form request to `/upload`. And access the URL of the uploaded file. The uploaded
 file starts downloading.
