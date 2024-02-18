@@ -4,7 +4,7 @@ import { globSync } from 'glob'
 const tocCaches = {}
 
 export function generateToc(fileLocation) {
-    const urlPath = fileLocation.replace(/^src\/app/, "").replace(/\/page.mdx$/, "")
+    const urlPath = fileLocation.replace(/^src[\/\\]app/, "").replace(/[\/\\]page.mdx$/, "")
     if (tocCaches[urlPath]) {
         return tocCaches[urlPath]
     }
@@ -21,12 +21,12 @@ export function generateToc(fileLocation) {
 }
 
 export function fetchToc(urlPath) {
-    return tocCaches[urlPath.replace(/\/$/, "")]
+    return tocCaches[urlPath.replace(/[\/\\]$/, "")]
 }
 
 export function fetchPrevNext(urlPath) {
-    const pureUrlPath = urlPath.replace(/\/$/, "")
-    const components = pureUrlPath.split('/')
+    const pureUrlPath = urlPath.replace(/[\/\\]$/, "")
+    const components = pureUrlPath.indexOf("\\") > -1 ? pureUrlPath.split('\\') : pureUrlPath.split('/')
     components.pop()
     const parentUrlPath = components.join("/")
     const parentItem = tocCaches[parentUrlPath]

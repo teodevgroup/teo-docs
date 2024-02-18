@@ -11,7 +11,7 @@ import { buildInsertRecord } from '@teocloud/teo-docs-search-engine'
 const pipeline = unified().use(remarkParse).use(remarkMdx).use(remarkRehype).use(plainText)
 
 export default function generateFullTextIndex(filepath) {
-    const urlPath = dirname(filepath).replace(/^src\/app/, "")
+    const urlPath = dirname(filepath).replace(/^src[\/\\]app/, "")
     const content = readFileSync(filepath).toString()
     const plainTextValue = pipeline.processSync(content).value
     buildInsertRecord(filepath, urlPath, plainTextValue)
