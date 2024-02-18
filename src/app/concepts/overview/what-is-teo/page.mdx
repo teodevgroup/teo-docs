@@ -107,14 +107,14 @@ app.main_namespace_mut().define_handler("hello", || async move {
 </RustDoc>
 <NodeJSDoc>
 ```ts showLineNumbers title="app.ts"
-app.mainNamespace().defineHandler("myHandler", async (_request: Request, _teo: Teo) => {
+app.mainNamespace().defineHandler("myHandler", async () => {
   return Response.data({ "hello": "world!" })
 })
 ```
 </NodeJSDoc>
 <PythonDoc>
 ```python showLineNumbers title="app.py"
-async def my_handler(_, __, ___):
+async def my_handler(_ctx):
   return Response.data({ "hello": "world!" })
 
 app.main_namespace().define_handler("myHandler", my_handler)

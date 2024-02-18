@@ -270,7 +270,7 @@ app.mainNamespace().defineHandler("empty", () => {
 </NodeJSDoc>
 <PythonDoc>
 ```python showLineNumbers
-    def empty_handler(_request, _body, _teo):
+    def empty_handler(_ctx):
         return Response.empty()
     app.main_namespace().define_handler("empty", empty_handler)
 ```

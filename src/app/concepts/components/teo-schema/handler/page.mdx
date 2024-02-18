@@ -129,7 +129,7 @@ app.main_namespace_mut().define_handler("hello", || async move {
 <span className="concept">REFERENCE</span>
 
 ```ts showLineNumbers
-app.mainNamespace().defineHandler("myHandler", async (_request: Request, _teo: Teo) => {
+app.mainNamespace().defineHandler("myHandler", async () => {
   return Response.data({ "hello": "world!" })
 })
 ```
@@ -145,7 +145,7 @@ app.mainNamespace().defineHandler("myHandler", async (_request: Request, _teo: T
 <span className="concept">REFERENCE</span>
 
 ```python showLineNumbers
-async def my_handler(_, __, ___):
+async def my_handler(_ctx):
   return Response.data({ "hello": "world!" })
 
 app.main_namespace().define_handler("myHandler", my_handler)
