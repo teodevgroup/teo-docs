@@ -1,10 +1,11 @@
 import { visit } from 'unist-util-visit'
+import { normalizePath } from '../scripts/generateCaches.mjs'
 
 /** @type {import('unified').Plugin<[], import('hast').Root>} */
 const prevNext = () => {
   return (tree, vfile) => {
     visit(tree, (node) => node.type == "mdxJsxFlowElement" && node.name === "PrevNext", (node) => {
-        const urlPath = vfile.path.replace(vfile.cwd, '').replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
+        const urlPath = normalizePath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
         const prevNextData = global.docFetchPrevNext(urlPath)
         if (!prevNextData) {
             return

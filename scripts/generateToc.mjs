@@ -1,5 +1,6 @@
 import extractFrontmatter from './extractFrontmatter.mjs'
 import { globSync } from 'glob'
+import { normalizePath } from './generateCaches.mjs'
 
 const tocCaches = {}
 
@@ -10,7 +11,7 @@ export function generateToc(fileLocation) {
     }
     const frontmatterData = extractFrontmatter(fileLocation, urlPath)
     if (frontmatterData) {
-        frontmatterData.children = globSync(fileLocation.replace(/page.mdx$/, "") + "*/page.mdx").map(generateToc)
+        frontmatterData.children = globSync(fileLocation.replace(/page.mdx$/, "") + "*/page.mdx").map(normalizePath).map(generateToc)
         frontmatterData.children = frontmatterData.children.filter((v) => v !== undefined)
         frontmatterData.children.sort((a, b) => (a.orderHint - b.orderHint) >> 31 | 1)
         tocCaches[urlPath] = frontmatterData
