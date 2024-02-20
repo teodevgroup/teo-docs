@@ -1068,7 +1068,7 @@ async fn main() -> Result<()> {
 <NodeJSDoc>
 Update `app.ts` to be like this.
 
-```ts showLineNumbers {2-4, 48-57}
+```ts showLineNumbers {2-4, 48-56}
 import { App, Response, RequestCtx, serveStaticFiles } from '@teocloud/teo'
 import { AlterCreatedAtInput, EchoPathArguments, StaticPathArguments, Teo, UploadInput } from './entities'
 import path from 'path'
@@ -1118,8 +1118,7 @@ app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
 })
 app.mainNamespace().defineHandler("upload", (ctx) => {
     const input: UploadInput = ctx.body()
-    const extname = path.extname(input.file.filepath)
-    const extension = extname ? `.${extname}` : ""
+    const extension = path.extname(input.file.filepath)
     const randomFileName = (Math.random() + 1).toString(36).substring(7)
     const destination = "static/images/" + randomFileName + extension
     const resultPath = "/" + destination
