@@ -1,11 +1,11 @@
-import { normalizePath } from '../scripts/generateCaches.mjs'
+import fixWindowsPath from '../scripts/fixWindowsPath.mjs'
 
 /** @type {import('unified').Plugin<[], import('hast').Root>} */
 const breadcrumb = () => {
   return (tree, vfile) => {
     let index = tree.children.findIndex((child) => child.type !== 'mdxjsEsm')
     if (index !== undefined) {
-        const urlPath = normalizePath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
+        const urlPath = fixWindowsPath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
         const breadcrumbData = global.docFetchBreadcrumb(urlPath)
         if (breadcrumbData) {
             let breadcrumbsNode = {
