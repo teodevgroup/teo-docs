@@ -1,5 +1,5 @@
 import { visit } from 'unist-util-visit'
-import { normalizePath } from '../scripts/generateCaches.mjs'
+import fixWindowsPath from '../scripts/fixWindowsPath.mjs'
 
 const childrenItems = (children) => {
     return children.map((child) => {
@@ -37,7 +37,7 @@ const childrenItems = (children) => {
 const tableOfContents = () => {
   return (tree, vfile) => {
     visit(tree, (node) => node.type == "mdxJsxFlowElement" && node.name === "TableOfContents", (node) => {
-        const urlPath = normalizePath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
+        const urlPath = fixWindowsPath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
         const toc = global.docFetchToc(urlPath)
 
         for (const member in node) {
