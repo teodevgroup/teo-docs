@@ -1118,11 +1118,11 @@ app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
 })
 app.mainNamespace().defineHandler("upload", (ctx) => {
     const input: UploadInput = ctx.body()
-    const extension = path.extname(input.file.filepath)
+    const extension = path.extname(input["file"].filepath)
     const randomFileName = (Math.random() + 1).toString(36).substring(7)
     const destination = "static/images/" + randomFileName + extension
     const resultPath = "/" + destination
-    fs.copyFileSync(input.file.filepath, destination)
+    fs.copyFileSync(input["file"].filepath, destination)
     return Response.data({ path: resultPath })
 })
 
@@ -1184,11 +1184,11 @@ async def main():
     app.main_namespace().define_model_handler_group("Record", record_group)
     def upload_handler(ctx: RequestCtx):
         input: UploadInput = ctx.body()
-        extension = Path(input.file.filepath).suffix
+        extension = Path(input["file"].filepath).suffix
         random_file_name = ''.join(choice(ascii_letters) for i in range(6))
-        destination = "static/images" + random_file_name + extension
+        destination = "static/images/" + random_file_name + extension
         result_path = "/" + destination
-        move(input.file.filepath, destination)
+        move(input["file"].filepath, destination)
         return Response.data({ "path": result_path })
     app.main_namespace().define_handler("upload", upload_handler)
 
