@@ -598,7 +598,7 @@ async def main():
     app.main_namespace().define_handler("echo", echo_handler)
     def static_handler(ctx: RequestCtx):
         path_args: StaticPathArguments = ctx.path_arguments()
-        return serve_static_files("static", path_args.path)
+        return serve_static_files("static", path_args["path"])
     app.main_namespace().define_handler("static", static_handler)
     await app.run()
 
@@ -918,7 +918,7 @@ async def main():
     app.main_namespace().define_handler("echo", echo_handler)
     def static_handler(ctx: RequestCtx):
         path_args: StaticPathArguments = ctx.path_arguments()
-        return serve_static_files("static", path_args.path)
+        return serve_static_files("static", path_args["path"])
     app.main_namespace().define_handler("static", static_handler)
     def record_group(group: HandlerGroup):
         async def alter_created_at_handler(ctx: RequestCtx):
@@ -1164,7 +1164,7 @@ async def main():
     app.main_namespace().define_handler("echo", echo_handler)
     def static_handler(ctx: RequestCtx):
         path_args: StaticPathArguments = ctx.path_arguments()
-        return serve_static_files("static", path_args.path)
+        return serve_static_files("static", path_args["path"])
     app.main_namespace().define_handler("static", static_handler)
     def record_group(group: HandlerGroup):
         async def alter_created_at_handler(ctx: RequestCtx):
