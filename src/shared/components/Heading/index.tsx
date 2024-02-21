@@ -12,6 +12,7 @@ import GitHubIcon from './GitHubIcon'
 import SlackIcon from './SlackIcon'
 import XIcon from './XIcon'
 import PatreonIcon from './PatreonIcon'
+import GiteeIcon from './GiteeIcon'
 
 interface HeadingMenuButtonProps {
   showMenu: boolean;
@@ -303,6 +304,8 @@ const HeadingIconA = styled.a`
 `
 
 const HeadingIconLinks = styled.div`
+  display: flex;
+  gap: 20px;
   ${tablet} {
     display: none;
   }
@@ -348,6 +351,14 @@ export const HeadingSlackButton = () => {
   </HeadingIconA>
 }
 
+export const HeadingGiteeButton = () => {
+  return <HeadingIconA href='https://gitee.com/teocloud/teo' target="_blank">
+    <GiteeIcon width={32} height={32} style={{
+      transition: "0.2s all ease-in-out 0s"
+    }} />
+  </HeadingIconA>
+}
+
 export const HeadingGitHubButton = () => {
   return <HeadingIconA href='https://github.com/teocloud/teo' target="_blank">
     <GitHubIcon width={32} height={32} style={{
@@ -369,6 +380,7 @@ const Heading = () => {
         <HeadingNavItemsReused />
         <HeadingIconLinks>
           <HeadingGitHubButton />
+          <HeadingGiteeButton />
         </HeadingIconLinks>
       </HeadingMenuContainer>
       <HeadingConstraint>
@@ -381,6 +393,7 @@ const Heading = () => {
         <HeadingRight>
           <HeadingIconLinks>
             <HeadingGitHubButton />
+            <HeadingGiteeButton />
           </HeadingIconLinks>
           <HeadingMenuButton onClick={() => setShowMenu(!showMenu)} showMenu={showMenu}>
             <Menu size={20} />
