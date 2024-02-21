@@ -506,12 +506,6 @@ export const FastDatabaseSelector = () => {
     </FastSelectorItem>
     <FastSelectorItem>
       <FastSelectorIconContainer>
-        <KotlinLogo16 />
-      </FastSelectorIconContainer>
-      <FastSelectorTitle>Kotlin</FastSelectorTitle>
-    </FastSelectorItem>
-    <FastSelectorItem>
-      <FastSelectorIconContainer>
         <SQLiteLogo16 />
       </FastSelectorIconContainer>
       <FastSelectorTitle>SQLite</FastSelectorTitle>
