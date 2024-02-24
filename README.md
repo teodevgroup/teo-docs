@@ -1,4 +1,4 @@
-Teo Docs
+TEO Docs
 ========
 
 Documentation website for Teo.

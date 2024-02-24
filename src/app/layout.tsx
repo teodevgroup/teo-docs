@@ -18,7 +18,7 @@ export async function generateMetadata() {
   const res = await global.docFetchToc(pathname)
   
   return {
-    title: res?.title ? `${res.title} | Teo Docs` : 'Teo Docs',
+    title: res?.title ? `${res.title} | TEO Docs` : 'TEO Docs',
     description: 'Teo Documentation. Guides, references, tutorials for Teo web framework.',
     icons: {
       icon: '/favicon.ico',
