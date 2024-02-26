@@ -892,7 +892,7 @@ And replace `app.py` with this.
 
 ```python showLineNumbers {2,3,30-45}
 from asyncio import run
-from teo import App, Response, RequestCtx, serve_static_files, HandlerGroup
+from teo import App, Response, RequestCtx, serve_static_files, HandlerGroup, TeoException
 from entities import EchoPathArguments, StaticPathArguments, AlterCreatedAtInput, Teo
 
 async def main():
@@ -930,7 +930,7 @@ async def main():
                 }
             })
             if record is None:
-                raise Exception("not found")
+                raise TeoException.not_found()
             record.created_at = input["createdAt"]
             await record.save()
             return Response.data(await record.to_teon())
@@ -1134,7 +1134,7 @@ Update `app.py` to be like this.
 
 ```python showLineNumbers {3-7,50-58}
 from asyncio import run
-from teo import App, Response, RequestCtx, serve_static_files, HandlerGroup
+from teo import App, Response, RequestCtx, serve_static_files, HandlerGroup, TeoException
 from entities import EchoPathArguments, StaticPathArguments, AlterCreatedAtInput, Teo, UploadInput
 from pathlib import Path
 from random import choice
@@ -1176,7 +1176,7 @@ async def main():
                 }
             })
             if record is None:
-                raise Exception("not found")
+                raise TeoException.not_found()
             record.created_at = input["createdAt"]
             await record.save()
             return Response.data(await record.to_teon())
