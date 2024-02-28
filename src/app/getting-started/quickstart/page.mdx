@@ -246,7 +246,7 @@ client ts {
   provider: .typeScript,
   dest: "../hello-teo-client/",
   package: true,
-  host: "http://127.0.0.1:5050",
+  host: .string("http://127.0.0.1:5050"),
   gitCommit: true
 }
 ```
@@ -259,7 +259,7 @@ client swift {
   provider: .swift,
   dest: "../hello-teo-client/",
   package: true,
-  host: "http://127.0.0.1:5050",
+  host: .string("http://127.0.0.1:5050"),
   gitCommit: true
 }
 ```
@@ -272,7 +272,7 @@ client kotlin {
   provider: .kotlin,
   dest: "../hello-teo-client/",
   package: true,
-  host: "http://127.0.0.1:5050",
+  host: .string("http://127.0.0.1:5050"),
   gitCommit: true
 }
 ```
@@ -285,7 +285,7 @@ client cs {
   provider: .cSharp,
   dest: "../hello-teo-client/",
   package: true,
-  host: "http://127.0.0.1:5050",
+  host: .string("http://127.0.0.1:5050"),
   gitCommit: true
 }
 ```
@@ -298,7 +298,7 @@ client dart {
   provider: .dart,
   dest: "../hello-teo-client/",
   package: true,
-  host: "http://127.0.0.1:5050",
+  host: .string("http://127.0.0.1:5050"),
   gitCommit: true
 }
 ```

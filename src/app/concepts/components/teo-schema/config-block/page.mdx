@@ -25,7 +25,7 @@ server {
 client ts {
   provider: .typeScript,
   dest: "../hello-teo",
-  host: "http://127.0.0.1:5300",
+  host: .string("http://127.0.0.1:5300"),
   package: true,
   gitCommit: true,
 }
