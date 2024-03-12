@@ -171,7 +171,7 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, path::Error>(response)
+        Ok::<Response, Error>(response)
     });
     app.run().await
 }
@@ -250,7 +250,7 @@ declare nonapi handler empty(): Any
 <RustDoc>
 ```rust showLineNumbers
 app.main_namespace_mut().define_handler("empty", || async {
-    Ok::<Response, path::Error>(Response::empty())
+    Ok::<Response, Error>(Response::empty())
 });
 ```
 </RustDoc>
@@ -358,13 +358,13 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, path::Error>(response)
+        Ok::<Response, Error>(response)
     });
     app.main_namespace_mut().define_handler("empty", || async {
-        Ok::<Response, path::Error>(Response::empty())
+        Ok::<Response, Error>(Response::empty())
     });
     app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
-        Ok::<Response, path::Error>(Response::string(path_args.data(), "text/plain"))
+        Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
     });
     app.run().await
 }
@@ -517,13 +517,13 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, path::Error>(response)
+        Ok::<Response, Error>(response)
     });
     app.main_namespace_mut().define_handler("empty", || async {
-        Ok::<Response, path::Error>(Response::empty())
+        Ok::<Response, Error>(Response::empty())
     });
     app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
-        Ok::<Response, path::Error>(Response::string(path_args.data(), "text/plain"))
+        Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
     });
     app.main_namespace_mut().define_handler("static", |path_args: StaticPathArguments| async move {
         serve_static_files("static", path_args.path())
@@ -804,13 +804,13 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, path::Error>(response)
+        Ok::<Response, Error>(response)
     });
     app.main_namespace_mut().define_handler("empty", || async {
-        Ok::<Response, path::Error>(Response::empty())
+        Ok::<Response, Error>(Response::empty())
     });
     app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
-        Ok::<Response, path::Error>(Response::string(path_args.data(), "text/plain"))
+        Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
     });
     app.main_namespace_mut().define_handler("static", |path_args: StaticPathArguments| async move {
         serve_static_files("static", path_args.path())
@@ -824,9 +824,9 @@ async fn main() -> Result<()> {
             })).await? {
                 record.set_created_at(*input.created_at());
                 record.save().await?;
-                Ok::<Response, path::Error>(Response::data(record.to_teon().await?))
+                Ok::<Response, Error>(Response::data(record.to_teon().await?))
             } else {
-                Err(path::Error::not_found_message_only())?
+                Err(Error::not_found_message_only())?
             }
         });
     });
@@ -1012,13 +1012,13 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, path::Error>(response)
+        Ok::<Response, Error>(response)
     });
     app.main_namespace_mut().define_handler("empty", || async {
-        Ok::<Response, path::Error>(Response::empty())
+        Ok::<Response, Error>(Response::empty())
     });
     app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
-        Ok::<Response, path::Error>(Response::string(path_args.data(), "text/plain"))
+        Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
     });
     app.main_namespace_mut().define_handler("static", |path_args: StaticPathArguments| async move {
         serve_static_files("static", path_args.path())
@@ -1032,9 +1032,9 @@ async fn main() -> Result<()> {
             })).await? {
                 record.set_created_at(*input.created_at());
                 record.save().await?;
-                Ok::<Response, path::Error>(Response::data(record.to_teon().await?))
+                Ok::<Response, Error>(Response::data(record.to_teon().await?))
             } else {
-                Err(path::Error::not_found_message_only())?
+                Err(Error::not_found_message_only())?
             }
         });
     });
@@ -1052,12 +1052,12 @@ async fn main() -> Result<()> {
         let path = "/".to_owned() + destination_string.as_str();
         match std::fs::rename(original_location, destination) {
             Ok(_) => {
-                Ok::<Response, path::Error>(Response::data(Value::Dictionary(indexmap!{
+                Ok::<Response, Error>(Response::data(Value::Dictionary(indexmap!{
                     "path".to_owned() => Value::String(path)
                 })))
             },
             Err(err) => {
-                Err(path::Error::internal_server_error_message_only(err.to_string()))
+                Err(Error::internal_server_error_message_only(err.to_string()))
             }
         }
     });
