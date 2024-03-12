@@ -500,7 +500,7 @@ Update `src/main.rs` to this.
 mod entities;
 
 use tokio::main;
-use teo::prelude::{App, Response, Result, path, serve_static_files};
+use teo::prelude::{App, Response, Result, Error, serve_static_files};
 use crate::entities::{EchoPathArguments, StaticPathArguments};
 
 #[main]
@@ -787,7 +787,7 @@ mod entities;
 
 use indexmap::indexmap;
 use tokio::main;
-use teo::prelude::{App, Response, Result, path, serve_static_files, teon, Value};
+use teo::prelude::{App, Response, Result, Error, serve_static_files, teon, Value};
 use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo};
 
 #[main]
@@ -995,7 +995,7 @@ use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 use indexmap::indexmap;
 use tokio::main;
-use teo::prelude::{App, Response, Result, path, serve_static_files, teon, Value};
+use teo::prelude::{App, Response, Result, Error, serve_static_files, teon, Value};
 use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo, UploadInput, UploadInputTrait};
 
 #[main]
