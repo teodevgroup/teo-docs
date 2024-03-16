@@ -1,0 +1,730 @@
+---
+title: Implement authentication
+author: Victor Teo
+orderHint: 3
+---
+
+import PrevNext from '../../../../shared/components/PrevNext'
+import CodeResult from '../../../../shared/components/CodeResult'
+import { RustDoc, NodeJSDoc, PythonDoc } from '../../../../shared/components/Selector'
+
+# Implement authentication
+
+Authentication is vital to modern server apps. Teo simplifies the
+implementation of authentication. Authentication includes handling user signing
+in sessions, generate and validate user's API tokens.
+
+## Setup the project
+
+To setup a project, install the dependencies and do programming language 
+specific setups. In the
+[first article in the series](/docs/getting-started/beginner-tutorial/write-a-schema-only-app),
+we explained what each step does in this process. In this tutorial, we just
+include the command for pasting.
+
+<RustDoc>
+mkdir hello-teo-authentication
+cd hello-teo-authentication
+cargo install teo
+</RustDoc>
+<NodeJSDoc>
+```sh
+mkdir hello-teo-authentication
+cd hello-teo-authentication
+npm init -y
+npm install typescript ts-node -D
+npx tsc --init
+npm install @teocloud/teo
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+mkdir hello-teo-authentication
+cd hello-teo-authentication
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install teo
+```
+</PythonDoc>
+
+## Password
+
+Let's create a simple password authentication. Paste this into a new file
+named `schema.teo`.
+
+```teo showLineNumbers title="schema.teo"
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5052)
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+
+Create a dot env file in the same directory.
+
+```txt title=".env"
+JWT_SECRET=my_top_secret
+```
+
+Let's explain the newly introduced decorators and pipeline items one by one.
+
+* The authentication functionalities reside in Teo's `std.identity`
+[namespace](/concepts/components/teo-schema/namespace)
+<span class="concept">CONCEPT</span>.
+* `@identity.id` specifies which field is used to fetch the user
+* `@identity.checker` specifies which field is used to validate credentials and
+how to validate
+* `@bcrypt.salt` performs a Bcrypt salting transform
+* `@bcrypt.verify` verifies the input value against the stored one
+* `@writeonly` hides the field value from the output
+* `@identity.tokenIssuer` specifies which type of token it generates
+* `$identity.jwt` performs the JWT token generation
+* `identity.identityFromJwt` middleware decodes the JWT token and set the 
+identity to the request
+* `identity.signIn` is the template which defines the `signIn` handler
+* `identity.identity` is the template which fetches the user information from 
+the token in the header
+
+Let's start the server and perform a `signIn` request.
+
+<RustDoc>
+```sh
+cargo teo serve
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo serve
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo serve
+```
+</PythonDoc>
+
+Send this JSON input to `/User/create` to create a user.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "create": {
+    "email": "01@gmail.com",
+    "password": "Aa123456"
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "01@gmail.com"
+  }
+}
+```
+</CodeResult>
+
+Send this JSON input to `/User/signIn`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "credentials": {
+    "email": "01@gmail.com",
+    "password": "Aa123456"
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "01@gmail.com"
+  },
+  "meta": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6eyJpZCI6MX0sIm1vZGVsIjpbIlVzZXIiXSwiZXhwIjoxNzQyMTI0NDk2fQ.x2DSIpdnUeJtsUOGQsHlGksr29aF-CWog6X5LILxsOc"
+  }
+}
+```
+</CodeResult>
+
+We've create a token from this user. If you intentionally type the password 
+wrongly, an error response is returned.
+
+## Companion validations
+
+Practically only something like username and pasword are not enough. A lot of
+websites and apps integrates some third party image authentications to prevent
+non-human access. As a framework, Teo doesn't integrate with any service 
+providers. Instead, it's easy to integrate any third-party service or identity 
+with Teo.
+
+Replace the content of `schema.teo` with this.
+
+```teo showLineNumbers title="schema.teo" {18-20,22,23}
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5052)
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker(
+    $do($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+    .do($get(.companions).presents.get(.imageAuthToken).presents))
+  password: String
+  @virtual @writeonly @identity.companion
+  imageAuthToken: String?
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+
+We created a `@identity.companion` field which is `@virtual`. A virtual field
+isn't stored into the database. Companion values are present when checking and
+validating against the checker value. In this simple example, we just ensure
+the image auth token value exists.
+
+Restart the server and send this JSON input to `/User/signIn`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "credentials": {
+    "email": "01@gmail.com",
+    "password": "Aa123456",
+    "imageAuthToken": "anytoken"
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "01@gmail.com"
+  },
+  "meta": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6eyJpZCI6MX0sIm1vZGVsIjpbIlVzZXIiXSwiZXhwIjoxNzQyMTI2MDIwfQ.7e3gXp5zA_h-Yk4ClUhjIIZLL4sLXAIFpE3CDzL_gzs"
+  }
+}
+```
+</CodeResult>
+
+Without the image auth token, this `signIn` request would fail.
+
+## Custom expiration internal
+
+The token expiration interval can be dynamic instead of static. Let's try an
+example of frontend passed expiration interval. Replace the content of
+`schema.teo` with this.
+
+```teo showLineNumbers title="schema.teo" {10, 24-25}
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5052)
+}
+
+@identity.tokenIssuer($identity.jwt(expired: $get(.expired).presents))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker(
+    $do($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+    .do($get(.companions).presents.get(.imageAuthToken).presents))
+  password: String
+  @virtual @writeonly @identity.companion
+  imageAuthToken: String?
+  @virtual @writeonly @identity.companion
+  expired: Int64?
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+
+Starts the server again and send this to `/User/signIn`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "credentials": {
+    "email": "01@gmail.com",
+    "password": "Aa123456",
+    "imageAuthToken": "anytoken",
+    "expired": 2
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "01@gmail.com"
+  },
+  "meta": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6eyJpZCI6MX0sIm1vZGVsIjpbIlVzZXIiXSwiZXhwIjoxNzEwNTk4MjQ5fQ.Oz9O2rB-usonrdfzt8q75vr0biOf_C6Y3JIaf5O3MAE"
+  }
+}
+```
+</CodeResult>
+
+Since this token is valid for 2 seconds, just paste the token to the header
+and send this empty JSON input to `/User/identity`. 
+
+**Headers**:
+* Authorization: Bearer `#your token#`
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{ }
+```
+```json
+{
+  "error": {
+    "type": "Unauthorized",
+    "message": "token expired"
+  }
+}
+```
+</CodeResult>
+
+## Blocked account
+
+Practically accounts can be blocked from signing in. Implement account blocking
+is quite easy. Just tell us what does it mean by invalid account.
+
+Replace the content of `schema.teo` with this.
+
+```teo showLineNumbers title="schema.teo" {12,28}
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5052)
+}
+
+@identity.tokenIssuer($identity.jwt(expired: $get(.expired).presents))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@identity.validateAccount($get(.enabled).presents.eq(true))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker(
+    $do($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+    .do($get(.companions).presents.get(.imageAuthToken).presents))
+  password: String
+  @virtual @writeonly @identity.companion
+  imageAuthToken: String?
+  @virtual @writeonly @identity.companion
+  expired: Int64?
+  @migration(default: true)
+  enabled: Bool
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+
+Let's disable the previously created account. Send this JSON input to 
+`/User/update`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "where": {
+    "id": 1
+  },
+  "update": {
+	"enabled": false
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "01@gmail.com",
+    "enabled": false
+  }
+}
+```
+</CodeResult>
+
+Now the `signIn` handler doesn't work for him and token authencation always 
+failed.
+
+## Third-party integration
+
+Teo provides an easy way for developers to integrate with third party identity
+services such as signing in with Google, Facebook. For China developers, this
+may be something like signing in with WeChat.
+
+Update the the content of `schema.teo` with this.
+
+```teo showLineNumbers title="schema.teo" {30-33}
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5052)
+}
+
+@identity.tokenIssuer($identity.jwt(expired: $get(.expired).presents))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@identity.validateAccount(
+  $message($get(.enabled).presents.eq(true), "this account is blocked"))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker(
+    $do($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+    .do($get(.companions).presents.get(.imageAuthToken).presents))
+  password: String
+  @virtual @writeonly @identity.companion
+  imageAuthToken: String?
+  @virtual @writeonly @identity.companion
+  expired: Int64?
+  @migration(default: true) @default(true)
+  enabled: Bool
+  @identity.id @unique
+  thirdPartyId: String?
+  @virtual @writeonly @identity.checker($get(.value).presents.valid)
+  thirdPartyToken: String?
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+
+Restart the server and let's create a new account with third party account 
+binded by sending this input to `/User/create`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "create": {
+    "email": "02@gmail.com",
+    "password": "Aa123456",
+    "thirdPartyId": "myFacebookId",
+    "thirdPartyToken": "myThirdPartyToken"
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 2,
+    "email": "02@gmail.com",
+    "enabled": true,
+    "thirdPartyId": "myFacebookId"
+  }
+}
+```
+</CodeResult>
+
+Now try signing in with the third party id and token. Send this input to
+`/User/signIn`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "credentials": {
+    "thirdPartyId": "myFacebookId",
+    "thirdPartyToken": "myFacebookToken",
+    "expired": 99999999999
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 2,
+    "email": "02@gmail.com",
+    "enabled": true,
+    "thirdPartyId": "myFacebookId"
+  },
+  "meta": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6eyJpZCI6Mn0sIm1vZGVsIjpbIlVzZXIiXSwiZXhwIjoxMDE3MTA2MDMwOTJ9.LcOzp8DFToXDQEBtu8jMtnQp-BndAazsTdBT2i4Mi3U"
+  }
+}
+```
+</CodeResult>
+
+For the sake of simplicity, let's just use `$valid` to make every third party 
+token valid. In the next section, we'll demonstrate how to create a custom
+pipeline item to validate user's credential input.
+
+## Phone number and auth code
+
+Let's add some complexity by introducing phone number and auth code. Replace
+the content of `schema.teo` with this.
+
+<RustDoc>
+</RustDoc>
+<NodeJSDoc>
+```teo showLineNumbers title="schema.teo" {10-15, 25, 42-46, 52-61} /email: String\\?/
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5052)
+}
+
+entity {
+  provider: .node,
+  dest: "./entities"
+}
+
+declare pipeline item validateAuthCode: String -> String
+
+@identity.tokenIssuer($identity.jwt(expired: $get(.expired).presents))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@identity.validateAccount(
+  $message($get(.enabled).presents.eq(true), "this account is blocked"))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  @presentWithout(.phoneNumber)
+  email: String?
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker(
+    $do($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+    .do($get(.companions).presents.get(.imageAuthToken).presents))
+  password: String?
+  @virtual @writeonly @identity.companion
+  imageAuthToken: String?
+  @virtual @writeonly @identity.companion
+  expired: Int64?
+  @migration(default: true) @default(true)
+  enabled: Bool
+  @identity.id @unique
+  thirdPartyId: String?
+  @virtual @writeonly @identity.checker($get(.value).presents.valid)
+  thirdPartyToken: String?
+  @onSet($if($presents, $regexMatch(/\\+?[0-9]+/))) @identity.id
+  @presentWithout(.email) @unique
+  phoneNumber: String?
+  @virtual @writeonly @identity.checker($get(.value).presents.validateAuthCode)
+  authCode: String?
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+model AuthCode {
+  @id @autoIncrement @readonly
+  id: Int
+  @presentWithout(.phoneNumber) @unique
+  email: String?
+  @presentWithout(.email) @unique
+  phoneNumber: String?
+  @onSave($randomDigits(4))
+  code: String
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+</NodeJSDoc>
+<PythonDoc>
+</PythonDoc>
+
+Generate entities for writing our custom pipeline item `$validateAuthCode`.
+
+<RustDoc>
+```sh
+cargo teo generate entity
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate entity
+```
+</NodeJSDoc>
+<PythonDoc>
+teo generate entity
+</PythonDoc>
+
+<RustDoc>
+Now let's create main program file. Create a file named `src/main.rs` in the 
+project directory.
+</RustDoc>
+<NodeJSDoc>
+Now let's create main program file. Create a file named `app.ts` in the project
+directory.
+
+```typescript showLineNumbers name="app.ts"
+import { App } from '@teocloud/teo'
+import { AuthCodeWhereUniqueInput, Teo, User } from './entities'
+
+const app = new App()
+
+app.mainNamespace().defineValidatorPipelineItem(
+    "validateAuthCode", 
+    async (checkArgs: any, _, user: User, teo: Teo) => {
+        const finder: AuthCodeWhereUniqueInput = {}
+        if (checkArgs.ids.email) {
+            finder.email = user.email!
+        }
+        if (user.phoneNumber) {
+            finder.phoneNumber = user.phoneNumber!
+        }
+        const authCode = await teo.authCode.findUnique({
+            where: finder
+        })
+        if (!authCode) {
+            return "auth code not found"
+        }
+        if (authCode.code !== checkArgs.value) {
+            return "auth code is wrong"
+        }
+})
+
+app.run()
+```
+</NodeJSDoc>
+<PythonDoc>
+Now let's create main program file. Create a file named `app.py` in the project
+directory.
+</PythonDoc>
+
+Start the server with the updated command.
+
+<RustDoc>
+```sh
+cargo run -- serve
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx ts-node app.ts serve
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+python app.py serve
+```
+</PythonDoc>
+
+Let's send the auth code to the first user that we've created. Send this JSON
+input to `/AuthCode/create`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "create": {
+    "email": "01@gmail.com"
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "01@gmail.com",
+    "code": "8736"
+  }
+}
+```
+</CodeResult>
+
+In practice, mark the `code` field with `@writeonly` to hide it from the 
+output, and set a expire time.
+
+Now try to sign in with this auth code. Send this to `/User/signIn`. Remember
+to replace the auth code with the one that you got.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "credentials": {
+    "email": "01@gmail.com",
+    "authCode": "8736",
+    "expired": 99999999999
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "01@gmail.com",
+    "enabled": true
+  },
+  "meta": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6eyJpZCI6MX0sIm1vZGVsIjpbIlVzZXIiXSwiZXhwIjoxMDE3MTA2MTE5NDV9.dfO7oJ4Ka11ZfzLqjjxU2XMv83lq6qc1Ijv5WUSz5Ac"
+  }
+}
+```
+</CodeResult>
+
+Now we can sign in with email and password, email and auth code, phone number 
+with password, phone number with auth code. Together with the third party 
+account bindings.
+
+## Going next
+
+There are much more even greater things to explore with Teo. Authentication is 
+all about how to validate user's validity and generate tokens. In the next 
+tutorial, we'll learn how to protect APIs with permissions.
+
+<PrevNext />
