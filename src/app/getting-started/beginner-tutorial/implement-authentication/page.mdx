@@ -857,6 +857,12 @@ run(main())
 ```
 </PythonDoc>
 
+Notice that we changed the type of email field from `String` to `String?`. For
+databases other than SQLite is all ok. However, SQLite disallows altering table
+columns. Using SQLite is for our demo purpose as it doesn't require
+installation. Just delete the `database.sqlite` file and let's have a new 
+database setup.
+
 Start the server with the updated command.
 
 <RustDoc>
@@ -875,8 +881,29 @@ python app.py serve
 ```
 </PythonDoc>
 
-Let's send the auth code to the first user that we've created. Send this JSON
-input to `/AuthCode/create`.
+Let's recreate the previously created user. Send this to `/User/create`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "create": {
+    "email": "01@gmail.com",
+    "password": "Aa123456"
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "01@gmail.com"
+  }
+}
+```
+</CodeResult>
+
+Let's send the auth code to this user. Send this JSON input to
+`/AuthCode/create`.
 
 <CodeResult name="HTTP response" defaultOpen={true}>
 ```json
