@@ -517,8 +517,6 @@ Let's add some complexity by introducing phone number and auth code. Replace
 the content of `schema.teo` with this.
 
 <RustDoc>
-</RustDoc>
-<NodeJSDoc>
 ```teo showLineNumbers title="schema.teo" {10-15, 25, 42-46, 52-61} /email: String\\?/
 connector {
   provider: .sqlite,
@@ -530,11 +528,11 @@ server {
 }
 
 entity {
-  provider: .node,
-  dest: "./entities"
+  provider: .rust,
+  dest: "./src/entities"
 }
 
-declare pipeline item validateAuthCode: String -> String
+declare pipeline item validateAuthCode<T>: T -> String
 
 @identity.tokenIssuer($identity.jwt(expired: $get(.expired).presents))
 @identity.jwtSecret(ENV["JWT_SECRET"]!)
@@ -564,7 +562,74 @@ model User {
   @onSet($if($presents, $regexMatch(/\\+?[0-9]+/))) @identity.id
   @presentWithout(.email) @unique
   phoneNumber: String?
-  @virtual @writeonly @identity.checker($get(.value).presents.validateAuthCode)
+  @virtual @writeonly @identity.checker($validateAuthCode)
+  authCode: String?
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+model AuthCode {
+  @id @autoIncrement @readonly
+  id: Int
+  @presentWithout(.phoneNumber) @unique
+  email: String?
+  @presentWithout(.email) @unique
+  phoneNumber: String?
+  @onSave($randomDigits(4))
+  code: String
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+</RustDoc>
+<NodeJSDoc>
+```teo showLineNumbers title="schema.teo" {10-15, 25, 42-46, 52-61} /email: String\\?/
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5052)
+}
+
+entity {
+  provider: .node,
+  dest: "./entities"
+}
+
+declare pipeline item validateAuthCode<T>: T -> String
+
+@identity.tokenIssuer($identity.jwt(expired: $get(.expired).presents))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@identity.validateAccount(
+  $message($get(.enabled).presents.eq(true), "this account is blocked"))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  @presentWithout(.phoneNumber)
+  email: String?
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker(
+    $do($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+    .do($get(.companions).presents.get(.imageAuthToken).presents))
+  password: String?
+  @virtual @writeonly @identity.companion
+  imageAuthToken: String?
+  @virtual @writeonly @identity.companion
+  expired: Int64?
+  @migration(default: true) @default(true)
+  enabled: Bool
+  @identity.id @unique
+  thirdPartyId: String?
+  @virtual @writeonly @identity.checker($get(.value).presents.valid)
+  thirdPartyToken: String?
+  @onSet($if($presents, $regexMatch(/\\+?[0-9]+/))) @identity.id
+  @presentWithout(.email) @unique
+  phoneNumber: String?
+  @virtual @writeonly @identity.checker($validateAuthCode)
   authCode: String?
 
   include handler identity.signIn
@@ -586,6 +651,71 @@ middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
 ```
 </NodeJSDoc>
 <PythonDoc>
+```teo showLineNumbers title="schema.teo" {10-15, 25, 42-46, 52-61} /email: String\\?/
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5052)
+}
+
+entity {
+  provider: .python,
+  dest: "./entities"
+}
+
+declare pipeline item validateAuthCode<T>: T -> String
+
+@identity.tokenIssuer($identity.jwt(expired: $get(.expired).presents))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@identity.validateAccount(
+  $message($get(.enabled).presents.eq(true), "this account is blocked"))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  @presentWithout(.phoneNumber)
+  email: String?
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker(
+    $do($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+    .do($get(.companions).presents.get(.imageAuthToken).presents))
+  password: String?
+  @virtual @writeonly @identity.companion
+  imageAuthToken: String?
+  @virtual @writeonly @identity.companion
+  expired: Int64?
+  @migration(default: true) @default(true)
+  enabled: Bool
+  @identity.id @unique
+  thirdPartyId: String?
+  @virtual @writeonly @identity.checker($get(.value).presents.valid)
+  thirdPartyToken: String?
+  @onSet($if($presents, $regexMatch(/\\+?[0-9]+/))) @identity.id
+  @presentWithout(.email) @unique
+  phoneNumber: String?
+  @virtual @writeonly @identity.checker($validateAuthCode)
+  authCode: String?
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+model AuthCode {
+  @id @autoIncrement @readonly
+  id: Int
+  @presentWithout(.phoneNumber) @unique
+  email: String?
+  @presentWithout(.email) @unique
+  phoneNumber: String?
+  @onSave($randomDigits(4))
+  code: String
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
 </PythonDoc>
 
 Generate entities for writing our custom pipeline item `$validateAuthCode`.
