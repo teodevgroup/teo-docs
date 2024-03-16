@@ -735,8 +735,16 @@ teo generate entity
 </PythonDoc>
 
 <RustDoc>
-Now let's create main program file. Create a file named `src/main.rs` in the 
-project directory.
+Now let's init a Rust project and create the main program file. Run the command 
+and create a file named `src/main.rs` in the project directory.
+
+```sh
+
+```
+
+```rust showLineNumbers name="src/main.rs"
+
+```
 </RustDoc>
 <NodeJSDoc>
 Now let's create main program file. Create a file named `app.ts` in the project
@@ -775,6 +783,36 @@ app.run()
 <PythonDoc>
 Now let's create main program file. Create a file named `app.py` in the project
 directory.
+
+```python showLineNumbers name="app.py"
+from __future__ import annotations
+from typing import Any
+from asyncio import run
+from teo import App
+from entities import Teo, User
+
+async def main():
+    app = App()
+    async def validate_auth_code(checker_args: dict[str, Any], _, user: User, teo: Teo):
+        finder = {}
+        if checker_args['ids'].get('email') is not None:
+            finder['email'] = user.email
+        if checker_args['ids'].get('phoneNumber') is not None:
+            finder['phoneNumber'] = user.phone_number
+        auth_code = await teo.auth_code.find_unique({
+            "where": finder
+        })
+        if auth_code is None:
+            return "auth code not found"
+        if auth_code.code != checker_args.value:
+            return "auth code is wrong"
+
+    app.main_namespace().define_validator_pipeline_item(
+        "validateAuthCode", 
+        validate_auth_code)
+
+run(main())
+```
 </PythonDoc>
 
 Start the server with the updated command.
