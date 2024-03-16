@@ -736,14 +736,56 @@ teo generate entity
 
 <RustDoc>
 Now let's init a Rust project and create the main program file. Run the command 
-and create a file named `src/main.rs` in the project directory.
+and update files.
 
 ```sh
+cargo init . --bin
+```
 
+```toml showLineNumbers name="Cargo.toml"
+[package]
+name = "hello-teo-authentication"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+teo = { version = "0.2.16" }
+tokio = { version = "1.36" }
 ```
 
 ```rust showLineNumbers name="src/main.rs"
+pub mod entities;
 
+use entities::{Teo, User};
+use indexmap::indexmap;
+use tokio::main;
+use teo::prelude::{pipeline::item::validator::Validity, App, Result, Value, Error};
+ 
+#[main]
+async fn main() -> Result<()> {
+    let app = App::new()?;
+    app.main_namespace_mut().define_validator_pipeline_item("validateAuthCode", move |check_args: Value, user: User, teo: Teo| async move {
+        let mut finder = Value::Dictionary(indexmap!{});
+        let check_args = check_args.as_dictionary().unwrap();
+        let ids = check_args.get("ids").unwrap().as_dictionary().unwrap();
+        if ids.contains_key("email") {
+            finder.as_dictionary_mut().unwrap().insert("email".to_owned(), ids.get("email").unwrap().clone());
+        }
+        if ids.contains_key("phoneNumber") {
+            finder.as_dictionary_mut().unwrap().insert("phoneNumber".to_owned(), ids.get("phoneNumber").unwrap().clone());
+        }
+        let auth_code = teo.auth_code().find_unique(finder).await?;
+        match auth_code {
+            Some(auth_code) => if auth_code.code().as_str() == check_args.get("value").unwrap().as_str().unwrap() {
+                Ok::<Validity, Error>(Validity::Valid)
+            } else {
+                Ok(Validity::Invalid("auth code is wrong".to_owned()))
+            },
+            None => Ok(Validity::Invalid("auth code not found".to_owned()))
+        }
+    });
+    app.run().await
+}
 ```
 </RustDoc>
 <NodeJSDoc>
@@ -763,7 +805,7 @@ app.mainNamespace().defineValidatorPipelineItem(
         if (checkArgs.ids.email) {
             finder.email = user.email!
         }
-        if (user.phoneNumber) {
+        if (checkArgs.ids.phoneNumber) {
             finder.phoneNumber = user.phoneNumber!
         }
         const authCode = await teo.authCode.findUnique({
