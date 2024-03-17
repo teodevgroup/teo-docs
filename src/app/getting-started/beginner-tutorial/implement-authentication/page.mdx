@@ -400,7 +400,7 @@ Let's disable the previously created account. Send this JSON input to
 ```
 </CodeResult>
 
-Now the `signIn` handler doesn't work for him and token authencation always 
+Now the `signIn` handler doesn't work for him and token authentication always 
 failed.
 
 ## Third-party integration
@@ -831,12 +831,12 @@ from __future__ import annotations
 from typing import Any
 from asyncio import run
 from teo import App
-from entities import Teo, User
+from entities import Teo, User, AuthCodeWhereUniqueInput
 
 async def main():
     app = App()
     async def validate_auth_code(checker_args: dict[str, Any], _, user: User, teo: Teo):
-        finder = {}
+        finder: AuthCodeWhereUniqueInput = {}
         if checker_args['ids'].get('email') is not None:
             finder['email'] = user.email
         if checker_args['ids'].get('phoneNumber') is not None:
@@ -846,12 +846,14 @@ async def main():
         })
         if auth_code is None:
             return "auth code not found"
-        if auth_code.code != checker_args.value:
+        if auth_code.code != checker_args["value"]:
             return "auth code is wrong"
 
     app.main_namespace().define_validator_pipeline_item(
         "validateAuthCode", 
         validate_auth_code)
+    
+    await app.run()
 
 run(main())
 ```
@@ -925,7 +927,7 @@ Let's send the auth code to this user. Send this JSON input to
 </CodeResult>
 
 In practice, mark the `code` field with `@writeonly` to hide it from the 
-output, and set a expire time.
+output, and set an expire time.
 
 Now try to sign in with this auth code. Send this to `/User/signIn`. Remember
 to replace the auth code with the one that you got.
