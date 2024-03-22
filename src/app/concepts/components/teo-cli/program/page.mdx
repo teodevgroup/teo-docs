@@ -25,7 +25,7 @@ Use the server API to define a program.
 
 <RustDoc>
 ```rust showLineNumbers
-app.program("myProgram", |teo: Teo| async move {
+app.program("myProgram", None, |teo: Teo| async move {
   // do things with teo
 Ok(())
 });
@@ -33,7 +33,7 @@ Ok(())
 </RustDoc>
 <NodeJSDoc>
 ```ts showLineNumbers
-app.program("myProgram", async (teo: Teo) => {
+app.program("myProgram", null, async (teo: Teo) => {
   // do things with teo
 })
 ```
@@ -44,7 +44,7 @@ async def my_program(teo: Teo):
   # do things with teo
   pass
 
-app.program("myProgram", my_program)
+app.program("myProgram", None, my_program)
 ```
 </PythonDoc>
 

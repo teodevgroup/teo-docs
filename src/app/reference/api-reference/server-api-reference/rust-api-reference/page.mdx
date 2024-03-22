@@ -72,7 +72,7 @@ Define a custom program to run with Teo CLI.
 ##### Define a custom program
 
 ```rust showLineNumbers
-app.program("listAllUsers", |teo: Teo| async move {
+app.program("listAllUsers", Some("description"), |teo: Teo| async move {
     // list all users
     println!("{:?}", teo.user().find_many().await?);
     Ok(())
