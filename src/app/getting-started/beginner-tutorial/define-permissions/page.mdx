@@ -1,0 +1,883 @@
+---
+title: Describe permissions
+author: Victor Teo
+orderHint: 4
+---
+
+import PrevNext from '../../../../shared/components/PrevNext'
+import CodeResult from '../../../../shared/components/CodeResult'
+import { RustDoc, NodeJSDoc, PythonDoc } from '../../../../shared/components/Selector'
+
+# Describe permissions
+
+Authentication doesn't make sense if the APIs can't be protected by a mechanism
+takes use of it. Permissions usually take the account from the request and 
+validate against permission rules.
+
+## Permission on the account itself
+
+Let's implement a quite simple logic: a user can update and delete himself.
+
+Create a file named `schema.teo` with this content.
+
+```teo showLineNumbers title="schema.teo"
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5053)
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($when(.update | .delete, $match($account, [
+    $case($cast(type User), $is($self)).asAny,
+    $case($cast(type Null), $invalid.asAny)
+]), otherwise: $valid.asAny))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  name: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+
+Create a file named `.env`.
+
+```sh showLineNumbers title=".env"
+JWT_SECRET=my_top_secret
+```
+
+Start the server.
+
+<RustDoc>
+```sh
+cargo teo serve
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo serve
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo serve
+```
+</PythonDoc>
+
+Create a user and try to update the user. Send this JSON input to
+`/User/create`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "create": {
+    "email": "john@gmail.com",
+    "password": "Aa123456",
+    "name": "John"
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "john@gmail.com",
+    "name": "John"
+  }
+}
+```
+</CodeResult>
+
+Send this to `/User/update`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "where": {
+    "id": 1
+  },
+  "update": {
+    "name": "John Larrison"
+  }
+}
+```
+```json
+{
+  "error": {
+    "type": "Unauthorized",
+    "message": "input is invalid"
+  }
+}
+```
+</CodeResult>
+
+You get a unauthorized error since you are not signed in. Sign in with the 
+account. Send this to `/User/signIn`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "credentials": {
+    "email": "john@gmail.com",
+    "password": "Aa123456"
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "john@gmail.com",
+    "name": "John"
+  },
+  "meta": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6eyJpZCI6MX0sIm1vZGVsIjpbIlVzZXIiXSwiZXhwIjoxNzQyNjc4MTA5fQ.qCubhmJGJzXqq4U5HDaTqHtFYYuzm3akklggAKugQ7Y"
+  }
+}
+```
+</CodeResult>
+
+Update the user again with header `authorization` set to `Bearer #token#`.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "where": {
+    "id": 1
+  },
+  "update": {
+    "name": "John Larrison"
+  }
+}
+```
+```json
+{
+  "data": {
+    "id": 1,
+    "email": "john@gmail.com",
+    "name": "John Larrison"
+  }
+}
+```
+</CodeResult>
+
+This time, Teo detects the correct user identity and updates the user.
+
+## Permission on direct owned models
+
+Update `schema.teo` with this content. This time we define a new model `Post`.
+
+```teo showLineNumbers title="schema.teo" {25-26, 32-45}
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5053)
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($when(.update | .delete, $match($account, [
+    $case($cast(type User), $is($self)).asAny,
+    $case($cast(type Null), $invalid.asAny)
+]), otherwise: $valid.asAny))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  name: String
+  @relation(fields: .id, references: .userId)
+  posts: Post[]
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@canMutate($match($account, [
+    $case($cast(type User), $get(.id).eq($self.get(.userId).presents)).asAny,
+    $case($cast(type Null), $invalid.asAny)
+]))
+model Post {
+  @id @autoIncrement @readonly
+  id: Int
+  title: String
+  content: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+
+Look at the new code, a post can be created, updated and deleted by the owner.
+Other accounts cannot mutate this post. Feel free to create posts with 
+different users and try with the API requests.
+
+## Admin's permissions
+
+It's common that a web platform has a lot of admins. Admins have different 
+roles. Replace the schema with this.
+
+```teo showLineNumbers title="schema.teo" {14, 36, 49-73}
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5053)
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($when(.update | .delete, $match($account, [
+    $case($cast(type User), $is($self)).asAny,
+    $case($cast(type Admin), $valid.asAny),
+    $case($cast(type Null), $invalid.asAny)
+]), otherwise: $valid.asAny))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  name: String
+  @relation(fields: .id, references: .userId)
+  posts: Post[]
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@canMutate($match($account, [
+    $case($cast(type User), $get(.id).eq($self.get(.userId).presents)).asAny,
+    $case($cast(type Null), $invalid.asAny),
+    $case($cast(type Admin), $when(.delete, $valid, otherwise: $invalid).asAny)
+]))
+model Post {
+  @id @autoIncrement @readonly
+  id: Int
+  title: String
+  content: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+}
+
+enum Role {
+    root
+    normal
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($match($account, [
+    $case($cast(type Admin), $any([
+        $get(.role).presents.eq(.root).asAny,
+        $is($self).asAny
+    ])).asAny,
+]))
+@canRead($account.cast(type Admin))
+model Admin {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  role: Role
+  name: String  
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+
+Let's describe the rule that we just newly created.
+* Admin can mutate users
+* Admin can delete a post if the post contains illegal or offensive content
+* Only admin can read admins
+* Only the normal admin himself and root admins can mutate the admin record
+
+## Indirect permissions
+
+We cannot simply describe the indirect permissions with the pipeline items. 
+Let's write some programmatic code to do this. Let's say, there are many 
+projects belongs to teams, and a user can join any team. A team has many users.
+Only team user can read or mutate the projects. Let's transform our thoughts
+to code like this.
+
+<RustDoc>
+```teo showLineNumbers title="schema.teo" {10-13, 82-115}
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5053)
+}
+
+entity {
+    provider: .rust,
+    dest: "./src/entities"
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($when(.update | .delete, $match($account, [
+    $case($cast(type User), $is($self)).asAny,
+    $case($cast(type Admin), $valid.asAny),
+    $case($cast(type Null), $invalid.asAny)
+]), otherwise: $valid.asAny))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  name: String
+  @relation(fields: .id, references: .userId)
+  posts: Post[]
+  @relation(through: TeamUser, local: .user, foreign: .team)
+  teams: Team[]
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@canMutate($match($account, [
+    $case($cast(type User), $get(.id).eq($self.get(.userId).presents)).asAny,
+    $case($cast(type Null), $invalid.asAny),
+    $case($cast(type Admin), $when(.delete, $valid, otherwise: $invalid).asAny)
+]))
+model Post {
+  @id @autoIncrement @readonly
+  id: Int
+  title: String
+  content: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+}
+
+enum Role {
+    root
+    normal
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($match($account, [
+    $case($cast(type Admin), $any([
+        $get(.role).presents.eq(.root).asAny,
+        $is($self).asAny
+    ])).asAny,
+]))
+@canRead($account.cast(type Admin))
+model Admin {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  role: Role
+  name: String  
+}
+
+model Team {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  @relation(through: TeamUser, local: .team, foreign: .user)
+  users: User[]
+  @relation(fields: .id, references: .teamId)
+  projects: Project[]
+}
+
+@id([.teamId, .userId])
+model TeamUser {
+  @foreignKey
+  userId: Int
+  @foreignKey
+  teamId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+  @relation(fields: .teamId, references: .id)
+  team: Team
+}
+
+declare pipeline item canReadOrMutateProject: User -> Ignored
+
+@canRead($account.cast(type User).canReadOrMutateProject)
+@canMutate($account.cast(type User).canReadOrMutateProject)
+model Project {
+  @id @autoIncrement @readonly
+  id: Int
+  @foreignKey
+  teamId: Int
+  @relation(fields: .teamId, references: .id)
+  team: Team
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+</RustDoc>
+<NodeJSDoc>
+```teo showLineNumbers title="schema.teo" {10-13, 82-115}
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5053)
+}
+
+entity {
+    provider: .node,
+    dest: "./entities"
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($when(.update | .delete, $match($account, [
+    $case($cast(type User), $is($self)).asAny,
+    $case($cast(type Admin), $valid.asAny),
+    $case($cast(type Null), $invalid.asAny)
+]), otherwise: $valid.asAny))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  name: String
+  @relation(fields: .id, references: .userId)
+  posts: Post[]
+  @relation(through: TeamUser, local: .user, foreign: .team)
+  teams: Team[]
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@canMutate($match($account, [
+    $case($cast(type User), $get(.id).eq($self.get(.userId).presents)).asAny,
+    $case($cast(type Null), $invalid.asAny),
+    $case($cast(type Admin), $when(.delete, $valid, otherwise: $invalid).asAny)
+]))
+model Post {
+  @id @autoIncrement @readonly
+  id: Int
+  title: String
+  content: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+}
+
+enum Role {
+    root
+    normal
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($match($account, [
+    $case($cast(type Admin), $any([
+        $get(.role).presents.eq(.root).asAny,
+        $is($self).asAny
+    ])).asAny,
+]))
+@canRead($account.cast(type Admin))
+model Admin {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  role: Role
+  name: String  
+}
+
+model Team {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  @relation(through: TeamUser, local: .team, foreign: .user)
+  users: User[]
+  @relation(fields: .id, references: .teamId)
+  projects: Project[]
+}
+
+@id([.teamId, .userId])
+model TeamUser {
+  @foreignKey
+  userId: Int
+  @foreignKey
+  teamId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+  @relation(fields: .teamId, references: .id)
+  team: Team
+}
+
+declare pipeline item canReadOrMutateProject: User -> Ignored
+
+@canRead($account.cast(type User).canReadOrMutateProject)
+@canMutate($account.cast(type User).canReadOrMutateProject)
+model Project {
+  @id @autoIncrement @readonly
+  id: Int
+  @foreignKey
+  teamId: Int
+  @relation(fields: .teamId, references: .id)
+  team: Team
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+</NodeJSDoc>
+<PythonDoc>
+```teo showLineNumbers title="schema.teo" {10-13, 82-115}
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite"
+}
+
+server {
+  bind: ("0.0.0.0", 5053)
+}
+
+entity {
+    provider: .python,
+    dest: "./entities"
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($when(.update | .delete, $match($account, [
+    $case($cast(type User), $is($self)).asAny,
+    $case($cast(type Admin), $valid.asAny),
+    $case($cast(type Null), $invalid.asAny)
+]), otherwise: $valid.asAny))
+model User {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  name: String
+  @relation(fields: .id, references: .userId)
+  posts: Post[]
+  @relation(through: TeamUser, local: .user, foreign: .team)
+  teams: Team[]
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@canMutate($match($account, [
+    $case($cast(type User), $get(.id).eq($self.get(.userId).presents)).asAny,
+    $case($cast(type Null), $invalid.asAny),
+    $case($cast(type Admin), $when(.delete, $valid, otherwise: $invalid).asAny)
+]))
+model Post {
+  @id @autoIncrement @readonly
+  id: Int
+  title: String
+  content: String
+  @foreignKey
+  userId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+}
+
+enum Role {
+    root
+    normal
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!)
+@canMutate($match($account, [
+    $case($cast(type Admin), $any([
+        $get(.role).presents.eq(.root).asAny,
+        $is($self).asAny
+    ])).asAny,
+]))
+@canRead($account.cast(type Admin))
+model Admin {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+  role: Role
+  name: String  
+}
+
+model Team {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  @relation(through: TeamUser, local: .team, foreign: .user)
+  users: User[]
+  @relation(fields: .id, references: .teamId)
+  projects: Project[]
+}
+
+@id([.teamId, .userId])
+model TeamUser {
+  @foreignKey
+  userId: Int
+  @foreignKey
+  teamId: Int
+  @relation(fields: .userId, references: .id)
+  user: User
+  @relation(fields: .teamId, references: .id)
+  team: Team
+}
+
+declare pipeline item canReadOrMutateProject: User -> Ignored
+
+@canRead($account.cast(type User).canReadOrMutateProject)
+@canMutate($account.cast(type User).canReadOrMutateProject)
+model Project {
+  @id @autoIncrement @readonly
+  id: Int
+  @foreignKey
+  teamId: Int
+  @relation(fields: .teamId, references: .id)
+  team: Team
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+```
+</PythonDoc>
+
+Transform the current directory into a project.
+
+<RustDoc>
+```sh
+cargo init . --bin
+```
+
+Replace content of `Cargo.toml` with this.
+
+```toml showLineNumbers title="Cargo.toml"
+[package]
+name = "hello-teo-permissions"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+teo = { version = "0.2.22" }
+tokio = { version = "1.36" }
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npm init -y
+npm install typescript ts-node -D
+npx tsc --init
+npm install @teocloud/teo
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install teo
+```
+</PythonDoc>
+
+Let's generate the entity from the schema for programming.
+
+<RustDoc>
+```sh
+cargo teo generate entity
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate entity
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo generate entity
+```
+</PythonDoc>
+
+<RustDoc>
+Create the main program file `src/main.rs`.
+
+```rust showLineNumbers title="src/main.rs"
+pub mod entities;
+
+use entities::{Teo, User, Project};
+use indexmap::indexmap;
+use tokio::main;
+use teo::prelude::{pipeline::item::validator::Validity, App, Result, Value, Error};
+ 
+#[main]
+async fn main() -> Result<()> {
+    let app = App::new()?;
+    app.main_namespace_mut().define_validator_pipeline_item("canReadOrMutateProject", move |user: User, project: Project, teo: Teo| async move {
+        if teo.team_user().find_unique(Value::Dictionary(indexmap! {
+            "where".to_owned() => Value::Dictionary(indexmap! {
+                "teamId".to_owned() => Value::Int(project.team_id()),
+                "userId".to_owned() => Value::Int(user.id())
+            })
+        })).await?.is_none() {
+            Ok::<Validity, Error>(Validity::Invalid("user doesn't belong to this project's team".to_owned()))
+        } else {
+            Ok(Validity::Valid)
+        }
+    });
+    app.run().await
+}
+```
+</RustDoc>
+<NodeJSDoc>
+Create the main program file `app.ts`.
+
+```ts showLineNumbers title="app.ts"
+import { App } from '@teocloud/teo'
+import { Teo, Project, User } from './entities'
+
+const app = new App()
+
+app.mainNamespace().defineValidatorPipelineItem(
+    "canReadOrMutateProject",
+    async (user: User, _args, project: Project, teo: Teo) => {
+    if (!await teo.teamUser.findUnique({
+        where: {
+            teamId: project.teamId,
+            userId: user.id
+        }
+    })) {
+        return "user doesn't belong to this project's team"
+    }
+})
+
+app.run()
+```
+</NodeJSDoc>
+<PythonDoc>
+Create the main program file `app.py`.
+
+```py showLineNumbers title="app.py"
+from __future__ import annotations
+from typing import Any
+from asyncio import run
+from teo import App
+from entities import Teo, User, Project
+ 
+async def main():
+    app = App()
+    async def can_read_or_mutate_project(user: User, _, project: Project, teo: Teo):
+        if None is await teo.team_user.find_unique({
+            "where": {
+                "teamId": project.team_id,
+                "userId": user.id
+            }
+        }):
+            return "user doesn't belong to this project's team"
+
+    app.main_namespace().define_validator_pipeline_item(
+        "canReadOrMutateProject", 
+        can_read_or_mutate_project)
+    
+    await app.run()
+ 
+run(main())
+```
+</PythonDoc>
+
+Now start the server with the app entrance. Try create, update and read with 
+different user accounts.
+
+<RustDoc>
+```sh
+cargo teo serve
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo serve
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo serve
+```
+</PythonDoc>
+
+Try to create a project on a team that the user doesn't belong to, will cause
+an error.
+
+<CodeResult name="HTTP response" defaultOpen={true}>
+```json
+{
+  "create": {
+    "teamId": 2
+  }
+}
+```
+```json
+{
+  "error": {
+    "type": "Unauthorized",
+    "message": "user doesn't belong to this project's team"
+  }
+}
+```
+</CodeResult>
+
+## Summary
+
+Like anything else in Teo, permissions are readable and clear, too. Developing
+protected APIs and defining permission rules are quite fast and easy.
+
+<PrevNext />

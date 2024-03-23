@@ -23,9 +23,11 @@ we explained what each step does in this process. In this tutorial, we just
 include the command for pasting.
 
 <RustDoc>
+```sh
 mkdir hello-teo-authentication
 cd hello-teo-authentication
 cargo install teo
+```
 </RustDoc>
 <NodeJSDoc>
 ```sh
@@ -731,7 +733,9 @@ npx teo generate entity
 ```
 </NodeJSDoc>
 <PythonDoc>
+```sh
 teo generate entity
+```
 </PythonDoc>
 
 <RustDoc>
@@ -742,18 +746,18 @@ and update files.
 cargo init . --bin
 ```
 
-```toml showLineNumbers name="Cargo.toml"
+```toml showLineNumbers title="Cargo.toml"
 [package]
 name = "hello-teo-authentication"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-teo = { version = "0.2.16" }
+teo = { version = "0.2.22" }
 tokio = { version = "1.36" }
 ```
 
-```rust showLineNumbers name="src/main.rs"
+```rust showLineNumbers title="src/main.rs"
 pub mod entities;
 
 use entities::{Teo, User};
