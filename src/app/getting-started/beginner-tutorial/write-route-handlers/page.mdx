@@ -155,7 +155,7 @@ Replace the content with `src/main.rs` with this.
 
 ```rust showLineNumbers
 use tokio::main;
-use teo::prelude::{App, Response, Result, Error, path};
+use teo::prelude::{App, Response, Result, Error};
 
 #[main]
 async fn main() -> Result<()> {
@@ -341,7 +341,7 @@ Replace `src/main.rs` with the following content.
 mod entities;
 
 use tokio::main;
-use teo::prelude::{App, Response, Result, Error, path};
+use teo::prelude::{App, Response, Result, Error};
 use crate::entities::EchoPathArguments;
 
 #[main]
@@ -787,7 +787,7 @@ mod entities;
 
 use indexmap::indexmap;
 use tokio::main;
-use teo::prelude::{App, Response, Result, Error, serve_static_files, teon, Value};
+use teo::prelude::{App, Response, Result, Error, serve_static_files, Value};
 use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo};
 
 #[main]
@@ -826,7 +826,7 @@ async fn main() -> Result<()> {
                 record.save().await?;
                 Ok::<Response, Error>(Response::data(record.to_teon().await?))
             } else {
-                Err(Error::not_found_message_only())?
+                Err(Error::not_found())?
             }
         });
     });
@@ -995,7 +995,7 @@ use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 use indexmap::indexmap;
 use tokio::main;
-use teo::prelude::{App, Response, Result, Error, serve_static_files, teon, Value};
+use teo::prelude::{App, Response, Result, Error, serve_static_files, Value};
 use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo, UploadInput, UploadInputTrait};
 
 #[main]
@@ -1034,7 +1034,7 @@ async fn main() -> Result<()> {
                 record.save().await?;
                 Ok::<Response, Error>(Response::data(record.to_teon().await?))
             } else {
-                Err(Error::not_found_message_only())?
+                Err(Error::not_found())?
             }
         });
     });
@@ -1057,7 +1057,7 @@ async fn main() -> Result<()> {
                 })))
             },
             Err(err) => {
-                Err(Error::internal_server_error_message_only(err.to_string()))
+                Err(Error::internal_server_error_message(err.to_string()))
             }
         }
     });
