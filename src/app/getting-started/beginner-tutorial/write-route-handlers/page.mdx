@@ -155,7 +155,7 @@ Replace the content with `src/main.rs` with this.
 
 ```rust showLineNumbers
 use tokio::main;
-use teo::prelude::{App, Response, Result, path};
+use teo::prelude::{App, Response, Result, Error, path};
 
 #[main]
 async fn main() -> Result<()> {
@@ -341,7 +341,7 @@ Replace `src/main.rs` with the following content.
 mod entities;
 
 use tokio::main;
-use teo::prelude::{App, Response, Result, path};
+use teo::prelude::{App, Response, Result, Error, path};
 use crate::entities::EchoPathArguments;
 
 #[main]
