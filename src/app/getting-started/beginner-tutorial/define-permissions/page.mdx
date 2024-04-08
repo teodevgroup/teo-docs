@@ -756,19 +756,18 @@ Create the main program file `src/main.rs`.
 pub mod entities;
 
 use entities::{Teo, User, Project};
-use indexmap::indexmap;
 use tokio::main;
-use teo::prelude::{pipeline::item::validator::Validity, App, Result, Value, Error};
+use teo::prelude::{pipeline::item::validator::Validity, App, Result, Error, teon};
  
 #[main]
 async fn main() -> Result<()> {
     let app = App::new()?;
     app.main_namespace_mut().define_validator_pipeline_item("canReadOrMutateProject", move |user: User, project: Project, teo: Teo| async move {
-        if teo.team_user().find_unique(Value::Dictionary(indexmap! {
-            "where".to_owned() => Value::Dictionary(indexmap! {
-                "teamId".to_owned() => Value::Int(project.team_id()),
-                "userId".to_owned() => Value::Int(user.id())
-            })
+        if teo.team_user().find_unique(teon!({
+            "where": {
+                "teamId": project.team_id(),
+                "userId": user.id(),
+            }
         })).await?.is_none() {
             Ok::<Validity, Error>(Validity::Invalid("user doesn't belong to this project's team".to_owned()))
         } else {
