@@ -13,7 +13,7 @@ const DocSidebarContainer = styled.div`
   ${exceptPhone} {
     display: flex !important;
     max-height: 100vh;
-    overflow: scroll;
+    overflow: auto;
     margin-left: -20px;
     padding-left: 20px;
   }
