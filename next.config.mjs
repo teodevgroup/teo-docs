@@ -92,7 +92,7 @@ const config = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   experimental: {
     serverActions: {
-      allowedOrigins: ['docs.teocloud.io', 'docker-teo-docs']
+      allowedOrigins: ['docs.teodev.io', 'docs.teocloud.io', 'docker-teo-docs']
     }
   }
   // webpack: (
