@@ -4,6 +4,7 @@ author: Victor Teo
 orderHint: 9
 ---
 
+import Image from '../../../../../shared/components/MdxImage'
 import PrevNext from '../../../../../shared/components/PrevNext'
 import {
     RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
@@ -99,5 +100,44 @@ npx teo generate client
 teo generate client
 ```
 </PythonDoc>
+
+## Admin dashboard generator
+
+The admin dashboard generator generates an admin dashboard for the project. It
+reduces a lot of work for hooking things up between the frontend and the 
+backend. The admin dashboard is a running frontend, too. It's written with 
+React and TypeScript. It utilizes TypeScript query client.
+
+Declare an admin dashboard generator in schema is deadly simple, too.
+
+```teo
+admin {
+  dest: "../hello-teo-admin-dashboard",
+  host: .inject("process.env.TEO_HOST"),
+  languages: [.enUs, .enUk, .de, .es, .fr, .he, .hi, .ja, .ko, .zhCn, .zhTw]
+}
+```
+
+To generate the admin dashboard, use `teo generate admin` command.
+
+<RustDoc>
+```sh
+cargo teo generate admin
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate admin
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo generate admin
+```
+</PythonDoc>
+
+The admin dashboard looks like this:
+
+<Image alt="Browser screenshot" width={480} height={298} src="/images/docs/tutorials/admin-dashboard/dashboard1.gif" />
 
 <PrevNext />

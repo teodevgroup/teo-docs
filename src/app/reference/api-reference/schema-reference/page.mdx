@@ -262,7 +262,7 @@ entity python {
 
 ## `client`
 
-Defines an 
+Defines a
 [client generator](/concepts/components/teo-schema/generator#query-client-generator)
 <span className="concept">CONCEPT</span> in the Teo schema. This config block 
 is optional. If multiple clients are specified, each of them should have a 
@@ -444,6 +444,47 @@ entity rust {
   dest     ENV["CLIENT_DIR"]!
   host     "http://localhost:5100"
   package  false
+}
+```
+
+## `admin`
+
+Defines an 
+[admin dashboard generator](/concepts/components/teo-schema/generator#admin-dashboard-generator)
+<span className="concept">CONCEPT</span> in the Teo schema. This config block 
+is optional. If multiple admins are specified, each of them should have a 
+unique config block name. `admin` config blocks must be placed at the main 
+namespace.
+
+### Fields
+
+| Name        | Required | Type          | Description                                                                 |
+| :---------- | :------- | :------------ | :-------------------------------------------------------------------------- |
+| `dest`      | **Yes**  | String (Path) | Into which directory the admin dashboard is generated.                      |
+| `host`      | **Yes**  | String (URL)  | To which host this admin dashboard connects to. Same with client generator. |
+| `languages` | No       | Language[]    | The supported human languages of the admin dashboard.                       |
+
+### Remarks
+
+* You can have zero or more `admin` config blocks in a schema. If multiple 
+clients are specified, each of them should have a unique config block name.
+* You need to give `admin` a name if there are more than one entity 
+generators. for example, `admin a` or `admin b`.
+* The `admin` config blocks must be placed at the main namespace.
+* The `languages` field defaults to `[.enUs]`.
+
+### Examples
+
+#### Define an admin dashboard
+
+This example defines an admin dashboard which supports a bunch of human 
+languages.
+
+```teo
+admin {
+  dest: "../hello-teo-admin-dashboard",
+  host: .inject("process.env.TEO_HOST"),
+  languages: [.enUs, .enUk, .de, .es, .fr, .he, .hi, .ja, .ko, .zhCn, .zhTw]
 }
 ```
 
