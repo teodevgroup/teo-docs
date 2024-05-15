@@ -1,0 +1,560 @@
+---
+title: Generate admin dashboard
+author: Victor Teo
+orderHint: 5
+---
+
+import Image from '../../../../shared/components/MdxImage'
+import PrevNext from '../../../../shared/components/PrevNext'
+import CodeResult from '../../../../shared/components/CodeResult'
+import { 
+    RustDoc, 
+    NodeJSDoc, 
+    PythonDoc, 
+    PostgreSQLDoc, 
+    MySQLDoc, 
+    SQLiteDoc, 
+    MongoDBDoc 
+} from '../../../../shared/components/Selector'
+
+# Generate admin dashboard
+
+The admin dashboard is a quite common business requirement. Wouldn't it be nice
+if we could generate a default admin dashboard from the backend code? Thus, we
+implemented admin dashboard generation. And the generated admin dashboard can
+be mixed with custom code. It can be extended and customized in any way.
+
+> Currently admin dashboard generation is in beta. Missing features including 
+> the charts, graphs and tables will be implemented soon.
+
+## The backend code
+
+Let's start with creating a new project. Create a new directory and a schema 
+file named `schema.teo`.
+
+```sh
+mkdir hello-teo-admin-dashboard-backend
+cd hello-teo-admin-dashboard-backend
+touch schema.teo
+```
+
+<SQLiteDoc>
+```teo title="schema.teo"
+connector {
+  provider: .sqlite,
+  url: "sqlite:./database.sqlite",
+}
+
+server {
+  bind: ("0.0.0.0", 5054)
+}
+
+admin {
+  dest: "../hello-teo-admin-dashboard",
+  host: .inject("process.env.TEO_HOST"),
+  languages: [.enUs, .enUk, .de, .es, .fr, .he, .hi, .ja, .ko, .zhCn, .zhTw]
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Root {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Admin {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @unique @identity.id
+  phoneNo: String
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+enum Sex {
+  male
+  female
+}
+
+model Record {
+  @id @autoIncrement @readonly
+  id: Int
+  string: String
+  bool: Bool
+  int: Int
+  float: Float
+  decimal: Decimal
+  date: Date
+  dateTime: DateTime
+  sex: Sex
+}
+
+model NullableRecord {
+  @id @autoIncrement @readonly
+  id: Int
+  string: String?
+  bool: Bool?
+  int: Int?
+  float: Float?
+  decimal: Decimal?
+  date: Date?
+  dateTime: DateTime?
+  sex: Sex?
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+
+autoseed dataset default {
+  group Admin {
+    record admin {
+      email: "admin@gmail.com",
+      phoneNo: "13588888888",
+      password: "Aa123456"
+    }
+  }
+  group Root {
+    record root {
+      email: "root@gmail.com",
+      password: "Aa123456"
+    }
+  }
+}
+```
+</SQLiteDoc>
+<MySQLDoc>
+```teo title="schema.teo"
+connector {
+  provider: .mysql,
+  url: "mysql://localhost:3306/helloadmindashboard",
+}
+
+server {
+  bind: ("0.0.0.0", 5054)
+}
+
+admin {
+  dest: "../hello-teo-admin-dashboard",
+  host: .inject("process.env.TEO_HOST"),
+  languages: [.enUs, .enUk, .de, .es, .fr, .he, .hi, .ja, .ko, .zhCn, .zhTw]
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Root {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Admin {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @unique @identity.id
+  phoneNo: String
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+enum Sex {
+  male
+  female
+}
+
+model Record {
+  @id @autoIncrement @readonly
+  id: Int
+  string: String
+  bool: Bool
+  int: Int
+  float: Float
+  decimal: Decimal
+  date: Date
+  dateTime: DateTime
+  sex: Sex
+}
+
+model NullableRecord {
+  @id @autoIncrement @readonly
+  id: Int
+  string: String?
+  bool: Bool?
+  int: Int?
+  float: Float?
+  decimal: Decimal?
+  date: Date?
+  dateTime: DateTime?
+  sex: Sex?
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+
+autoseed dataset default {
+  group Admin {
+    record admin {
+      email: "admin@gmail.com",
+      phoneNo: "13588888888",
+      password: "Aa123456"
+    }
+  }
+  group Root {
+    record root {
+      email: "root@gmail.com",
+      password: "Aa123456"
+    }
+  }
+}
+```
+</MySQLDoc>
+<PostgreSQLDoc>
+```teo title="schema.teo"
+connector {
+  provider: .postgres,
+  url: "postgres://localhost:5432/helloadmindashboard",
+}
+
+server {
+  bind: ("0.0.0.0", 5054)
+}
+
+admin {
+  dest: "../hello-teo-admin-dashboard",
+  host: .inject("process.env.TEO_HOST"),
+  languages: [.enUs, .enUk, .de, .es, .fr, .he, .hi, .ja, .ko, .zhCn, .zhTw]
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Root {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Admin {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @unique @identity.id
+  phoneNo: String
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+enum Sex {
+  male
+  female
+}
+
+model Record {
+  @id @autoIncrement @readonly
+  id: Int
+  string: String
+  bool: Bool
+  int: Int
+  float: Float
+  decimal: Decimal
+  date: Date
+  dateTime: DateTime
+  sex: Sex
+  strings: String[]
+  genders: Sex[]
+}
+
+model NullableRecord {
+  @id @autoIncrement @readonly
+  id: Int
+  string: String?
+  bool: Bool?
+  int: Int?
+  float: Float?
+  decimal: Decimal?
+  date: Date?
+  dateTime: DateTime?
+  sex: Sex?
+  strings: String[]?
+  genders: Sex?[]?
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+
+autoseed dataset default {
+  group Admin {
+    record admin {
+      email: "admin@gmail.com",
+      phoneNo: "13588888888",
+      password: "Aa123456"
+    }
+  }
+  group Root {
+    record root {
+      email: "root@gmail.com",
+      password: "Aa123456"
+    }
+  }
+}
+```
+</PostgreSQLDoc>
+<MongoDBDoc>
+```teo title="schema.teo"
+connector {
+  provider: .mongo,
+  url: "mongodb://localhost:27017/helloadmindashboard",
+}
+
+server {
+  bind: ("0.0.0.0", 5054)
+}
+
+admin {
+  dest: "../hello-teo-admin-dashboard",
+  host: .inject("process.env.TEO_HOST"),
+  languages: [.enUs, .enUk, .de, .es, .fr, .he, .hi, .ja, .ko, .zhCn, .zhTw]
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Root {
+  @id @auto @map("_id") @readonly
+  id: ObjectId
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Admin {
+  @id @auto @map("_id") @readonly
+  id: ObjectId
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @unique @identity.id
+  phoneNo: String
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+enum Sex {
+  male
+  female
+}
+
+model Record {
+  @id @auto @map("_id") @readonly
+  id: ObjectId
+  string: String
+  bool: Bool
+  int: Int
+  float: Float
+  decimal: Decimal
+  date: Date
+  dateTime: DateTime
+  sex: Sex
+  strings: String[]
+  genders: Sex[]
+}
+
+model NullableRecord {
+  @id @auto @map("_id") @readonly
+  id: ObjectId
+  string: String?
+  bool: Bool?
+  int: Int?
+  float: Float?
+  decimal: Decimal?
+  date: Date?
+  dateTime: DateTime?
+  sex: Sex?
+  strings: String[]?
+  genders: Sex?[]?
+}
+
+middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+
+autoseed dataset default {
+  group Admin {
+    record admin {
+      email: "admin@gmail.com",
+      phoneNo: "13588888888",
+      password: "Aa123456"
+    }
+  }
+  group Root {
+    record root {
+      email: "root@gmail.com",
+      password: "Aa123456"
+    }
+  }
+}
+```
+</MongoDBDoc>
+
+Create a `.env` file with the following content.
+
+```sh title=".env"
+JWT_SECRET=my_top_secret
+```
+
+After created the schema file, install Teo.
+
+<RustDoc>
+```sh
+cargo install teo
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npm init -y
+npm install typescript ts-node -D
+npx tsc --init
+npm install @teocloud/teo
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install teo
+```
+</PythonDoc>
+
+Start the server.
+
+<RustDoc>
+```sh
+cargo teo serve
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo serve
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo serve
+```
+</PythonDoc>
+
+## The generate command
+
+Let's generate the admin dashboard code into the directory that we described
+in the `admin` block.
+
+<RustDoc>
+```sh
+cargo teo generate admin
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate admin
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo generate admin
+```
+</PythonDoc>
+
+After files are generated, move to the admin dashboard directory and install 
+dependencies.
+
+```sh
+cd ..
+cd hello-teo-admin-dashboard
+npm install
+```
+
+Start the frontend server for the generated admin dashboard.
+
+```sh
+npm start
+```
+
+Open a browser, and navigate to `http://localhost:9000`. Sign in with this 
+credential:
+* Email: admin@gmail.com
+* Password: Aa123456
+
+<Image alt="Browser screenshot" width={480} height={298} src="/images/docs/tutorials/admin-dashboard/dashboard0.gif" />
+
+## Create a record
+
+To create a new record, follow these steps:
+1. Navigate to "Records" in the leading tabs.
+2. Click "Records" at the top of the page. Now the records list is empty.
+3. Create a record by clicking the "Create" button.
+4. Fill the form and click "Submit".
+
+<Image alt="Browser screenshot" width={480} height={298} src="/images/docs/tutorials/admin-dashboard/dashboard1.gif" />
+
+## Update or delete a record
+
+To update or delete an existing record, double click the record in the list.
+And then edit and submit or click the "Delete" button.
+
+<Image alt="Browser screenshot" width={480} height={298} src="/images/docs/tutorials/admin-dashboard/dashboard2.gif" />
+
+## Summary
+
+It's quite easy to generate an admin dashboard. The code is generated. Thus, 
+developers can modify and extend it in any way. How to extend and write custom
+code in the admin dashboard is far beyond this tutorial. There aren't any 
+simpler way to generate an admin dashboard from the backend code directly.
+
+<PrevNext />
