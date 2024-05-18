@@ -360,7 +360,7 @@ export const HeadingGiteeButton = () => {
 }
 
 export const HeadingGitHubButton = () => {
-  return <HeadingIconA href='https://github.com/teocloud/teo' target="_blank">
+  return <HeadingIconA href='https://github.com/teodevgroup/teo' target="_blank">
     <GitHubIcon width={32} height={32} style={{
       transition: "0.2s all ease-in-out 0s"
     }} />
