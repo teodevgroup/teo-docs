@@ -24,7 +24,7 @@ model Student {
   id: Int
   firstName: String
   lastName: String
-  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+  @getter($self.get(.firstName).presents.append(" ").append($self.get(.lastName).presents))
   @deps([.firstName, .lastName])
   name: String
 }
@@ -47,8 +47,8 @@ model Student {
   id: Int
   firstName: String
   lastName: String
-  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
-  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $get(0)).assign(.lastName, $get(1)))
+  @getter($self.get(.firstName).presents.append(" ").append($self.get(.lastName).presents))
+  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $get(0).presents).assign(.lastName, $get(1).presents))
   @deps([.firstName, .lastName])
   name: String
 }
@@ -68,7 +68,7 @@ model Student {
   firstName: String
   lastName: String
   @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
-  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $get(0)).assign(.lastName, $get(1)))
+  @setter($regexMatch(/^.+ .+$/).split(" ").assign(.firstName, $get(0).presents).assign(.lastName, $get(1).presents))
   @deps([.firstName, .lastName]) @cached
   name: String
 }
@@ -88,7 +88,7 @@ model Student {
   id: Int
   firstName: String
   lastName: String
-  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+  @getter($self.get(.firstName.presents).append(" ").append($self.get(.lastName).presents))
   @deps([.firstName, .lastName]) @cached @index
   name: String
 }

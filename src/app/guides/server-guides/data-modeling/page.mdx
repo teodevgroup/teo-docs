@@ -133,8 +133,8 @@ values of fields. A property with a getter represents calculated result.
 model User {
     firstName: String
     lastName: String
-    @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
-    @setter($assign(.firstName, $split(" ").get(0)).assign(.lastName, $split(" ").get(1)))
+    @getter($self.get(.firstName).presents.append(" ").append($self.get(.lastName).presents))
+    @setter($assign(.firstName, $split(" ").get(0).presents).assign(.lastName, $split(" ").get(1).presents))
     fullName: String
 }
 ```
@@ -160,7 +160,7 @@ A cached property is stored in the database. This is useful for properties which
 model User {
     firstName: String
     lastName: String
-    @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+    @getter($self.get(.firstName).presents.append(" ").append($self.get(.lastName).presents))
     @cached @deps([.firstName, .lastName])
     fullName: String
 }

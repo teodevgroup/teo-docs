@@ -2584,7 +2584,7 @@ model User {
   id: Int
   firstName: String
   lastName: String
-  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+  @getter($self.get(.firstName).presents.append(" ").append($self.get(.lastName).presents))
   name: String
 }
 ```
@@ -2646,7 +2646,7 @@ model User {
   id: Int
   firstName: String
   lastName: String
-  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+  @getter($self.get(.firstName).presents.append(" ").append($self.get(.lastName).presents))
   @cached @deps([.firstName, .lastName])
   name: String
 }
@@ -2678,7 +2678,7 @@ model User {
   id: Int
   firstName: String
   lastName: String
-  @getter($self.get(.firstName).append(" ").append($self.get(.lastName)))
+  @getter($self.get(.firstName).presents.append(" ").append($self.get(.lastName).presents))
   @deps([.firstName, .lastName])
   name: String
 }
