@@ -2,7 +2,7 @@ import React from 'react'
 import { styled } from '@linaria/react'
 import Constraint from './Constraint'
 import { flexColumn, flexRow, tintFontStack, margin, anyDesktop, phoneAndTablet, docFontFamily, light, dark } from '../styles/theme'
-import { HeadingGitHubButton, HeadingGiteeButton, HeadingLogo, HeadingPatreonButton, HeadingSlackButton, HeadingTwitterButton } from './Heading'
+import { HeadingGitHubButton, HeadingLogo, HeadingPatreonButton, HeadingSlackButton, HeadingTwitterButton } from './Heading'
 
 const FooterContainer = styled(Constraint)`
   ${anyDesktop} {
@@ -98,7 +98,6 @@ const Footer = () => <FooterContainer>
     <HeadingSlackButton />
     <HeadingGitHubButton />
     <HeadingPatreonButton />
-    <HeadingGiteeButton />
   </FooterIconSection>
 </FooterContainer>
 
