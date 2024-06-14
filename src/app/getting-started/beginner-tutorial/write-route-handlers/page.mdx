@@ -785,9 +785,9 @@ And replace `src/main.rs` with this.
 ```rust showLineNumbers {3,5,6,33-47}
 mod entities;
 
-use indexmap::indexmap;
+
 use tokio::main;
-use teo::prelude::{App, Response, Result, Error, serve_static_files, Value};
+use teo::prelude::{App, Response, Result, Error, serve_static_files, teon};
 use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo};
 
 #[main]
@@ -817,10 +817,10 @@ async fn main() -> Result<()> {
     });
     app.main_namespace_mut().define_model_handler_group("Record", |group| {
         group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
-            if let Some(record) = teo.record().find_unique(Value::Dictionary(indexmap!{
-                "where".to_owned() => Value::Dictionary(indexmap!{
-                    "id".to_owned() => Value::Int(*input.id())
-                })
+            if let Some(record) = teo.record().find_unique(teon!({
+                "where": {
+                    "id": input.id()
+                }
             })).await? {
                 record.set_created_at(*input.created_at());
                 record.save().await?;
@@ -993,9 +993,9 @@ mod entities;
 
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
-use indexmap::indexmap;
+
 use tokio::main;
-use teo::prelude::{App, Response, Result, Error, serve_static_files, Value};
+use teo::prelude::{App, Response, Result, Error, serve_static_files, teon};
 use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo, UploadInput, UploadInputTrait};
 
 #[main]
@@ -1025,10 +1025,10 @@ async fn main() -> Result<()> {
     });
     app.main_namespace_mut().define_model_handler_group("Record", |group| {
         group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
-            if let Some(record) = teo.record().find_unique(Value::Dictionary(indexmap!{
-                "where".to_owned() => Value::Dictionary(indexmap!{
-                    "id".to_owned() => Value::Int(*input.id())
-                })
+            if let Some(record) = teo.record().find_unique(teon!({
+                "where": {
+                    "id": input.id()
+                }
             })).await? {
                 record.set_created_at(*input.created_at());
                 record.save().await?;
