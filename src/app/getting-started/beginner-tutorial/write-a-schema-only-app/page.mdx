@@ -78,7 +78,7 @@ If you see some outputs like `v21.6.2`, great! Node.js is installed
 successfully.
 
 Although now you can install Teo globally with the `npm` package manager. We
-highly recommand you to init a Node.js project and install Teo locally. This
+highly recommend you to init a Node.js project and install Teo locally. This
 won't affect other projects that use Teo. To create a directory, init a 
 Node.js project, and install Teo, follow these commands.
 
@@ -123,7 +123,7 @@ If you see some outputs like `Python 3.12.2`, great! Python is installed
 successfully.
 
 Although now you can install Teo globally with the `pip` package manager. We
-highly recommand you to create a virtual environment and install Teo locally. 
+highly recommend you to create a virtual environment and install Teo locally. 
 This won't affect other projects that use Teo. To create a directory, create a 
 virtual environment, and install Teo, follow these commands.
 
@@ -149,7 +149,7 @@ teo Teo 0.2.23 (Python 3.12.2) [CLI]
 
 ## Editor plugin
 
-We highly recommand you to use [VSCode](https://code.visualstudio.com) as we created 
+We highly recommend you to use [VSCode](https://code.visualstudio.com) as we created 
 a plugin for syntax highlight, code diagnostics, auto completion and jump to definition.
 Download our plugin from [VSCode marketplace](https://marketplace.visualstudio.com/items?itemName=yeannylam.teo-vscode).
 
@@ -329,7 +329,10 @@ content of the block is just a plain object literal with some predefined key
 value pairs. The expression starts with a `.` is enum variant literal in Teo
 schema. It's inspired by Apple's Swift programming language and is widely used
 in schema. The benefits of prefixing with a dot is that it's easy to write and 
-complete. Obviously, this server app connects to an in-memory SQLite database.
+<SQLiteDoc>complete. Obviously, this server app connects to an in-memory SQLite database.</SQLiteDoc>
+<MySQLDoc>complete. Obviously, this server app connects to a MySQL database.</MySQLDoc>
+<PostgreSQLDoc>complete. Obviously, this server app connects to a PostgresSQL database.</PostgreSQLDoc>
+<MongoDBDoc>complete. Obviously, this server app connects to a MongoDB database.</MongoDBDoc>
 
 * The `server` block defines how the server behaves. The syntax is the same with
 `connector`. These blocks are for configuration, and they are called config blocks
@@ -355,7 +358,7 @@ which fields the models are connected. The trailing `?` in a type expression ind
 the value is optional.
 
 In Teo schema, trailing comma is allowed wherever comma is used. The whole schema 
-langauge is inspired by a lot of languages like TypeScript, Swift, GraphQL and Prisma.
+language is inspired by a lot of languages like TypeScript, Swift, GraphQL and Prisma.
 When we design this, we want developers to feel familiar. We take advantages from 
 different programming languages, combine them with our descriptive declarations.
 Teo schema is quite easy and not something to learn with. If you have trouble with
@@ -541,7 +544,7 @@ teo serve
 </CodeResult>
 </PythonDoc>
 
-If you see the output likt above, congratulation, it starts successfully.
+If you see the output like above, congratulation, it starts successfully.
 If it cannot start successfully, most of the times, the reason is the 
 database setup and configuration.
 
