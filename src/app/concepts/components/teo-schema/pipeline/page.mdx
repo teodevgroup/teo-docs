@@ -77,7 +77,7 @@ Use the server API to implement a pipeline item:
 
 <RustDoc>
 ```rust showLineNumbers
-app.main_namespace_mut().define_pipeline_item("identical", |value: Value| async move {
+app.main_namespace().define_pipeline_item("identical", |value: Value| async move {
   Ok(value)
 });
 ```

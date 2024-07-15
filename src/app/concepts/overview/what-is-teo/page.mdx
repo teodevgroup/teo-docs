@@ -101,7 +101,7 @@ implementation to the handler declared above is implemented in below.
 
 <RustDoc>
 ```rust showLineNumbers title="src/main.rs"
-app.main_namespace_mut().define_handler("hello", || async move {
+app.main_namespace().define_handler("hello", || async move {
   Ok::<Response, Error>(Response::data(teon!({ "hello": "world!" })))
 });
 ```

@@ -36,7 +36,7 @@ cargo teo generate entity
 Write logics for the handler:
 
 ```rust
-app.main_namespace_mut().define_model_handler_group("User", |group| {
+app.main_namespace().define_model_handler_group("User", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx, create_args: UserCreateArgs| async move {
         let user = teo.user().new(create_args.create()).await?;
         Ok::<Response, Error>(Response::data(user.to_teon().await?))
@@ -69,7 +69,7 @@ declare handler group MyHandlerGroup {
 In the programming side, alter `define_model_handler_group` with `define_handler_group`.
 
 ```rust
-app.main_namespace_mut().define_handler_group("MyHandler", |group| {
+app.main_namespace().define_handler_group("MyHandler", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx, create_args: UserCreateArgs| async move {
         let user = teo.user().new(create_args.create()).await?;
         Ok::<Response, Error>(Response::data(user.to_teon().await?))
@@ -102,7 +102,7 @@ declare handler group MyHandlerGroup {
 To retrieve path parameters, access it from the context.
 
 ```rust
-app.main_namespace_mut().define_handler_group("MyHandlerGroup", |group| {
+app.main_namespace().define_handler_group("MyHandlerGroup", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
         let captures = ctx.handler_match().captures();
         Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))

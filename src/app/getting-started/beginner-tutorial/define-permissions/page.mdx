@@ -762,7 +762,7 @@ use teo::prelude::{pipeline::item::validator::Validity, App, Result, Error, teon
 #[main]
 async fn main() -> Result<()> {
     let app = App::new()?;
-    app.main_namespace_mut().define_validator_pipeline_item("canReadOrMutateProject", move |user: User, project: Project, teo: Teo| async move {
+    app.main_namespace().define_validator_pipeline_item("canReadOrMutateProject", move |user: User, project: Project, teo: Teo| async move {
         if teo.team_user().find_unique(teon!({
             "where": {
                 "teamId": project.team_id(),

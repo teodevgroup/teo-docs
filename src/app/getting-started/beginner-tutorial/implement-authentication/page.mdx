@@ -768,7 +768,7 @@ use teo::prelude::{pipeline::item::validator::Validity, App, Result, Value, Erro
 #[main]
 async fn main() -> Result<()> {
     let app = App::new()?;
-    app.main_namespace_mut().define_validator_pipeline_item("validateAuthCode", move |check_args: Value, user: User, teo: Teo| async move {
+    app.main_namespace().define_validator_pipeline_item("validateAuthCode", move |check_args: Value, user: User, teo: Teo| async move {
         let mut finder = Value::Dictionary(indexmap!{});
         let check_args = check_args.as_dictionary().unwrap();
         let ids = check_args.get("ids").unwrap().as_dictionary().unwrap();

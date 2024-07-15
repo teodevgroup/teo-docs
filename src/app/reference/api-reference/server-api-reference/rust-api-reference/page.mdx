@@ -35,18 +35,6 @@ decorators and pipeline items are defined. See [`Namespace`](#namespace).
 let main_namespace = app.main_namespace();
 ```
 
-### `main_namespace_mut`
-
-Retrieve the main namespace from the app. This is the mutable version.
-
-#### Examples
-
-##### Retrieve the mutable main namespace
-
-```rust showLineNumbers
-let main_namespace_mut = app.main_namespace_mut();
-```
-
 ### `setup`
 
 Attach some code to run after the database is connected.
@@ -119,19 +107,15 @@ let namespace_path: Vec<&str> = namespace.path();
 
 Get the namespace's child namespace by name or `None`.
 
-### `namespace_mut`
+### `namespace_or_create`
 
-Get the namespace's mutable child namespace by name or `None`.
-
-### `namespace_mut_or_create`
-
-Get the namespace's mutable child namespace. If not present, create and return.
+Get the namespace's child namespace. If not present, create and return.
 
 ### `namespace_at_path`
 
 Get the namespace's child namespace at path.
 
-### `namespace_mut_or_create_at_path`
+### `namespace_or_create_at_path`
 
 The the namespace's child namespace at path. If not present, create and return.
 
@@ -214,7 +198,7 @@ Define a transformer pipeline item. This is a shortcut to `define_pipeline_item`
 ##### Define a custom transformer
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_transform_pipeline_item("append0", |string: String| async {
+app.main_namespace().define_transform_pipeline_item("append0", |string: String| async {
     string + "0"
 });
 ```
@@ -222,7 +206,7 @@ app.main_namespace_mut().define_transform_pipeline_item("append0", |string: Stri
 ##### Define a custom transformer which errors
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_transform_pipeline_item("abs", |i: i32| async {
+app.main_namespace().define_transform_pipeline_item("abs", |i: i32| async {
     if i < 0 {
         Ok(i.abs())
     } else {
@@ -240,7 +224,7 @@ Define a validator pipeline item. This is a shortcut to `define_pipeline_item`.
 ##### Define a custom validator pipeline item with bool return value
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_validator_pipeline_item("numberIsEven", |n: i32| async move {
+app.main_namespace().define_validator_pipeline_item("numberIsEven", |n: i32| async move {
     n % 2 == 0
 });
 ```
@@ -249,7 +233,7 @@ app.main_namespace_mut().define_validator_pipeline_item("numberIsEven", |n: i32|
 ##### Define a custom validator pipeline item with string return value
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_validator_pipeline_item("numberIsEven", |n: i32| async move {
+app.main_namespace().define_validator_pipeline_item("numberIsEven", |n: i32| async move {
     if n % 2 == 0 {
         None
     } else {
@@ -261,7 +245,7 @@ app.main_namespace_mut().define_validator_pipeline_item("numberIsEven", |n: i32|
 ##### Define a custom validator pipeline item which errors
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_validator_pipeline_item("largerThan15", |i: i32| async move {
+app.main_namespace().define_validator_pipeline_item("largerThan15", |i: i32| async move {
     if i < 0 {
         Err(Error::new("value is negative"))
     } else if i <= 15 {
@@ -281,7 +265,7 @@ Define a callback pipeline item. This is a shortcut to `define_pipeline_item`.
 ##### Define a custom callback pipeline item
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_callback_pipeline_item("customCallback", |user: User| async {
+app.main_namespace().define_callback_pipeline_item("customCallback", |user: User| async {
     // do something with the value
     Ok(())
 });
@@ -290,7 +274,7 @@ app.main_namespace_mut().define_callback_pipeline_item("customCallback", |user: 
 ##### Define a custom callback pipeline item which errors
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_callback_pipeline_item("customCallback", |user: User| async {
+app.main_namespace().define_callback_pipeline_item("customCallback", |user: User| async {
     if do_something() {
         Err(Error::new("error occurred"))
     } else {
@@ -308,7 +292,7 @@ Define a compare pipeline item. This is a shortcut to `define_pipeline_item`.
 #### Define a custom compare pipeline item
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_compare_pipeline_item("compare", |old: String, new: String| async {
+app.main_namespace().define_compare_pipeline_item("compare", |old: String, new: String| async {
     // do some callback with the old value and the new value
     // return a validation result if the new value is invalid
     Ok::<(), Error>(())
@@ -324,7 +308,7 @@ Define a middleware on a namespace.
 ##### Define a custom middleware
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_middleware("timing", |arguments: Arguments| {
+app.main_namespace().define_middleware("timing", |arguments: Arguments| {
     Ok(middleware_wrap_fn(move |ctx: Ctx, next: &'static dyn Next| async move {
         let start = SystemTime::now();
         let res = next.call(ctx).await?;
@@ -345,7 +329,7 @@ Define a custom route handler on a namespace.
 ##### Define a custom route handler
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
+app.main_namespace().define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
     let captures = ctx.handler_match().captures();
     Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
 });
@@ -360,7 +344,7 @@ Define a handler group on a namespace.
 ##### Define a custom handler group
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_handler_group("MyHandlerGroup", |group| {
+app.main_namespace().define_handler_group("MyHandlerGroup", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
         let captures = ctx.handler_match().captures();
         Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
@@ -377,7 +361,7 @@ Define model handlers on a namespace.
 ##### Define a custom model handler group
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_model_handler_group("User", |group| {
+app.main_namespace().define_model_handler_group("User", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
         let captures = ctx.handler_match().captures();
         Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
@@ -398,7 +382,7 @@ Define a custom route handler on a handler group.
 ##### Define a custom route handler
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_handler_group("MyHandlerGroup", |group| {
+app.main_namespace().define_handler_group("MyHandlerGroup", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
         let captures = ctx.handler_match().captures();
         Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))

@@ -277,7 +277,8 @@ const hide = css`display: none;`
 const MakeDocBlockInner = (name: string, key: string, indexes: number[]) => {
   const DocBlock = (props: OptionalDocProps) => {
     const [index] = usePreference(key)
-    return <div className={indexes.includes(index) ? show : hide}>{props.children}</div>
+    return indexes.includes(index) ? props.children : null
+//    return <div className={indexes.includes(index) ? show : hide}>{props.children}</div>
   }
   DocBlock.displayName = name
   return DocBlock

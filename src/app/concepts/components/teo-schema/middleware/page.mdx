@@ -39,7 +39,7 @@ To implement custom handlers, use server APIs. See:
 <span className="concept">REFERENCE</span>
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_middleware("print", |arguments: Arguments| async move {
+app.main_namespace().define_middleware("print", |arguments: Arguments| async move {
   let label_str: String = arguments.get("label")?;
   let label = Box::leak(Box::new(label_str)).as_str();
   Ok(middleware_wrap_fn(move |ctx: Ctx, next: &'static dyn Next| async move {

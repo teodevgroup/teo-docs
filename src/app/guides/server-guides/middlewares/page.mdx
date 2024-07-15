@@ -20,7 +20,7 @@ middlewares [timing]
 Implement the middleware in code:
 
 ```rust
-app.main_namespace_mut().define_middleware("timing", |arguments: Arguments| {
+app.main_namespace().define_middleware("timing", |arguments: Arguments| {
     Ok(middleware_wrap_fn(move |ctx: Ctx, next: &'static dyn Next| async move {
         let start = SystemTime::now();
         let res = next.call(ctx).await?;

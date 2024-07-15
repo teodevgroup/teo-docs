@@ -52,7 +52,7 @@ Decorator requires server implementation. See:
 <span className="concept">REFERENCE</span>
 
 ```rust showLineNumbers
-app.main_namespace_mut().define_model_field_decorator("markSpecial", |arguments: Arguments, model: &mut Model| {
+app.main_namespace().define_model_field_decorator("markSpecial", |arguments: Arguments, model: &mut Model| {
   let altName: Option<String> = arguments.get_optional("altName")?;
   model.data.insert("altName".to_owned(), Value::from(altName));
   Ok(())

@@ -160,7 +160,7 @@ use teo::prelude::{App, Response, Result, Error};
 #[main]
 async fn main() -> Result<()> {
     let app = App::new()?;
-    app.main_namespace_mut().define_handler("hello", || async {
+    app.main_namespace().define_handler("hello", || async {
         let response = Response::html(r#"
             <html>
                 <head>
@@ -249,7 +249,7 @@ declare nonapi handler empty(): Any
 
 <RustDoc>
 ```rust showLineNumbers
-app.main_namespace_mut().define_handler("empty", || async {
+app.main_namespace().define_handler("empty", || async {
     Ok::<Response, Error>(Response::empty())
 });
 ```
@@ -347,7 +347,7 @@ use crate::entities::EchoPathArguments;
 #[main]
 async fn main() -> Result<()> {
     let app = App::new()?;
-    app.main_namespace_mut().define_handler("hello", || async {
+    app.main_namespace().define_handler("hello", || async {
         let response = Response::html(r#"
             <html>
                 <head>
@@ -360,10 +360,10 @@ async fn main() -> Result<()> {
         "#)?;
         Ok::<Response, Error>(response)
     });
-    app.main_namespace_mut().define_handler("empty", || async {
+    app.main_namespace().define_handler("empty", || async {
         Ok::<Response, Error>(Response::empty())
     });
-    app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
+    app.main_namespace().define_handler("echo", |path_args: EchoPathArguments| async move {
         Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
     });
     app.run().await
@@ -506,7 +506,7 @@ use crate::entities::{EchoPathArguments, StaticPathArguments};
 #[main]
 async fn main() -> Result<()> {
     let app = App::new()?;
-    app.main_namespace_mut().define_handler("hello", || async {
+    app.main_namespace().define_handler("hello", || async {
         let response = Response::html(r#"
             <html>
                 <head>
@@ -519,13 +519,13 @@ async fn main() -> Result<()> {
         "#)?;
         Ok::<Response, Error>(response)
     });
-    app.main_namespace_mut().define_handler("empty", || async {
+    app.main_namespace().define_handler("empty", || async {
         Ok::<Response, Error>(Response::empty())
     });
-    app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
+    app.main_namespace().define_handler("echo", |path_args: EchoPathArguments| async move {
         Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
     });
-    app.main_namespace_mut().define_handler("static", |path_args: StaticPathArguments| async move {
+    app.main_namespace().define_handler("static", |path_args: StaticPathArguments| async move {
         serve_static_files("static", path_args.path())
     });
     app.run().await
@@ -793,7 +793,7 @@ use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArg
 #[main]
 async fn main() -> Result<()> {
     let app = App::new()?;
-    app.main_namespace_mut().define_handler("hello", || async {
+    app.main_namespace().define_handler("hello", || async {
         let response = Response::html(r#"
             <html>
                 <head>
@@ -806,16 +806,16 @@ async fn main() -> Result<()> {
         "#)?;
         Ok::<Response, Error>(response)
     });
-    app.main_namespace_mut().define_handler("empty", || async {
+    app.main_namespace().define_handler("empty", || async {
         Ok::<Response, Error>(Response::empty())
     });
-    app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
+    app.main_namespace().define_handler("echo", |path_args: EchoPathArguments| async move {
         Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
     });
-    app.main_namespace_mut().define_handler("static", |path_args: StaticPathArguments| async move {
+    app.main_namespace().define_handler("static", |path_args: StaticPathArguments| async move {
         serve_static_files("static", path_args.path())
     });
-    app.main_namespace_mut().define_model_handler_group("Record", |group| {
+    app.main_namespace().define_model_handler_group("Record", |group| {
         group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
             if let Some(record) = teo.record().find_unique(teon!({
                 "where": {
@@ -1001,7 +1001,7 @@ use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArg
 #[main]
 async fn main() -> Result<()> {
     let app = App::new()?;
-    app.main_namespace_mut().define_handler("hello", || async {
+    app.main_namespace().define_handler("hello", || async {
         let response = Response::html(r#"
             <html>
                 <head>
@@ -1014,16 +1014,16 @@ async fn main() -> Result<()> {
         "#)?;
         Ok::<Response, Error>(response)
     });
-    app.main_namespace_mut().define_handler("empty", || async {
+    app.main_namespace().define_handler("empty", || async {
         Ok::<Response, Error>(Response::empty())
     });
-    app.main_namespace_mut().define_handler("echo", |path_args: EchoPathArguments| async move {
+    app.main_namespace().define_handler("echo", |path_args: EchoPathArguments| async move {
         Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
     });
-    app.main_namespace_mut().define_handler("static", |path_args: StaticPathArguments| async move {
+    app.main_namespace().define_handler("static", |path_args: StaticPathArguments| async move {
         serve_static_files("static", path_args.path())
     });
-    app.main_namespace_mut().define_model_handler_group("Record", |group| {
+    app.main_namespace().define_model_handler_group("Record", |group| {
         group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
             if let Some(record) = teo.record().find_unique(teon!({
                 "where": {
@@ -1038,7 +1038,7 @@ async fn main() -> Result<()> {
             }
         });
     });
-    app.main_namespace_mut().define_handler("upload", |input: UploadInput| async move {
+    app.main_namespace().define_handler("upload", |input: UploadInput| async move {
         let original_location = PathBuf::from(input.file().filepath.as_str());
         let extension = if let Some(ext) = original_location.extension() {
             ".".to_owned() + ext.to_str().unwrap()
