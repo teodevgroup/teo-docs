@@ -113,7 +113,7 @@ model User {
   @presentWithout(.email)
   phoneNo: String?
   // If phone number is present, calling code should be present
-  @presentIf($self.get(.phoneNo).exists)
+  @presentIf($self.get(.phoneNo).presents)
   callingCode: String?
 }
 ```
