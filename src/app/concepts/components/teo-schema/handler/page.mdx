@@ -145,7 +145,7 @@ app.mainNamespace().defineHandler("myHandler", async () => {
 <span className="concept">REFERENCE</span>
 
 ```python showLineNumbers
-async def my_handler(_ctx):
+async def my_handler(_request):
   return Response.data({ "hello": "world!" })
 
 app.main_namespace().define_handler("myHandler", my_handler)

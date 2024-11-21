@@ -210,7 +210,7 @@ from teo import App, Response
 
 async def main():
     app = App()
-    def hello_handler(_ctx):
+    def hello_handler(_request):
         return Response.html("""
             <html>
                 <head>
@@ -265,7 +265,7 @@ app.mainNamespace().defineHandler("empty", () => {
 </NodeJSDoc>
 <PythonDoc>
 ```python showLineNumbers
-    def empty_handler(_ctx):
+    def empty_handler(_request):
         return Response.empty()
     app.main_namespace().define_handler("empty", empty_handler)
 ```
@@ -412,7 +412,7 @@ from entities import EchoPathArguments
 
 async def main():
     app = App()
-    def hello_handler(_ctx):
+    def hello_handler(_request):
         return Response.html("""
             <html>
                 <head>
@@ -579,7 +579,7 @@ from entities import EchoPathArguments, StaticPathArguments
 
 async def main():
     app = App()
-    def hello_handler(_ctx):
+    def hello_handler(_request):
         return Response.html("""
             <html>
                 <head>
@@ -921,7 +921,7 @@ from entities import EchoPathArguments, StaticPathArguments, AlterCreatedAtInput
 
 async def main():
     app = App()
-    def hello_handler(_ctx):
+    def hello_handler(_request):
         return Response.html("""
             <html>
                 <head>
@@ -1166,7 +1166,7 @@ from shutil import move
 
 async def main():
     app = App()
-    def hello_handler(_ctx):
+    def hello_handler(_request):
         return Response.html("""
             <html>
                 <head>

@@ -115,7 +115,7 @@ app.mainNamespace().defineHandler("hello", async () => {
 </NodeJSDoc>
 <PythonDoc>
 ```python showLineNumbers title="app.py"
-async def hello(_ctx):
+async def hello(_request):
   return Response.data({ "hello": "world!" })
 
 app.main_namespace().define_handler("hello", hello)

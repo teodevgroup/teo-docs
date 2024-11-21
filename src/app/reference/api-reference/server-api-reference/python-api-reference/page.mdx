@@ -339,7 +339,7 @@ Define a custom route handler on a namespace.
 ##### Define a custom route handler
 
 ```python showLineNumbers
-async def my_handler(_ctx):
+async def my_handler(_request):
     return Response.data({"myKey": "myValue"})
 
 app.main_namespace().define_handler("myHandler", my_handler)
@@ -355,7 +355,7 @@ Define a handler group on a namespace.
 
 ```python showLineNumbers
 def my_group(group: HandlerGroup):
-    async def my_handler(_ctx):
+    async def my_handler(_request):
         return Response.data({"myKey": "myValue"})
     group.define_handler("myHandler", my_handler)
 
