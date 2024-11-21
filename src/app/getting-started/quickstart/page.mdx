@@ -156,17 +156,21 @@ connector {
 ```
 </MongoDBDoc>
 
-Within this `connector` config block, we specified which database to use. Next,
-let's declare a `server` block to specify which port this HTTP server should
-be listening on.
+Within this `connector` config block, we specified the database to connect. 
+Next, let's declare a `server` block to specify the port that this HTTP server 
+should be listening on. We specified the port value `5050`. Our server will be 
+listening on port 5050 after started. 
 
 ```teo showLineNumbers title="schema.teo"
 server {
   bind: ("0.0.0.0", 5050)
 }
+
+request middlewares [logRequest]
 ```
 
-Our server will be listening on port 5050 after started.
+Look at the `request middlewares` thing. There is a middleware in the standard 
+library called `logRequest`. It will log each incoming requests to the console.
 
 ## 3. Model your data in the schema
 
