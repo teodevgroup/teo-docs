@@ -528,7 +528,7 @@ async fn main() -> Result<()> {
         Ok(Response::string(path_args.data()?, "text/plain"))
     });
     app.main_namespace().define_handler("static", |path_args: StaticPathArguments| async move {
-        Response::send_file("static", path_args.path())
+        Response::send_file("static", path_args.path()?)
     });
     app.run().await
 }
@@ -786,9 +786,26 @@ model Record {
 }
 ```
 </PythonDoc>
+Generate the entities again.
 
 <RustDoc>
-And replace `src/main.rs` with this.
+```sh
+cargo teo generate entity
+```
+</RustDoc>
+<NodeJSDoc>
+```sh
+npx teo generate entity
+```
+</NodeJSDoc>
+<PythonDoc>
+```sh
+teo generate entity
+```
+</PythonDoc>
+
+<RustDoc>
+Then replace `src/main.rs` with this.
 
 ```rust showLineNumbers {4,5,32-46}
 mod entities;
@@ -820,11 +837,11 @@ async fn main() -> Result<()> {
         Ok(Response::string(path_args.data()?, "text/plain"))
     });
     app.main_namespace().define_handler("static", |path_args: StaticPathArguments| async move {
-        Response::send_file("static", path_args.path())
+        Response::send_file("static", path_args.path()?)
     });
     app.main_namespace().define_model_handler_group("Record", |group| {
         group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
-            if let Some(record) = teo.record().find_unique(teon!({
+            if let Some(record) = teo.record().find_unique_object(teon!({
                 "where": {
                     "id": input.id()
                 }
@@ -842,7 +859,7 @@ async fn main() -> Result<()> {
 ```
 </RustDoc>
 <NodeJSDoc>
-And replace `app.ts` with this.
+Then replace `app.ts` with this.
 
 ```ts showLineNumbers {2, 28-45}
 import { App, Response, Request } from '@teodevgroup/teo'
@@ -876,7 +893,7 @@ app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
     group.defineHandler("alterCreatedAt", async (ctx) => {
         const teo: Teo = ctx.teo()
         const input: AlterCreatedAtInput = ctx.body()
-        const record = await teo.record.findUnique({
+        const record = await teo.record.findUniqueObject({
             "where": {
                 "id": input.id
             }
@@ -895,7 +912,7 @@ app.run()
 ```
 </NodeJSDoc>
 <PythonDoc>
-And replace `app.py` with this.
+Then replace `app.py` with this.
 
 ```python showLineNumbers {2,3,30-45}
 from asyncio import run
@@ -931,7 +948,7 @@ async def main():
         async def alter_created_at_handler(request: Request):
             input: AlterCreatedAtInput = request.body()
             teo: Teo = request.teo()
-            record = await teo.record.find_unique({
+            record = await teo.record.find_unique_object({
                 "where": {
                     "id": input["id"]
                 }
@@ -1028,11 +1045,11 @@ async fn main() -> Result<()> {
         Ok(Response::string(path_args.data()?, "text/plain"))
     });
     app.main_namespace().define_handler("static", |path_args: StaticPathArguments| async move {
-        Response::send_file("static", path_args.path())
+        Response::send_file("static", path_args.path()?)
     });
     app.main_namespace().define_model_handler_group("Record", |group| {
         group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
-            if let Some(record) = teo.record().find_unique(teon!({
+            if let Some(record) = teo.record().find_unique_object(teon!({
                 "where": {
                     "id": input.id()
                 }
@@ -1109,7 +1126,7 @@ app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
     group.defineHandler("alterCreatedAt", async (request) => {
         const teo: Teo = request.teo()
         const input: AlterCreatedAtInput = request.body()
-        const record = await teo.record.findUnique({
+        const record = await teo.record.findUniqueObject({
             "where": {
                 "id": input.id
             }
@@ -1177,7 +1194,7 @@ async def main():
         async def alter_created_at_handler(request: Request):
             input: AlterCreatedAtInput = ctx.body()
             teo: Teo = ctx.teo()
-            record = await teo.record.find_unique({
+            record = await teo.record.find_unique_object({
                 "where": {
                     "id": input["id"]
                 }
