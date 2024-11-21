@@ -846,7 +846,7 @@ async fn main() -> Result<()> {
                     "id": input.id()
                 }
             })).await? {
-                record.set_created_at(*input.created_at());
+                record.set_created_at(*input.created_at())?;
                 record.save().await?;
                 Ok(Response::data(record.to_teon().await?))
             } else {
@@ -1012,12 +1012,11 @@ teo generate entity
 <RustDoc>
 Update `src/main.rs` to be like this.
 
-```rust showLineNumbers {3,4,8,50-72}
+```rust showLineNumbers {3,4,7,49-71}
 mod entities;
 
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
-
 use tokio::main;
 use teo::prelude::{App, Response, Result, Error, teon};
 use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo, UploadInput, UploadInputTrait};
@@ -1054,7 +1053,7 @@ async fn main() -> Result<()> {
                     "id": input.id()
                 }
             })).await? {
-                record.set_created_at(*input.created_at());
+                record.set_created_at(*input.created_at())?;
                 record.save().await?;
                 Ok(Response::data(record.to_teon().await?))
             } else {
@@ -1076,8 +1075,8 @@ async fn main() -> Result<()> {
         let path = "/".to_owned() + destination_string.as_str();
         match std::fs::rename(original_location, destination) {
             Ok(_) => {
-                Ok(Response::data(Value::Dictionary(indexmap!{
-                    "path".to_owned() => Value::String(path)
+                Ok(Response::data(teon!({
+                    "path": path
                 })))
             },
             Err(err) => {
