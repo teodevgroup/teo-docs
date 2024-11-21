@@ -376,7 +376,7 @@ async fn main() -> Result<()> {
 Replace `app.ts` with the following content.
 
 ```ts showLineNumbers {1,2,20-23}
-import { App, Response } from '@teodevgroup/teo'
+import { App, Response, Request } from '@teodevgroup/teo'
 import { EchoPathArguments } from './entities'
 
 const app = new App()
@@ -537,7 +537,7 @@ async fn main() -> Result<()> {
 <NodeJSDoc>
 Update `app.ts` to this.
 
-```ts showLineNumbers {1,2,24-27}
+```ts showLineNumbers {2,24-27}
 import { App, Response, Request } from '@teodevgroup/teo'
 import { EchoPathArguments, StaticPathArguments } from './entities'
 
@@ -890,9 +890,9 @@ app.mainNamespace().defineHandler("static", (request: Request) => {
     return Response.sendFile("static", pathArguments.path)
 })
 app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
-    group.defineHandler("alterCreatedAt", async (ctx) => {
-        const teo: Teo = ctx.teo()
-        const input: AlterCreatedAtInput = ctx.body()
+    group.defineHandler("alterCreatedAt", async (request) => {
+        const teo: Teo = request.teo()
+        const input: AlterCreatedAtInput = request.bodyObject()
         const record = await teo.record.findUniqueObject({
             "where": {
                 "id": input.id
@@ -946,7 +946,7 @@ async def main():
     app.main_namespace().define_handler("static", static_handler)
     def record_group(group: HandlerGroup):
         async def alter_created_at_handler(request: Request):
-            input: AlterCreatedAtInput = request.body()
+            input: AlterCreatedAtInput = request.body_object()
             teo: Teo = request.teo()
             record = await teo.record.find_unique_object({
                 "where": {
@@ -1124,7 +1124,7 @@ app.mainNamespace().defineHandler("static", (request: Request) => {
 app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
     group.defineHandler("alterCreatedAt", async (request) => {
         const teo: Teo = request.teo()
-        const input: AlterCreatedAtInput = request.body()
+        const input: AlterCreatedAtInput = request.bodyObject()
         const record = await teo.record.findUniqueObject({
             "where": {
                 "id": input.id
@@ -1139,8 +1139,8 @@ app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
         }
     })
 })
-app.mainNamespace().defineHandler("upload", (ctx) => {
-    const input: UploadInput = ctx.body()
+app.mainNamespace().defineHandler("upload", (request) => {
+    const input: UploadInput = request.bodyObject()
     const extension = path.extname(input["file"].filepath)
     const randomFileName = (Math.random() + 1).toString(36).substring(7)
     const destination = "static/images/" + randomFileName + extension
@@ -1191,8 +1191,8 @@ async def main():
     app.main_namespace().define_handler("static", static_handler)
     def record_group(group: HandlerGroup):
         async def alter_created_at_handler(request: Request):
-            input: AlterCreatedAtInput = ctx.body()
-            teo: Teo = ctx.teo()
+            input: AlterCreatedAtInput = request.body_object()
+            teo: Teo = request.teo()
             record = await teo.record.find_unique_object({
                 "where": {
                     "id": input["id"]
@@ -1206,7 +1206,7 @@ async def main():
         group.define_handler("alterCreatedAt", alter_created_at_handler)
     app.main_namespace().define_model_handler_group("Record", record_group)
     def upload_handler(request: Request):
-        input: UploadInput = request.body()
+        input: UploadInput = request.body_object()
         extension = Path(input["file"].filepath).suffix
         random_file_name = ''.join(choice(ascii_letters) for i in range(6))
         destination = "static/images/" + random_file_name + extension
