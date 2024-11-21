@@ -96,7 +96,7 @@ Use the `npx` command to verify whether Teo is installed successfully.
 npx teo --version
 ```
 ```txt
-teo Teo 0.3.1 (Node.js v21.6.2) [CLI]
+teo Teo 0.3.1 (Node.js v23.3.0) [CLI]
 ```
 </CodeResult>
 
@@ -192,6 +192,8 @@ server {
   bind: ("0.0.0.0", 5050)
 }
 
+request middlewares [logRequest]
+
 model User {
   @id @autoIncrement @readonly
   id: Int
@@ -220,12 +222,14 @@ model Post {
 ```teo showLineNumbers
 connector {
   provider: .mysql,
-  url: "mysql://localhost:3306/helloadmindashboard",
+  url: "mysql://localhost:3306/helloschemaonly",
 }
 
 server {
   bind: ("0.0.0.0", 5050)
 }
+
+request middlewares [logRequest]
 
 model User {
   @id @autoIncrement @readonly
@@ -255,12 +259,14 @@ model Post {
 ```teo showLineNumbers
 connector {
   provider: .postgres,
-  url: "postgres://localhost:5432/helloadmindashboard",
+  url: "postgres://localhost:5432/helloschemaonly",
 }
 
 server {
   bind: ("0.0.0.0", 5050)
 }
+
+request middlewares [logRequest]
 
 model User {
   @id @autoIncrement @readonly
@@ -290,12 +296,14 @@ model Post {
 ```teo showLineNumbers
 connector {
   provider: .mongo,
-  url: "mongodb+srv://root:password@cluster1.test1.mongodb.net/testing?retryWrites=true&w=majority"
+  url: "mongodb://localhost:27017/helloschemaonly",
 }
 
 server {
   bind: ("0.0.0.0", 5050)
 }
+
+request middlewares [logRequest]
 
 model User {
   @id @auto @map("_id") @readonly
@@ -526,7 +534,7 @@ npx teo serve
 ```
 ```txt
 [2023-12-20 04:58:40] sqlite connector connected for `main` at "sqlite::memory:"
-[2023-12-20 04:58:40] Teo 0.3.1 (Node.js v21.6.2, CLI)
+[2023-12-20 04:58:40] Teo 0.3.1 (Node.js v23.3.0, CLI)
 [2023-12-20 04:58:40] listening on port 5050
 ```
 </CodeResult>
