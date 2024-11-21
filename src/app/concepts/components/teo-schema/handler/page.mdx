@@ -114,7 +114,7 @@ To implement custom handlers, use server APIs. See:
 
 ```rust showLineNumbers
 app.main_namespace().define_handler("hello", || async move {
-  Ok::<Response, Error>(Response::data(teon!({ "hello": "world!" })))
+  Ok(Response::data(teon!({ "hello": "world!" })))
 });
 ```
 </RustDoc>

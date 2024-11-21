@@ -39,7 +39,7 @@ Write logics for the handler:
 app.main_namespace().define_model_handler_group("User", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx, create_args: UserCreateArgs| async move {
         let user = teo.user().new(create_args.create()).await?;
-        Ok::<Response, Error>(Response::data(user.to_teon().await?))
+        Ok(Response::data(user.to_teon().await?))
     });
 });
 ```
@@ -72,7 +72,7 @@ In the programming side, alter `define_model_handler_group` with `define_handler
 app.main_namespace().define_handler_group("MyHandler", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx, create_args: UserCreateArgs| async move {
         let user = teo.user().new(create_args.create()).await?;
-        Ok::<Response, Error>(Response::data(user.to_teon().await?))
+        Ok(Response::data(user.to_teon().await?))
     });
 });
 ```
@@ -105,7 +105,7 @@ To retrieve path parameters, access it from the context.
 app.main_namespace().define_handler_group("MyHandlerGroup", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
         let captures = ctx.handler_match().captures();
-        Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+        Ok(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
     });
 });
 ```

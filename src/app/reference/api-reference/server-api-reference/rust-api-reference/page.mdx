@@ -331,7 +331,7 @@ Define a custom route handler on a namespace.
 ```rust showLineNumbers
 app.main_namespace().define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
     let captures = ctx.handler_match().captures();
-    Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+    Ok(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
 });
 ```
 
@@ -347,7 +347,7 @@ Define a handler group on a namespace.
 app.main_namespace().define_handler_group("MyHandlerGroup", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
         let captures = ctx.handler_match().captures();
-        Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+        Ok(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
     });
 });
 ```
@@ -364,7 +364,7 @@ Define model handlers on a namespace.
 app.main_namespace().define_model_handler_group("User", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
         let captures = ctx.handler_match().captures();
-        Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+        Ok(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
     });
 });
 ```
@@ -385,7 +385,7 @@ Define a custom route handler on a handler group.
 app.main_namespace().define_handler_group("MyHandlerGroup", |group| {
     group.define_handler("myHandler", |request: Request, teo: Teo, ctx: Ctx| async move {
         let captures = ctx.handler_match().captures();
-        Ok::<Response, Error>(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
+        Ok(Response::data(Value::String(captures.get("id").unwrap().to_owned())))
     });
 });
 ```

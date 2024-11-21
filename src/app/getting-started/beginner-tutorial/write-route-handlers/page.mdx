@@ -104,6 +104,8 @@ project with the following content.
 server {
   bind: ("0.0.0.0", 5051)
 }
+
+request middlewares [logRequest]
 ```
 
 Run this command to start our server:
@@ -171,7 +173,7 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, Error>(response)
+        Ok(response)
     });
     app.run().await
 }
@@ -250,7 +252,7 @@ declare nonapi handler empty(): Any
 <RustDoc>
 ```rust showLineNumbers
 app.main_namespace().define_handler("empty", || async {
-    Ok::<Response, Error>(Response::empty())
+    Ok(Response::empty())
 });
 ```
 </RustDoc>
@@ -358,13 +360,13 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, Error>(response)
+        Ok(response)
     });
     app.main_namespace().define_handler("empty", || async {
-        Ok::<Response, Error>(Response::empty())
+        Ok(Response::empty())
     });
     app.main_namespace().define_handler("echo", |path_args: EchoPathArguments| async move {
-        Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
+        Ok(Response::string(path_args.data()?, "text/plain"))
     });
     app.run().await
 }
@@ -500,7 +502,7 @@ Update `src/main.rs` to this.
 mod entities;
 
 use tokio::main;
-use teo::prelude::{App, Response, Result, Error, serve_static_files};
+use teo::prelude::{App, Response, Result, Error};
 use crate::entities::{EchoPathArguments, StaticPathArguments};
 
 #[main]
@@ -517,16 +519,16 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, Error>(response)
+        Ok(response)
     });
     app.main_namespace().define_handler("empty", || async {
-        Ok::<Response, Error>(Response::empty())
+        Ok(Response::empty())
     });
     app.main_namespace().define_handler("echo", |path_args: EchoPathArguments| async move {
-        Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
+        Ok(Response::string(path_args.data()?, "text/plain"))
     });
     app.main_namespace().define_handler("static", |path_args: StaticPathArguments| async move {
-        serve_static_files("static", path_args.path())
+        Response::send_file("static", path_args.path())
     });
     app.run().await
 }
@@ -559,9 +561,9 @@ app.mainNamespace().defineHandler("echo", (request: Request) => {
     const pathArguments: EchoPathArguments = request.captures()
     return Response.string(pathArguments.data, "text/plain")
 })
-app.mainNamespace().defineHandler("static", (ctx) => {
-    const pathArguments: StaticPathArguments = ctx.pathArguments()
-    return serveStaticFiles("static", pathArguments.path)
+app.mainNamespace().defineHandler("static", (request) => {
+    const pathArguments: StaticPathArguments = request.captures()
+    return Response.sendFile("static", pathArguments.path)
 })
 
 app.run()
@@ -598,7 +600,7 @@ async def main():
     app.main_namespace().define_handler("echo", echo_handler)
     def static_handler(request: Request):
         path_args: StaticPathArguments = request.captures()
-        return serve_static_files("static", path_args["path"])
+        return Response.send_file("static", path_args["path"])
     app.main_namespace().define_handler("static", static_handler)
     await app.run()
 
@@ -641,10 +643,12 @@ Let's add some models and perform some model updates from JSON requests.
 Replace `schema.teo` with this.
 
 <RustDoc>
-```teo showLineNumbers {5-8,27-42}
+```teo showLineNumbers {7-10,29-44}
 server {
   bind: ("0.0.0.0", 5051)
 }
+
+request middlewares [logRequest]
 
 connector {
   provider: .sqlite,
@@ -687,10 +691,12 @@ model Record {
 ```
 </RustDoc>
 <NodeJSDoc>
-```teo showLineNumbers {5-8,27-42}
+```teo showLineNumbers {7-10,29-44}
 server {
   bind: ("0.0.0.0", 5051)
 }
+
+request middlewares [logRequest]
 
 connector {
   provider: .sqlite,
@@ -733,10 +739,12 @@ model Record {
 ```
 </NodeJSDoc>
 <PythonDoc>
-```teo showLineNumbers {5-8,27-42}
+```teo showLineNumbers {7-10,29-44}
 server {
   bind: ("0.0.0.0", 5051)
 }
+
+request middlewares [logRequest]
 
 connector {
   provider: .sqlite,
@@ -786,7 +794,7 @@ And replace `src/main.rs` with this.
 mod entities;
 
 use tokio::main;
-use teo::prelude::{App, Response, Result, Error, serve_static_files, teon};
+use teo::prelude::{App, Response, Result, Error, teon};
 use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo};
 
 #[main]
@@ -803,16 +811,16 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, Error>(response)
+        Ok(response)
     });
     app.main_namespace().define_handler("empty", || async {
-        Ok::<Response, Error>(Response::empty())
+        Ok(Response::empty())
     });
     app.main_namespace().define_handler("echo", |path_args: EchoPathArguments| async move {
-        Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
+        Ok(Response::string(path_args.data()?, "text/plain"))
     });
     app.main_namespace().define_handler("static", |path_args: StaticPathArguments| async move {
-        serve_static_files("static", path_args.path())
+        Response::send_file("static", path_args.path())
     });
     app.main_namespace().define_model_handler_group("Record", |group| {
         group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
@@ -823,7 +831,7 @@ async fn main() -> Result<()> {
             })).await? {
                 record.set_created_at(*input.created_at());
                 record.save().await?;
-                Ok::<Response, Error>(Response::data(record.to_teon().await?))
+                Ok(Response::data(record.to_teon().await?))
             } else {
                 Err(Error::not_found())?
             }
@@ -862,7 +870,7 @@ app.mainNamespace().defineHandler("echo", (request: Request) => {
 })
 app.mainNamespace().defineHandler("static", (request: Request) => {
     const pathArguments: StaticPathArguments = request.captures()
-    return serveStaticFiles("static", pathArguments.path)
+    return Response.sendFile("static", pathArguments.path)
 })
 app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
     group.defineHandler("alterCreatedAt", async (ctx) => {
@@ -917,7 +925,7 @@ async def main():
     app.main_namespace().define_handler("echo", echo_handler)
     def static_handler(request: Request):
         path_args: StaticPathArguments = request.path_arguments()
-        return serve_static_files("static", path_args["path"])
+        return Response.send_file("static", path_args["path"])
     app.main_namespace().define_handler("static", static_handler)
     def record_group(group: HandlerGroup):
         async def alter_created_at_handler(request: Request):
@@ -994,7 +1002,7 @@ use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use tokio::main;
-use teo::prelude::{App, Response, Result, Error, serve_static_files, teon};
+use teo::prelude::{App, Response, Result, Error, teon};
 use crate::entities::{AlterCreatedAtInput, AlterCreatedAtInputTrait, EchoPathArguments, StaticPathArguments, Teo, UploadInput, UploadInputTrait};
 
 #[main]
@@ -1011,16 +1019,16 @@ async fn main() -> Result<()> {
                 </body>
             </html>
         "#)?;
-        Ok::<Response, Error>(response)
+        Ok(response)
     });
     app.main_namespace().define_handler("empty", || async {
-        Ok::<Response, Error>(Response::empty())
+        Ok(Response::empty())
     });
     app.main_namespace().define_handler("echo", |path_args: EchoPathArguments| async move {
-        Ok::<Response, Error>(Response::string(path_args.data(), "text/plain"))
+        Ok(Response::string(path_args.data()?, "text/plain"))
     });
     app.main_namespace().define_handler("static", |path_args: StaticPathArguments| async move {
-        serve_static_files("static", path_args.path())
+        Response::send_file("static", path_args.path())
     });
     app.main_namespace().define_model_handler_group("Record", |group| {
         group.define_handler("alterCreatedAt", |teo: Teo, input: AlterCreatedAtInput| async move {
@@ -1031,7 +1039,7 @@ async fn main() -> Result<()> {
             })).await? {
                 record.set_created_at(*input.created_at());
                 record.save().await?;
-                Ok::<Response, Error>(Response::data(record.to_teon().await?))
+                Ok(Response::data(record.to_teon().await?))
             } else {
                 Err(Error::not_found())?
             }
@@ -1051,7 +1059,7 @@ async fn main() -> Result<()> {
         let path = "/".to_owned() + destination_string.as_str();
         match std::fs::rename(original_location, destination) {
             Ok(_) => {
-                Ok::<Response, Error>(Response::data(Value::Dictionary(indexmap!{
+                Ok(Response::data(Value::Dictionary(indexmap!{
                     "path".to_owned() => Value::String(path)
                 })))
             },
@@ -1095,7 +1103,7 @@ app.mainNamespace().defineHandler("echo", (request: Request) => {
 })
 app.mainNamespace().defineHandler("static", (request: Request) => {
     const pathArguments: StaticPathArguments = request.pathArguments()
-    return serveStaticFiles("static", pathArguments.path)
+    return Response.sendFile("static", pathArguments.path)
 })
 app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
     group.defineHandler("alterCreatedAt", async (request) => {
@@ -1163,7 +1171,7 @@ async def main():
     app.main_namespace().define_handler("echo", echo_handler)
     def static_handler(request: Request):
         path_args: StaticPathArguments = request.path_arguments()
-        return serve_static_files("static", path_args["path"])
+        return Response.send_file("static", path_args["path"])
     app.main_namespace().define_handler("static", static_handler)
     def record_group(group: HandlerGroup):
         async def alter_created_at_handler(request: Request):
