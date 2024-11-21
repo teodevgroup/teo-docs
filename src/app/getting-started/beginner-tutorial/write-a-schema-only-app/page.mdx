@@ -115,11 +115,11 @@ After installation, run this command to verify its installation.
 python3.13 --version
 ```
 ```txt
-Python 3.12.2
+Python 3.13.0
 ```
 </CodeResult>
 
-If you see some outputs like `Python 3.12.2`, great! Python is installed 
+If you see some outputs like `Python 3.13.0`, great! Python is installed 
 successfully.
 
 Although now you can install Teo globally with the `pip` package manager. We
@@ -142,7 +142,7 @@ Use the `teo` command to verify whether Teo is installed successfully.
 teo --version
 ```
 ```txt
-teo Teo 0.3.1 (Python 3.12.2) [CLI]
+teo Teo 0.3.1 (Python 3.13.0) [CLI]
 ```
 </CodeResult>
 </PythonDoc>
@@ -546,7 +546,7 @@ teo serve
 ```
 ```txt
 [2023-12-20 04:58:40] sqlite connector connected for `main` at "sqlite::memory:"
-[2023-12-20 04:58:40] Teo 0.3.1 (Python 3.12.2, CLI)
+[2023-12-20 04:58:40] Teo 0.3.1 (Python 3.13.0, CLI)
 [2023-12-20 04:58:40] listening on port 5050
 ```
 </CodeResult>
@@ -626,7 +626,7 @@ send again...
   "error": {
     "type": "ValueError",
     "message": "value is invalid",
-    "fields": {
+    "errors": {
       "create": "unique value duplicated: email"
     }
   }
