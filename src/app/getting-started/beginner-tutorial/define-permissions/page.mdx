@@ -720,12 +720,12 @@ tokio = { version = "1.36" }
 npm init -y
 npm install typescript ts-node -D
 npx tsc --init
-npm install @teocloud/teo
+npm install @teodevgroup/teo
 ```
 </NodeJSDoc>
 <PythonDoc>
 ```sh
-python3.12 -m venv .venv
+python3.13 -m venv .venv
 source .venv/bin/activate
 pip install teo
 ```
@@ -782,7 +782,7 @@ async fn main() -> Result<()> {
 Create the main program file `app.ts`.
 
 ```ts showLineNumbers title="app.ts"
-import { App } from '@teocloud/teo'
+import { App } from '@teodevgroup/teo'
 import { Teo, Project, User } from './entities'
 
 const app = new App()

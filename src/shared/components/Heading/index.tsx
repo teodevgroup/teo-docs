@@ -343,7 +343,7 @@ export const HeadingTwitterButton = () => {
 }
 
 export const HeadingSlackButton = () => {
-  return <HeadingIconA href='https://teocloud.slack.com' target="_blank">
+  return <HeadingIconA href='https://teodevgroup.slack.com' target="_blank">
     <SlackIcon width={32} height={32} style={{
       transition: "0.2s all ease-in-out 0s"
     }} />

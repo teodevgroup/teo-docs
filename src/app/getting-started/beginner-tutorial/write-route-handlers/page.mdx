@@ -59,13 +59,13 @@ cd hello-teo-handlers
 npm init -y
 npm install typescript ts-node -D
 npx tsc --init
-npm install @teocloud/teo
+npm install @teodevgroup/teo
 ```
 
 Create a file named `app.ts` with the following content.
 
 ```ts showLineNumbers
-import { App } from '@teocloud/teo'
+import { App } from '@teodevgroup/teo'
 
 const app = new App()
 app.run()
@@ -77,7 +77,7 @@ Run these commands to setup a virtual environment and install dependencies.
 ```sh
 mkdir hello-teo-handlers
 cd hello-teo-handlers
-python3.12 -m venv .venv
+python3.13 -m venv .venv
 source .venv/bin/activate
 pip install teo
 ```
@@ -181,7 +181,7 @@ async fn main() -> Result<()> {
 Replace the content with `app.ts` with this.
 
 ```ts showLineNumbers
-import { App, Response } from '@teocloud/teo'
+import { App, Response } from '@teodevgroup/teo'
 
 const app = new App()
 app.mainNamespace().defineHandler("hello", () => {
@@ -374,7 +374,7 @@ async fn main() -> Result<()> {
 Replace `app.ts` with the following content.
 
 ```ts showLineNumbers {1,2,20-23}
-import { App, Response, RequestCtx } from '@teocloud/teo'
+import { App, Response, RequestCtx } from '@teodevgroup/teo'
 import { EchoPathArguments } from './entities'
 
 const app = new App()
@@ -536,7 +536,7 @@ async fn main() -> Result<()> {
 Update `app.ts` to this.
 
 ```ts showLineNumbers {1,2,24-27}
-import { App, Response, RequestCtx, serveStaticFiles } from '@teocloud/teo'
+import { App, Response, RequestCtx, serveStaticFiles } from '@teodevgroup/teo'
 import { EchoPathArguments, StaticPathArguments } from './entities'
 
 const app = new App()
@@ -837,7 +837,7 @@ async fn main() -> Result<()> {
 And replace `app.ts` with this.
 
 ```ts showLineNumbers {2, 28-45}
-import { App, Response, RequestCtx, serveStaticFiles } from '@teocloud/teo'
+import { App, Response, RequestCtx, serveStaticFiles } from '@teodevgroup/teo'
 import { AlterCreatedAtInput, EchoPathArguments, StaticPathArguments, Teo } from './entities'
 
 const app = new App()
@@ -1068,7 +1068,7 @@ async fn main() -> Result<()> {
 Update `app.ts` to be like this.
 
 ```ts showLineNumbers {2-4, 48-56}
-import { App, Response, RequestCtx, serveStaticFiles } from '@teocloud/teo'
+import { App, Response, RequestCtx, serveStaticFiles } from '@teodevgroup/teo'
 import { AlterCreatedAtInput, EchoPathArguments, StaticPathArguments, Teo, UploadInput } from './entities'
 import path from 'path'
 import fs from 'fs'

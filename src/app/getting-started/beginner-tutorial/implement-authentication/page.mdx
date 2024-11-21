@@ -36,14 +36,14 @@ cd hello-teo-authentication
 npm init -y
 npm install typescript ts-node -D
 npx tsc --init
-npm install @teocloud/teo
+npm install @teodevgroup/teo
 ```
 </NodeJSDoc>
 <PythonDoc>
 ```sh
 mkdir hello-teo-authentication
 cd hello-teo-authentication
-python3.12 -m venv .venv
+python3.13 -m venv .venv
 source .venv/bin/activate
 pip install teo
 ```
@@ -797,7 +797,7 @@ Now let's create main program file. Create a file named `app.ts` in the project
 directory.
 
 ```typescript showLineNumbers name="app.ts"
-import { App } from '@teocloud/teo'
+import { App } from '@teodevgroup/teo'
 import { AuthCodeWhereUniqueInput, Teo, User } from './entities'
 
 const app = new App()
