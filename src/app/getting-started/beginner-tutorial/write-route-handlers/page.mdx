@@ -374,7 +374,7 @@ async fn main() -> Result<()> {
 Replace `app.ts` with the following content.
 
 ```ts showLineNumbers {1,2,20-23}
-import { App, Response, RequestCtx } from '@teodevgroup/teo'
+import { App, Response } from '@teodevgroup/teo'
 import { EchoPathArguments } from './entities'
 
 const app = new App()
@@ -393,8 +393,8 @@ app.mainNamespace().defineHandler("hello", () => {
 app.mainNamespace().defineHandler("empty", () => {
     return Response.empty()
 })
-app.mainNamespace().defineHandler("echo", (ctx: RequestCtx) => {
-    const pathArguments: EchoPathArguments = ctx.pathArguments()
+app.mainNamespace().defineHandler("echo", (request: Request) => {
+    const pathArguments: EchoPathArguments = request.captures()
     return Response.string(pathArguments.data, "text/plain")
 })
 app.run()
@@ -405,7 +405,7 @@ Replace `app.py` with the following content.
 
 ```teo showLineNumbers {2,3,22-25}
 from asyncio import run
-from teo import App, Response, RequestCtx
+from teo import App, Response, Request
 from entities import EchoPathArguments
 
 async def main():
@@ -422,11 +422,11 @@ async def main():
             </html>
         """)
     app.main_namespace().define_handler("hello", hello_handler)
-    def empty_handler(_ctx):
+    def empty_handler(_request):
         return Response.empty()
     app.main_namespace().define_handler("empty", empty_handler)
-    def echo_handler(ctx: RequestCtx):
-        path_arguments: EchoPathArguments = ctx.path_arguments()
+    def echo_handler(request: Request):
+        path_arguments: EchoPathArguments = request.captures()
         return Response.string(path_arguments["data"], "text/plain")
     app.main_namespace().define_handler("echo", echo_handler)
     await app.run()
@@ -536,7 +536,7 @@ async fn main() -> Result<()> {
 Update `app.ts` to this.
 
 ```ts showLineNumbers {1,2,24-27}
-import { App, Response, RequestCtx, serveStaticFiles } from '@teodevgroup/teo'
+import { App, Response, Request } from '@teodevgroup/teo'
 import { EchoPathArguments, StaticPathArguments } from './entities'
 
 const app = new App()
@@ -555,8 +555,8 @@ app.mainNamespace().defineHandler("hello", () => {
 app.mainNamespace().defineHandler("empty", () => {
     return Response.empty()
 })
-app.mainNamespace().defineHandler("echo", (ctx: RequestCtx) => {
-    const pathArguments: EchoPathArguments = ctx.pathArguments()
+app.mainNamespace().defineHandler("echo", (request: Request) => {
+    const pathArguments: EchoPathArguments = request.captures()
     return Response.string(pathArguments.data, "text/plain")
 })
 app.mainNamespace().defineHandler("static", (ctx) => {
@@ -572,7 +572,7 @@ Update `app.py` to this.
 
 ```python showLineNumbers {2,3,26-29}
 from asyncio import run
-from teo import App, Response, RequestCtx, serve_static_files
+from teo import App, Response, Request
 from entities import EchoPathArguments, StaticPathArguments
 
 async def main():
@@ -589,15 +589,15 @@ async def main():
             </html>
         """)
     app.main_namespace().define_handler("hello", hello_handler)
-    def empty_handler(_ctx):
+    def empty_handler(_request):
         return Response.empty()
     app.main_namespace().define_handler("empty", empty_handler)
-    def echo_handler(ctx: RequestCtx):
-        path_arguments: EchoPathArguments = ctx.path_arguments()
+    def echo_handler(request: Request):
+        path_arguments: EchoPathArguments = request.captures()
         return Response.string(path_arguments["data"], "text/plain")
     app.main_namespace().define_handler("echo", echo_handler)
-    def static_handler(ctx: RequestCtx):
-        path_args: StaticPathArguments = ctx.path_arguments()
+    def static_handler(request: Request):
+        path_args: StaticPathArguments = request.captures()
         return serve_static_files("static", path_args["path"])
     app.main_namespace().define_handler("static", static_handler)
     await app.run()
@@ -837,7 +837,7 @@ async fn main() -> Result<()> {
 And replace `app.ts` with this.
 
 ```ts showLineNumbers {2, 28-45}
-import { App, Response, RequestCtx, serveStaticFiles } from '@teodevgroup/teo'
+import { App, Response, Request } from '@teodevgroup/teo'
 import { AlterCreatedAtInput, EchoPathArguments, StaticPathArguments, Teo } from './entities'
 
 const app = new App()
@@ -856,12 +856,12 @@ app.mainNamespace().defineHandler("hello", () => {
 app.mainNamespace().defineHandler("empty", () => {
     return Response.empty()
 })
-app.mainNamespace().defineHandler("echo", (ctx: RequestCtx) => {
-    const pathArguments: EchoPathArguments = ctx.pathArguments()
+app.mainNamespace().defineHandler("echo", (request: Request) => {
+    const pathArguments: EchoPathArguments = request.captures()
     return Response.string(pathArguments.data, "text/plain")
 })
-app.mainNamespace().defineHandler("static", (ctx) => {
-    const pathArguments: StaticPathArguments = ctx.pathArguments()
+app.mainNamespace().defineHandler("static", (request: Request) => {
+    const pathArguments: StaticPathArguments = request.captures()
     return serveStaticFiles("static", pathArguments.path)
 })
 app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
@@ -891,7 +891,7 @@ And replace `app.py` with this.
 
 ```python showLineNumbers {2,3,30-45}
 from asyncio import run
-from teo import App, Response, RequestCtx, serve_static_files, HandlerGroup, TeoException
+from teo import App, Response, Request, HandlerGroup, TeoException
 from entities import EchoPathArguments, StaticPathArguments, AlterCreatedAtInput, Teo
 
 async def main():
@@ -908,21 +908,21 @@ async def main():
             </html>
         """)
     app.main_namespace().define_handler("hello", hello_handler)
-    def empty_handler(_ctx):
+    def empty_handler(_request):
         return Response.empty()
     app.main_namespace().define_handler("empty", empty_handler)
-    def echo_handler(ctx: RequestCtx):
-        path_arguments: EchoPathArguments = ctx.path_arguments()
+    def echo_handler(request: Request):
+        path_arguments: EchoPathArguments = request.captures()
         return Response.string(path_arguments["data"], "text/plain")
     app.main_namespace().define_handler("echo", echo_handler)
-    def static_handler(ctx: RequestCtx):
-        path_args: StaticPathArguments = ctx.path_arguments()
+    def static_handler(request: Request):
+        path_args: StaticPathArguments = request.path_arguments()
         return serve_static_files("static", path_args["path"])
     app.main_namespace().define_handler("static", static_handler)
     def record_group(group: HandlerGroup):
-        async def alter_created_at_handler(ctx: RequestCtx):
-            input: AlterCreatedAtInput = ctx.body()
-            teo: Teo = ctx.teo()
+        async def alter_created_at_handler(request: Request):
+            input: AlterCreatedAtInput = request.body()
+            teo: Teo = request.teo()
             record = await teo.record.find_unique({
                 "where": {
                     "id": input["id"]
@@ -1068,7 +1068,7 @@ async fn main() -> Result<()> {
 Update `app.ts` to be like this.
 
 ```ts showLineNumbers {2-4, 48-56}
-import { App, Response, RequestCtx, serveStaticFiles } from '@teodevgroup/teo'
+import { App, Response, Request } from '@teodevgroup/teo'
 import { AlterCreatedAtInput, EchoPathArguments, StaticPathArguments, Teo, UploadInput } from './entities'
 import path from 'path'
 import fs from 'fs'
@@ -1089,18 +1089,18 @@ app.mainNamespace().defineHandler("hello", () => {
 app.mainNamespace().defineHandler("empty", () => {
     return Response.empty()
 })
-app.mainNamespace().defineHandler("echo", (ctx: RequestCtx) => {
-    const pathArguments: EchoPathArguments = ctx.pathArguments()
+app.mainNamespace().defineHandler("echo", (request: Request) => {
+    const pathArguments: EchoPathArguments = request.pathArguments()
     return Response.string(pathArguments.data, "text/plain")
 })
-app.mainNamespace().defineHandler("static", (ctx) => {
-    const pathArguments: StaticPathArguments = ctx.pathArguments()
+app.mainNamespace().defineHandler("static", (request: Request) => {
+    const pathArguments: StaticPathArguments = request.pathArguments()
     return serveStaticFiles("static", pathArguments.path)
 })
 app.mainNamespace().defineModelHandlerGroup("Record", (group) => {
-    group.defineHandler("alterCreatedAt", async (ctx) => {
-        const teo: Teo = ctx.teo()
-        const input: AlterCreatedAtInput = ctx.body()
+    group.defineHandler("alterCreatedAt", async (request) => {
+        const teo: Teo = request.teo()
+        const input: AlterCreatedAtInput = request.body()
         const record = await teo.record.findUnique({
             "where": {
                 "id": input.id
@@ -1133,7 +1133,7 @@ Update `app.py` to be like this.
 
 ```python showLineNumbers {3-7,50-58}
 from asyncio import run
-from teo import App, Response, RequestCtx, serve_static_files, HandlerGroup, TeoException
+from teo import App, Response, Request, HandlerGroup, TeoException
 from entities import EchoPathArguments, StaticPathArguments, AlterCreatedAtInput, Teo, UploadInput
 from pathlib import Path
 from random import choice
@@ -1154,19 +1154,19 @@ async def main():
             </html>
         """)
     app.main_namespace().define_handler("hello", hello_handler)
-    def empty_handler(_ctx):
+    def empty_handler(_request):
         return Response.empty()
     app.main_namespace().define_handler("empty", empty_handler)
-    def echo_handler(ctx: RequestCtx):
-        path_arguments: EchoPathArguments = ctx.path_arguments()
+    def echo_handler(request: Request):
+        path_arguments: EchoPathArguments = request.path_arguments()
         return Response.string(path_arguments["data"], "text/plain")
     app.main_namespace().define_handler("echo", echo_handler)
-    def static_handler(ctx: RequestCtx):
-        path_args: StaticPathArguments = ctx.path_arguments()
+    def static_handler(request: Request):
+        path_args: StaticPathArguments = request.path_arguments()
         return serve_static_files("static", path_args["path"])
     app.main_namespace().define_handler("static", static_handler)
     def record_group(group: HandlerGroup):
-        async def alter_created_at_handler(ctx: RequestCtx):
+        async def alter_created_at_handler(request: Request):
             input: AlterCreatedAtInput = ctx.body()
             teo: Teo = ctx.teo()
             record = await teo.record.find_unique({
@@ -1181,8 +1181,8 @@ async def main():
             return Response.data(await record.to_teon())
         group.define_handler("alterCreatedAt", alter_created_at_handler)
     app.main_namespace().define_model_handler_group("Record", record_group)
-    def upload_handler(ctx: RequestCtx):
-        input: UploadInput = ctx.body()
+    def upload_handler(request: Request):
+        input: UploadInput = request.body()
         extension = Path(input["file"].filepath).suffix
         random_file_name = ''.join(choice(ascii_letters) for i in range(6))
         destination = "static/images/" + random_file_name + extension

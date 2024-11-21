@@ -372,7 +372,7 @@ Define model handlers on a namespace.
 
 ```python showLineNumbers
 def my_group(group: HandlerGroup):
-    async def my_handler(_ctx: RequestCtx):
+    async def my_handler(_request: Request):
         return Response.data({"myKey": "myValue"})
     group.define_handler("myHandler", my_handler)
 
@@ -393,7 +393,7 @@ Define a custom route handler on a handler group.
 
 ```python showLineNumbers
 def my_group(group: HandlerGroup):
-    async def my_handler(_ctx: RequestCtx):
+    async def my_handler(_request: Request):
         return Response.data({"myKey": "myValue"})
     group.define_handler("myHandler", my_handler)
 

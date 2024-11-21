@@ -322,8 +322,8 @@ Define a handler group on a namespace.
 
 ```ts showLineNumbers
 app.mainNamespace().defineHandlerGroup("MyHandlerGroup", (group: HandlerGroup) => {
-    group.defineHandler("myHandler", async (ctx: RequestCtx) => {
-        const teo: Teo = ctx.teo()
+    group.defineHandler("myHandler", async (request: Request) => {
+        const teo: Teo = request.teo()
         const user = await teo.user.findFirst({})
         return Response.teon(await user?.toTeon())
     })
@@ -362,8 +362,8 @@ Define a custom route handler on a handler group.
 
 ```ts showLineNumbers
 app.mainNamespace().defineHandlerGroup("MyHandlerGroup", (group: HandlerGroup) => {
-    group.defineHandler("myHandler", async (ctx: RequestCtx) => {
-        const teo: Teo = ctx.teo()
+    group.defineHandler("myHandler", async (request: Request) => {
+        const teo: Teo = request.teo()
         const user = await teo.user.findFirst({})
         return Response.teon(await user?.toTeon())
     })
