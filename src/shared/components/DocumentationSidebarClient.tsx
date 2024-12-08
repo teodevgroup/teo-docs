@@ -161,7 +161,7 @@ export const DocSidebarItem: (props: DocSidebarItemProps) => ReactElement = ({ l
   }
   return <>
     <DocSidebarItemTitleContainer>
-      <Link href={link} className={docSidebarItemTitleLinkClassName} onClick={(e) => {
+      <a href={link} className={docSidebarItemTitleLinkClassName} onClick={(e) => {
         e.stopPropagation()
         setSidebarVisible(false)
       }}>
@@ -175,7 +175,7 @@ export const DocSidebarItem: (props: DocSidebarItemProps) => ReactElement = ({ l
           <div>{title}</div>
           {time ? <DocSidebarItemTitleTime>{time}</DocSidebarItemTitleTime> : null}
         </DocSidebarItemTitleLine>
-      </Link>
+      </a>
     </DocSidebarItemTitleContainer>
     {open ?
       <DocSidebarItemInner>
