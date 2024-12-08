@@ -144,7 +144,7 @@
     },
     "keywords": {
       "name": "storage.modifier.keyword.teo",
-      "match": "(let|declare|model|enum|interface|middlewares?|form|json|handler|group|import|connector|client|entity|server|autoseed dataset|autoseed|dataset|group|record|type)"
+      "match": "(let|declare|model|enum|interface|middlewares?|form|json|request|handler|group|import|connector|client|entity|server|admin|autoseed dataset|autoseed|dataset|group|record|type)"
     },
     "typeKeyword": {
       "name": "storage.modifier.keyword.teo",
@@ -584,7 +584,7 @@
     },
     "configStatement": {
       "name": "source.teo.embedded.config",
-      "begin": "^\\s*(entity|client|connector|server|debug)(\\s+([_A-Za-z][_A-Za-z0-9]*))?\\s+({)",
+      "begin": "^\\s*(entity|client|connector|server|admin|debug)(\\s+([_A-Za-z][_A-Za-z0-9]*))?\\s+({)",
       "beginCaptures": {
         "1": {
           "name": "storage.type.config.teo"
@@ -1205,7 +1205,7 @@
     },
     "middlewareDeclaration": {
       "name": "meta.middlewareDeclaration.teo",
-      "match": "(declare)\\s+(middleware)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "match": "(declare)\\s+(request|handler)\\s+(middleware)\\s+([A-Za-z_][A-Za-z0-9_]*)",
       "captures": {
         "1": {
           "name": "storage.modifier.keyword.teo"
@@ -1214,6 +1214,9 @@
           "name": "storage.modifier.keyword.teo"
         },
         "3": {
+          "name": "storage.modifier.keyword.teo"
+        },
+        "4": {
           "name": "entity.name.type.model.teo"
         }
       }
