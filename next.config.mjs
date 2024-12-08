@@ -9,7 +9,7 @@ import rehypeMdxTitle from 'rehype-mdx-title'
 import recmaNextjsStaticProps from 'recma-nextjs-static-props'
 import remarkGfm from 'remark-gfm'
 import remarkFrontmatter from 'remark-frontmatter'
-import { getHighlighter, BUNDLED_LANGUAGES } from 'shiki'
+import { bundledLanguages, getSingletonHighlighter } from 'shiki'
 import generateCaches from './scripts/generateCaches.mjs'
 import { search } from '@teocloud/teo-docs-search-engine'
 import { fetchPrevNext, fetchToc } from './scripts/generateToc.mjs'
@@ -65,10 +65,10 @@ let withMDX = mdx({
         onVisitHighlightedWord(node) {
           node.properties.className = ['word']
         },
-        getHighlighter: (options) => getHighlighter({
+        getHighlighter: (options) => getSingletonHighlighter({
           ...options,
           langs: [
-            ...BUNDLED_LANGUAGES,
+            ...bundledLanguages,
             {
               id: 'teo',
               scopeName: 'source.teo',
