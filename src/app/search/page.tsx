@@ -1,10 +1,9 @@
 'use server'
 
 import { FullWidthSearchInput } from "../../shared/components/Search"
-import fetchSearchResult, { SearchRecord } from "./fetcher"
+import fetchSearchResult from "./fetcher"
 import { styled } from "@linaria/react"
 import { dark, docFontFamily, docTitleFontFamily, light } from "../../shared/styles/theme"
-import { NextPage } from "next"
 
 const SearchRecordTitle = styled.a`
     font-size: 26px;
