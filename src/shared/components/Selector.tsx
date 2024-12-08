@@ -38,7 +38,7 @@ const usePreference = (name: string): [number, (value: number) => void] => {
       const index = savedSetStateCallbacks[name].indexOf(setState)
       savedSetStateCallbacks[name].splice(index, 1);
     };
-}, [name]);
+  }, [name]);
   const wrappedSetState = (newValue: number) => {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(name, newValue.toString())
@@ -270,9 +270,6 @@ export const TripleSelector = () => {
 type OptionalDocProps = {
   children: ReactNode
 }
-
-const show = css`display: block;`
-const hide = css`display: none;`
 
 const MakeDocBlockInner = (name: string, key: string, indexes: number[]) => {
   const DocBlock = (props: OptionalDocProps) => {

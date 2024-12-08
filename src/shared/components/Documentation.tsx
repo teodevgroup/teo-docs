@@ -886,7 +886,6 @@ export const Aside = (props: AsideProps) => {
 
 const CodeTitleContainer = styled.div`
   ${flexRow('center')}
-
 `
 
 const CodeTitle = (props: DivProps) => {

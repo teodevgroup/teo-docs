@@ -13,11 +13,13 @@ import {
   lightBackground,
   lightContent,
 } from '../styles/theme'
+import Preferences from '../lib/preferences'
 
 export default function Main({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode,
+  preferences: Preferences,
 }) {
   return (
     <body
