@@ -1,10 +1,10 @@
-'use client'
+'use server'
 
-import { useEffect, useState } from "react"
 import { FullWidthSearchInput } from "../../shared/components/Search"
 import fetchSearchResult, { SearchRecord } from "./fetcher"
 import { styled } from "@linaria/react"
 import { dark, docFontFamily, docTitleFontFamily, light } from "../../shared/styles/theme"
+import { NextPage } from "next"
 
 const SearchRecordTitle = styled.a`
     font-size: 26px;
@@ -43,16 +43,10 @@ const SearchRecordBreadcrumbContainer = styled.div`
     }
 `
 
-const SearchPage = ({ searchParams }: {
-    searchParams: { [key: string]: string | string[] | undefined }
-}) => {
+const SearchPage = async ({ searchParams: searchParamsPromise }) => {
+    const searchParams = await searchParamsPromise
     const original = searchParams["q"] as string | undefined
-    const [items, setItems] = useState<SearchRecord[]>([])
-    useEffect(() => {
-        if (original) {
-            fetchSearchResult(original).then((result) => setItems(result))
-        }
-    }, [])
+    const items = await fetchSearchResult(original)
     return <div style={{ width: '100%' }}>
         <FullWidthSearchInput defaultValue={original as string | undefined} />
         {items.map((item) => <SearchRecordView key={item.urlPath}>
@@ -60,7 +54,7 @@ const SearchPage = ({ searchParams }: {
                 {item.breadcrumb.map((data, index) => {
                     if (index !== item.breadcrumb.length - 1) {
                         return [
-                            <a href={data.urlPath}>{data.title}</a>,
+                            <a href={data.urlPath} key={data.urlPath}>{data.title}</a>,
                             <span> / </span>
                         ]
                     } else {
