@@ -222,6 +222,7 @@ export const DocumentationContent = styled.div`
     overflow-x: hidden;
     position: relative;
     ${dark} {
+      --shiki-foreground: #f6f8fa;
       --shiki-color-text: #f6f8fa;
       --shiki-color-background: #292929; 
       --shiki-token-constant: #dd6b21;
@@ -235,6 +236,7 @@ export const DocumentationContent = styled.div`
       --shiki-token-link: #EE0000;       
     }
     ${light} {
+      --shiki-foreground: #1a202c;
       --shiki-color-text: #1a202c;
       --shiki-color-background: #f6f8fa;    
       --shiki-token-constant: #dd6b21;
@@ -536,7 +538,7 @@ export const DocumentationContent = styled.div`
       font-weight: 300;
       font-variant-ligatures: none;
       position: relative;
-      background-color: #f6f8fa;
+      background-color: #f6f8fa !important;
       border-radius: 8px;
       max-width: 580px;
       overflow: hidden;
