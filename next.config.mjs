@@ -9,7 +9,8 @@ import rehypeMdxTitle from 'rehype-mdx-title'
 import recmaNextjsStaticProps from 'recma-nextjs-static-props'
 import remarkGfm from 'remark-gfm'
 import remarkFrontmatter from 'remark-frontmatter'
-import { getHighlighter, BUNDLED_LANGUAGES } from 'shiki'
+import { getSingletonHighlighter, bundledLanguagesInfo } from 'shiki'
+import { createCssVariablesTheme } from 'shiki/core'
 import generateCaches from './scripts/generateCaches.mjs'
 import { search } from '@teocloud/teo-docs-search-engine'
 import { fetchPrevNext, fetchToc } from './scripts/generateToc.mjs'
@@ -17,6 +18,7 @@ import breadcrumb from './plugins/breadcrumb.mjs'
 import { fetchBreadcrumb } from './scripts/generateBreadcrumb.mjs'
 import tableOfContents from './plugins/tableOfContents.mjs'
 import prevNext from './plugins/prevNext.mjs'
+import { readFileSync } from 'fs'
 
 generateCaches()
 
@@ -47,6 +49,7 @@ let withMDX = mdx({
       rehypeSlug,
       [rehypePrettyCode, {
         theme: 'css-variables',
+        addLanguageClass: true,
         onVisitLine(node) {
           // Prevent lines from collapsing in `display: grid` mode, and
           // allow empty lines to be copy/pasted
@@ -65,15 +68,17 @@ let withMDX = mdx({
         onVisitHighlightedWord(node) {
           node.properties.className = ['word']
         },
-        getHighlighter: (options) => getHighlighter({
+        getHighlighter: (options) => getSingletonHighlighter({
           ...options,
+          themes: [createCssVariablesTheme({ 
+            name: 'css-variables',
+            variablePrefix: '--shiki-',
+            variableDefaults: {},
+            fontStyle: true
+          })],
           langs: [
-            ...BUNDLED_LANGUAGES,
-            {
-              id: 'teo',
-              scopeName: 'source.teo',
-              path: '../../langs/teo.json',
-            },
+            ...bundledLanguagesInfo.map((lang) => lang.id),
+            () => JSON.parse(readFileSync("./langs/teo.json", "utf-8")),
           ],
         }),
       }],

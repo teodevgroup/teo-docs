@@ -222,7 +222,7 @@ export const DocumentationContent = styled.div`
     overflow-x: hidden;
     position: relative;
     ${dark} {
-      --shiki-color-text: #f6f8fa;
+      --shiki-foreground: #f6f8fa;
       --shiki-color-background: #292929; 
       --shiki-token-constant: #dd6b21;
       --shiki-token-string: #690;
@@ -235,7 +235,7 @@ export const DocumentationContent = styled.div`
       --shiki-token-link: #EE0000;       
     }
     ${light} {
-      --shiki-color-text: #1a202c;
+      --shiki-foreground: #1a202c;
       --shiki-color-background: #f6f8fa;    
       --shiki-token-constant: #dd6b21;
       --shiki-token-string: #690;
@@ -518,12 +518,12 @@ export const DocumentationContent = styled.div`
     [data-use-dark] {
       pre {
         background-color: rgb(26, 32, 44) !important;
-        --shiki-color-text: #edf2f7;
+        --shiki-foreground: #edf2f7;
         button {
           background-color: #2d3748;
         }
         code {
-          --shiki-color-text: #edf2f7;
+          --shiki-foreground: #edf2f7;
           [data-line]::before {
             color: #4a5568 !important;
           }
@@ -536,7 +536,7 @@ export const DocumentationContent = styled.div`
       font-weight: 300;
       font-variant-ligatures: none;
       position: relative;
-      background-color: #f6f8fa;
+      background-color: #f6f8fa !important;
       border-radius: 8px;
       max-width: 580px;
       overflow: hidden;
@@ -550,7 +550,7 @@ export const DocumentationContent = styled.div`
       }
       &[data-language="sh"] {
         background-color: rgb(26, 32, 44) !important;
-        --shiki-color-text: #edf2f7;
+        --shiki-foreground: #edf2f7;
         button {
           background-color: #2d3748;
         }
@@ -562,12 +562,20 @@ export const DocumentationContent = styled.div`
         display: grid;
         background-color: transparent;
         border-radius: 0;
-        color: rgb(237, 242, 247);
+        ${light} {
+          color: #1a202c;
+        }
+        ${dark} {
+          color: rgb(237, 242, 247);
+        }
         padding: 16px 0;
         overflow-x: scroll;
         overflow-y: hidden;
+        [data-language="txt"] {
+          color: #1a202c;
+        }
         [data-language="sh"] {
-          --shiki-color-text: #edf2f7;
+          --shiki-foreground: #edf2f7;
         }
         [data-line] {
           padding: 0 48px 0 16px;

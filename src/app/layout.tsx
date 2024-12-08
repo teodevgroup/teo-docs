@@ -1,7 +1,6 @@
 'use server'
 
 import React from 'react'
-
 import type { Viewport } from 'next'
 import { headers } from 'next/headers'
 import Main from '../shared/components/Main'
@@ -13,7 +12,7 @@ export async function generateViewport(): Promise<Viewport> {
 }
 
 export async function generateMetadata() {
-  const headersList = headers()
+  const headersList = await headers()
   const pathname = headersList.get('x-request-pathname') as string
   const res = await global.docFetchToc(pathname)
   
