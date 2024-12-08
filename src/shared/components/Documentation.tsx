@@ -741,7 +741,6 @@ export const DocumentationContent = styled.div`
 `
 
 type DocumentationLayoutProps = {
-  path: string
   children: ReactNode
 }
 

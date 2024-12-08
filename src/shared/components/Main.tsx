@@ -1,5 +1,3 @@
-'use client'
-
 import {
   DocumentationContent,
   DocumentationLayout,
@@ -15,15 +13,12 @@ import {
   lightBackground,
   lightContent,
 } from '../styles/theme'
-import { usePathname } from 'next/navigation'
 
 export default function Main({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const pathname = usePathname()
-
   return (
     <body
       className={css`
@@ -40,8 +35,8 @@ export default function Main({
         font-family: ${contentFontStack};
       `}
     >
-      <DocumentationLayout path={pathname}>
-        <DocumentationSidebar path={pathname} />
+      <DocumentationLayout>
+        <DocumentationSidebar />
         <DocumentationContent>{children}</DocumentationContent>
       </DocumentationLayout>
     </body>
