@@ -4,6 +4,7 @@ import React, { Children, ReactElement, ReactNode, cloneElement, useEffect, useS
 import { styled } from '@linaria/react'
 import { dark, docTitleFontFamily, flexColumn, flexRow, light } from '../../shared/styles/theme'
 import { cx, css } from '@linaria/core'
+import useCookie from 'react-use-cookie'
 import {
   CSharpLogo16, DartLogo16, KotlinLogo16, MongoDBLogo16,
   MySQLLogo16, NodeLogo16, PostgreSQLLogo16, PythonLogo16, RustLogo16,
@@ -19,36 +20,14 @@ const selectorBorderColorDark = "#2a2c2f"
 const serverKey = "serverSelector"
 const databaseKey = "databaseSelector"
 const clientKey = "clientSelector"
-const savedSetStateCallbacks: any = {
-  [serverKey]: [],
-  [databaseKey]: [],
-  [clientKey]: []
-}
 
-const usePreference = (name: string): [number, (value: number) => void] => {
-  let saved = typeof localStorage !== 'undefined' ? localStorage.getItem(name) : '0'
-  if (!saved) {
-    saved = '0'
+const usePreference = (name: string, initialValue: string): [number, (value: number) => void] => {
+  const [value, setValue] = useCookie(name, initialValue)
+  const index = parseInt(value)
+  const setIndex = (newValue: number) => {
+    setValue(newValue.toString())
   }
-  let index = parseInt(saved)
-  const [state, setState] = useState(index)
-  useEffect(() => {
-    savedSetStateCallbacks[name].push(setState)
-    return () => {
-      const index = savedSetStateCallbacks[name].indexOf(setState)
-      savedSetStateCallbacks[name].splice(index, 1);
-    };
-  }, [name]);
-  const wrappedSetState = (newValue: number) => {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(name, newValue.toString())
-    }
-    for (const key in savedSetStateCallbacks[name]) {
-      const setState = savedSetStateCallbacks[name][key]
-      setState(newValue)
-    }
-  }
-  return [state, wrappedSetState]
+  return [index, setIndex]
 }
 
 const SelectorContainer = styled.div`
@@ -275,7 +254,6 @@ const MakeDocBlockInner = (name: string, key: string, indexes: number[]) => {
   const DocBlock = (props: OptionalDocProps) => {
     const [index] = usePreference(key)
     return indexes.includes(index) ? props.children : null
-//    return <div className={indexes.includes(index) ? show : hide}>{props.children}</div>
   }
   DocBlock.displayName = name
   return DocBlock
