@@ -94,7 +94,7 @@ let withMDX = mdx({
 
 /** @type {import('next-with-linaria').LinariaConfig} */
 const config = {
-  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   experimental: {
     serverActions: {
       allowedOrigins: ['docs.teodev.io', 'docs.teodevgroup.io', 'docker-teo-docs']

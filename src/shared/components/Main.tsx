@@ -13,7 +13,7 @@ import {
   lightBackground,
   lightContent,
 } from '../styles/theme'
-import Preferences from '../lib/preferences'
+import Preferences from '../lib/preferences/preferences'
 
 export default function Main({
   children,

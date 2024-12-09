@@ -8,10 +8,13 @@ time: 5 min
 import { setPriority } from 'os'
 import CodeResult from '../../../shared/components/CodeResult'
 import {
-    TripleSelector, RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
+    RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
     PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
     SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
 } from '../../../shared/components/Selector'
+import {
+  TripleSelectorServer
+} from '../../../shared/components/SelectorServer'
 import { setgroups } from 'process'
 
 # Quickstart
@@ -27,7 +30,7 @@ guide will just be tailored for you. Also, your preferences are saved locally.
 The next time you open any documentation in our site, your tech stack
 preferences are preserved and restored for you.
 
-<TripleSelector />
+<TripleSelectorServer />
 
 ## Prerequisites
 

@@ -4,7 +4,7 @@ import React from 'react'
 import type { Viewport } from 'next'
 import { headers } from 'next/headers'
 import Main from '../shared/components/Main'
-import defaultPreferences from '../shared/lib/preferencesServer'
+import defaultPreferences from '../shared/lib/preferences/preferencesServer'
 
 export async function generateViewport(): Promise<Viewport> {
   return {

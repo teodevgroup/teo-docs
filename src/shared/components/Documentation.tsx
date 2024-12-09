@@ -9,8 +9,8 @@ import Layout from './Layout'
 import Footer from './Footer'
 import Heading from './Heading'
 import { Clipboard, File, Hash } from 'react-feather'
-import { FastTripleSelector } from './Selector'
 import FileIcon from './FileIcon'
+import { FastTripleSelectorServer } from './SelectorServer'
 
 export const DocumentationContainer = styled.div`
   ${light} {
@@ -100,8 +100,7 @@ const AsideContentContainer = styled.div`
     overflow-y: auto;
     max-height: 100vh;
   }
-  
-  
+
   right: 0;
   top: 0;
   flex-grow: 0;
@@ -869,7 +868,7 @@ export const Aside = (props: AsideProps) => {
         }
       })})
     } else if ((c as any).type && (c as any).type === 'triple') {
-      return <FastTripleSelector />
+      return <FastTripleSelectorServer />
     } else {
       return c
     }
