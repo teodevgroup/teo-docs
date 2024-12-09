@@ -1,10 +1,11 @@
 import type { MDXComponents } from "mdx/types"
-import { Aside, FigCaption, H2, H3, H4, H5, H6, Pre } from "./src/shared/components/Documentation"
+import { FigCaption, H2, H3, H4, H5, H6, Pre } from "./src/shared/components/DocumentationAside"
+import DocumentationAsideServer from "./src/shared/components/DocumentationAsideServer"
 
 // This file is required to use MDX in `app` directory.
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
-    aside: (props: any) => <Aside {...props} />,
+    aside: (props: any) => <DocumentationAsideServer {...props} />,
     pre: (props: any) => <Pre {...props} />,
     figcaption: (props: any) => <FigCaption {...props} />,
     h2: (props: any) => <H2 {...props} />,

@@ -5,7 +5,6 @@ import { dark, darkHeadingBackgroundColor, docFontFamily, docTagBackgroundColor,
 import { TocItem } from "../lib/fetchToc"
 import { styled } from "@linaria/react"
 import BookIcon from './BookIcon'
-import Link from "next/link"
 import { css } from "@linaria/core"
 import { SearchIcon, SearchIconContainer, SearchInput } from "./Search"
 

@@ -11,11 +11,8 @@ import {
     RustDoc, NodeJSDoc, PythonDoc, MySQLDoc,
     PostgreSQLDoc, SQLiteDoc, MongoDBDoc, SQLDatabaseDoc, TypeScriptDoc,
     SwiftDoc, KotlinDoc, CSharpDoc, DartDoc,
-} from '../../../shared/components/Selector'
-import {
-  TripleSelectorServer
-} from '../../../shared/components/SelectorServer'
-import { setgroups } from 'process'
+} from '../../../shared/components/Preference/PreferencesBlock'
+import PreferencesPanelSelector from '../../../shared/components/Preference/PreferencesPanelSelector'
 
 # Quickstart
 
@@ -30,7 +27,7 @@ guide will just be tailored for you. Also, your preferences are saved locally.
 The next time you open any documentation in our site, your tech stack
 preferences are preserved and restored for you.
 
-<TripleSelectorServer />
+<PreferencesPanelSelector {...props} />
 
 ## Prerequisites
 
