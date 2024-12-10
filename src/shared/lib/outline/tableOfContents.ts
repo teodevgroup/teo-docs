@@ -1,4 +1,3 @@
-import 'server-only'
 import { extractFrontmatter, Frontmatter } from './frontmatter'
 import { globSync } from 'glob'
 import fixWindowsPath from './fixWindowsPath'

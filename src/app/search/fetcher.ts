@@ -1,5 +1,4 @@
 'use server'
-import 'server-only'
 import { searchFullTextIndex } from '../../shared/lib/outline/fullTextIndex'
 import { outlineCachesFetcher } from '../../shared/lib/outline/outlineCachesFetcher'
 

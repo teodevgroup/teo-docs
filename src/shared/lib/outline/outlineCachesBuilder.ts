@@ -1,4 +1,3 @@
-import 'server-only'
 import { globSync, writeFileSync } from 'fs'
 import fixWindowsPath from './fixWindowsPath'
 import { generateFullTextIndex, commitFullTextIndex } from './fullTextIndex'

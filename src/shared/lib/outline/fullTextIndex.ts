@@ -1,4 +1,3 @@
-import 'server-only'
 import { readFileSync } from 'fs'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'

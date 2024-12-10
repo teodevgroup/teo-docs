@@ -7,9 +7,9 @@
   "author": "Victor Teo",
   "license": "Apache-2.0",
   "scripts": {
-    "predev": "node --loader ts-node/esm ./src/tasks/persistentCaches.ts",
+    "predev": "tsx ./src/tasks/persistentCaches.ts",
     "dev": "next dev",
-    "prebuild": "node --loader ts-node/esm ./src/tasks/persistentCaches.ts",
+    "prebuild": "tsx ./src/tasks/persistentCaches.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -44,9 +44,8 @@
     "@types/node": "22.10.1",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.1",
-    "glob": "^11.0.0",
     "native-ext-loader": "^2.3.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "5.7.2"
   }
 }
