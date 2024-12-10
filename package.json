@@ -21,7 +21,7 @@
     "@linaria/react": "^6.2.1",
     "@mdx-js/react": "^3.1.0",
     "@next/mdx": "^15.0.4",
-    "@teodevgroup/teo-docs-search-engine": "0.0.8",
+    "@teodevgroup/teo-docs-search-engine": "0.0.10",
     "next": "^15.0.4",
     "next-with-linaria": "^0.7.0",
     "react": "^19.0.0",
