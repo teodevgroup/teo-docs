@@ -243,9 +243,9 @@ const DocSidebarSectionTitle = styled.div`
 `
 
 const renderChildren = (children: TableOfContentNode[], path: string, setSidebarVisible: (v: boolean) => void) => {
-  return children.map((child) => child.children.length ? <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} readingTime={child.readingTime} setSidebarVisible={setSidebarVisible}>
+  return children.map((child, index) => child.children.length ? <DocSidebarItem key={`${child.urlPath}${index}`} path={path} link={child.urlPath} title={child.title} readingTime={child.readingTime} setSidebarVisible={setSidebarVisible}>
     {renderChildren(child.children, path, setSidebarVisible)}
-  </DocSidebarItem> : <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} readingTime={child.readingTime} setSidebarVisible={setSidebarVisible} />)
+  </DocSidebarItem> : <DocSidebarItem key={`${child.urlPath}${index}`} path={path} link={child.urlPath} title={child.title} readingTime={child.readingTime} setSidebarVisible={setSidebarVisible} />)
 }
 
 
@@ -253,14 +253,14 @@ const SidebarWithToc: (props: { item: TableOfContentNode, path: string, phoneOpe
   return <DocSidebarContainer style={{'display': props.phoneOpen ? "block" : "none"}}>
     <DocSideBarSearchInput />
     <DocSidebarTitle>{props.item.title}</DocSidebarTitle>
-    {props.item.children.map((child) => {
+    {props.item.children.map((child, index) => {
       if (child.children.length) {
         return [
           <DocSidebarSectionTitle key="__sidebar__title">{child.title}</DocSidebarSectionTitle>,
           ...renderChildren(child.children, props.path, props.setSidebarVisible)
         ]
       } else {
-        return <DocSidebarItem key={child.urlPath} path={props.path} link={child.urlPath} title={child.title} readingTime={child.readingTime} setSidebarVisible={props.setSidebarVisible} />
+        return <DocSidebarItem key={`${child.urlPath}${index}`} path={props.path} link={child.urlPath} title={child.title} readingTime={child.readingTime} setSidebarVisible={props.setSidebarVisible} />
       }
     })}
   </DocSidebarContainer>

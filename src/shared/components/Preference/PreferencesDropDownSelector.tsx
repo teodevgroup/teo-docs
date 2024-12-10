@@ -12,6 +12,7 @@ import VSpace from '../VSpace'
 import RustLogoSvg from '../RustLogo'
 import Preferences, { PreferencesClient, PreferencesDatabase, preferencesIndex, PreferencesKey, PreferencesServer, preferencesValue } from '../../lib/preferences/preferences'
 import usePreference from '../../lib/preferences/preferencesClient'
+import {autoUpdate, flip, FloatingFocusManager, FloatingPortal, offset, shift, size, useClick, useDismiss, useFloating, useInteractions} from '@floating-ui/react'
 
 const FastSelectorContainer = styled.div`
   position: relative;
@@ -37,6 +38,7 @@ const FastSelectorExpandedList = styled.div`
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
   z-index: 1000;
+  ${flexColumn('flex-start')}
   ${dark} {
     background-color: #242424;
     border-left: 0.5px solid #171717;
@@ -67,6 +69,7 @@ const FastSelectorItem = styled.div<FastSelectorItemProps>`
     }
   }
   width: 100%;
+  height: 32px;
   padding: 4px 8px;
   font-size: 14px;
   opacity: ${(props) => props.disabled ? 0.5 : 1};
@@ -77,7 +80,9 @@ const FastSelectorIconContainer = styled.div`
   margin-right: 8px;
 `
 
-const FastSelectorTitle = styled.div``
+const FastSelectorTitle = styled.div`
+  cursor: default;
+`
 
 type FastSelectorProps<T extends PreferencesKey, V extends Preferences[T]> = {
   preferenceKey: T
@@ -91,10 +96,36 @@ export const FastSelector = <T extends PreferencesKey, V extends Preferences[T]>
     children,
 }: FastSelectorProps<T, V>) => {
   const [value, setValue] = usePreference(preferenceKey, defaultValue)
-  const [expanded, setExpanded] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: setIsOpen,
+    middleware: [
+      offset(0), 
+      flip(), 
+      shift(), 
+      size({
+        apply({ rects, elements, availableHeight }) {
+          Object.assign(elements.floating.style, {
+            maxHeight: `${availableHeight}px`,
+            minWidth: `${rects.reference.width}px`,
+            maxWidth: `${rects.reference.width}px`,
+          });
+        },
+        padding: 10,
+      }),
+    ],
+    whileElementsMounted: autoUpdate,
+  })
+  const click = useClick(context)
+  const dismiss = useDismiss(context)
+  const {getReferenceProps, getFloatingProps} = useInteractions([
+    click,
+    dismiss,
+  ])
   const selectedChild = Children.toArray(children)[preferencesIndex(preferenceKey, value)]
-  return <FastSelectorContainer onMouseLeave={() => setExpanded(false)}>
-    <FastSelectorDisplayItem onClick={() => setExpanded(!expanded)} className={!expanded ? css`
+  return <FastSelectorContainer>
+    <FastSelectorDisplayItem ref={refs.setReference} {...getReferenceProps()} className={!isOpen ? css`
       ${dark} {
         border: 0.5px solid #171717;
       }
@@ -156,19 +187,19 @@ export const FastSelector = <T extends PreferencesKey, V extends Preferences[T]>
     `}>
       {selectedChild}
     </FastSelectorDisplayItem>
-    <FastSelectorExpandedList className={!expanded ? css`display: none;` : css`
-      ${flexColumn('flex-start')}
-      position: absolute;
-    `}>
-      {Children.map(children, (child, index) => {
-        return cloneElement(child as any, { onClick: () => {
-          if (!(child as any).props.disabled) {
-            setValue(preferencesValue(preferenceKey, index))
-            setExpanded(false)  
-          }
-        }})
-      })}
-    </FastSelectorExpandedList>
+    {isOpen ? <FloatingPortal>
+      <FastSelectorExpandedList ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+        {Children.map(children, (child, index) => {
+          return cloneElement(child as any, { onClick: () => {
+            if (!(child as any).props.disabled) {
+              setValue(preferencesValue(preferenceKey, index))
+              setIsOpen(false)  
+            }
+          }})
+        })}
+      </FastSelectorExpandedList>
+    </FloatingPortal> : null}
+    
   </FastSelectorContainer>
 }
 
