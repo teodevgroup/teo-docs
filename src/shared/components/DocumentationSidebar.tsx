@@ -3,12 +3,12 @@
 import React from 'react'
 import { ClientDocumentationSidebar, DocSidebarContainer } from './DocumentationSidebarClient'
 import { headers } from 'next/headers'
-import { fetchToc } from '../../scripts/generateToc'
+import { outlineCachesFetcher } from '../lib/outline/outlineCachesFetcher'
 
 export const DocumentationSidebar = async () => {
   const headersList = await headers()
   const path = headersList.get('x-request-pathname') as string
-  const sidebarToc = await fetchToc(firstPathComponent(path))
+  const sidebarToc = outlineCachesFetcher.tableOfContents(firstPathComponent(path))
   if (sidebarToc) {
     return <ClientDocumentationSidebar path={path} sidebarToc={sidebarToc} />
   } else {

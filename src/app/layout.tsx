@@ -5,7 +5,7 @@ import type { Viewport } from 'next'
 import { headers } from 'next/headers'
 import Main from '../shared/components/Main'
 import defaultPreferences from '../shared/lib/preferences/preferencesServer'
-import { fetchToc } from '../scripts/generateToc'
+import { outlineCachesFetcher } from '../shared/lib/outline/outlineCachesFetcher'
 
 export async function generateViewport(): Promise<Viewport> {
   return {
@@ -16,7 +16,7 @@ export async function generateViewport(): Promise<Viewport> {
 export async function generateMetadata() {
   const headersList = await headers()
   const pathname = headersList.get('x-request-pathname') as string
-  const res = await fetchToc(pathname)
+  const res = outlineCachesFetcher.tableOfContents(pathname)
   
   return {
     title: res?.title ? `${res.title} | TEO Docs` : 'TEO Docs',
