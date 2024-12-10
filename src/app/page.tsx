@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 import { styled } from '@linaria/react'
-import { anyDesktop, dark, docTextColor, docTextColorDark, docTitleFontFamily, flexColumn, flexRow, light, phone, phoneAndTablet, tablet, tintFontStack } from '../shared/styles/theme'
+import { anyDesktop, dark, docTextColor, docTextColorDark, docTitleFontFamily, flexColumn, flexRow, light, phone, phoneAndTablet, tablet, tintFontStack } from '../styles/theme'
 import { Book, BookOpen } from 'react-feather'
-import { FullWidthSearchInput } from '../shared/components/Search'
+import { FullWidthSearchInput } from '../components/Search'
 
 const DocHomeContainer = styled.div`
   ${flexColumn('center')}

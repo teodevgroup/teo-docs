@@ -1,4 +1,4 @@
-import { outlineCachesBuilder } from "../shared/lib/outline/outlineCachesBuilder"
+import { outlineCachesBuilder } from "../lib/outline/outlineCachesBuilder"
 
 outlineCachesBuilder.build()
 outlineCachesBuilder.saveToDisk()

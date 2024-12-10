@@ -1,6 +1,6 @@
 'use server'
-import { searchFullTextIndex } from '../../shared/lib/fullTextIndex'
-import { outlineCachesFetcher } from '../../shared/lib/outline/outlineCachesFetcher'
+import { searchFullTextIndex } from '../../lib/fullTextIndex'
+import { outlineCachesFetcher } from '../../lib/outline/outlineCachesFetcher'
 
 export interface SearchRecord {
     title: string

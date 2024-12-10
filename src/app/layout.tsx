@@ -3,9 +3,9 @@
 import React from 'react'
 import type { Viewport } from 'next'
 import { headers } from 'next/headers'
-import Main from '../shared/components/Main'
-import defaultPreferences from '../shared/lib/preferences/preferencesServer'
-import { outlineCachesFetcher } from '../shared/lib/outline/outlineCachesFetcher'
+import Main from '../components/Main'
+import defaultPreferences from '../lib/preferences/preferencesServer'
+import { outlineCachesFetcher } from '../lib/outline/outlineCachesFetcher'
 
 export async function generateViewport(): Promise<Viewport> {
   return {

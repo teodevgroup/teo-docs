@@ -1,7 +1,7 @@
 import { Plugin } from 'unified'
 import { Root } from 'hast'
-import fixWindowsPath from '../shared/lib/outline/fixWindowsPath'
-import { outlineCachesFetcher } from '../shared/lib/outline/outlineCachesFetcher'
+import fixWindowsPath from '../lib/outline/fixWindowsPath'
+import { outlineCachesFetcher } from '../lib/outline/outlineCachesFetcher'
 
 const breadcrumb: Plugin<[], Root> = () => {
   return (tree, vfile) => {

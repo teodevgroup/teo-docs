@@ -1,8 +1,8 @@
 'use server'
-import { FullWidthSearchInput } from "../../shared/components/Search"
+import { FullWidthSearchInput } from "../../components/Search"
 import fetchSearchResult from "./fetcher"
 import { styled } from "@linaria/react"
-import { dark, docFontFamily, docTitleFontFamily, light } from "../../shared/styles/theme"
+import { dark, docFontFamily, docTitleFontFamily, light } from "../../styles/theme"
 
 const SearchRecordTitle = styled.a`
     font-size: 26px;
@@ -53,10 +53,10 @@ const SearchPage = async ({ searchParams: searchParamsPromise }) => {
                     if (index !== item.breadcrumb.length - 1) {
                         return [
                             <a href={data.urlPath} key={data.urlPath}>{data.title}</a>,
-                            <span> / </span>
+                            <span key={data.urlPath + '@span'}> / </span>
                         ]
                     } else {
-                        return <a href={data.urlPath}>{data.title}</a>
+                        return <a key={index} href={data.urlPath}>{data.title}</a>
                     }
                 })}
             </SearchRecordBreadcrumbContainer> : <></>}

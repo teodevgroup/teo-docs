@@ -1,6 +1,6 @@
 {
   "name": "teo-docs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "description": "Documentation for Teo",
   "main": "index.js",
@@ -21,7 +21,7 @@
     "@linaria/react": "^6.2.1",
     "@mdx-js/react": "^3.1.0",
     "@next/mdx": "^15.0.4",
-    "@teodevgroup/teo-docs-search-engine": "0.0.10",
+    "@teodevgroup/teo-docs-search-engine": "0.0.11",
     "next": "^15.0.4",
     "next-with-linaria": "^0.7.0",
     "react": "^19.0.0",

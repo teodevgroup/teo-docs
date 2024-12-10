@@ -1,6 +1,6 @@
 import { visit } from 'unist-util-visit'
-import fixWindowsPath from '../shared/lib/outline/fixWindowsPath'
-import { outlineCachesFetcher } from '../shared/lib/outline/outlineCachesFetcher'
+import fixWindowsPath from '../lib/outline/fixWindowsPath'
+import { outlineCachesFetcher } from '../lib/outline/outlineCachesFetcher'
 
 const prevNext: any = () => {
   return (tree: any, vfile: any) => {

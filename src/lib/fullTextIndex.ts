@@ -3,10 +3,10 @@ import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkMdx from 'remark-mdx'
 import remarkRehype from 'remark-rehype'
-import plainText from '../../plugins/plainText'
 import { Record, SearchIndex } from '@teodevgroup/teo-docs-search-engine'
 import fileLocationToUrlPath from './outline/fileLocationToUrlPath'
 import fixWindowsPath from './outline/fixWindowsPath'
+import plainText from '../plugins/plainText'
 
 const pipeline = unified().use(remarkParse).use(remarkMdx).use(remarkRehype).use(plainText)
 

@@ -4,9 +4,9 @@ author: Victor Teo
 orderHint: 3
 ---
 
-import PrevNext from '../../../../shared/components/PrevNext'
-import CodeResult from '../../../../shared/components/CodeResult'
-import { RustDoc, NodeJSDoc, PythonDoc } from '../../../../shared/components/Preference/PreferencesBlock'
+import PrevNext from '../../../../components/PrevNext'
+import CodeResult from '../../../../components/CodeResult'
+import { RustDoc, NodeJSDoc, PythonDoc } from '../../../../components/Preference/PreferencesBlock'
 
 # Implement authentication
 
@@ -92,7 +92,7 @@ Let's explain the newly introduced decorators and pipeline items one by one.
 
 * The authentication functionalities reside in Teo's `std.identity`
 [namespace](/concepts/components/teo-schema/namespace)
-<span class="concept">CONCEPT</span>.
+<span className="concept">CONCEPT</span>.
 * `@identity.id` specifies which field is used to fetch the user
 * `@identity.checker` specifies which field is used to validate credentials and
 how to validate
