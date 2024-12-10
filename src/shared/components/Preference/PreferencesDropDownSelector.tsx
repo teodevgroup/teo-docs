@@ -69,7 +69,7 @@ const FastSelectorItem = styled.div<FastSelectorItemProps>`
     }
   }
   width: 100%;
-  height: 32px;
+  height: 38px;
   padding: 4px 8px;
   font-size: 14px;
   opacity: ${(props) => props.disabled ? 0.5 : 1};
