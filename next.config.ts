@@ -15,6 +15,9 @@ import breadcrumb from './src/plugins/breadcrumb'
 import tableOfContents from './src/plugins/tableOfContents'
 import prevNext from './src/plugins/prevNext'
 import { readFileSync } from 'fs'
+import { NextConfig } from 'next'
+import { NextJsWebpackConfig } from 'next/dist/server/config-shared'
+import { inspect } from 'util'
 
 let withMDX = mdx({
   extension: /\.mdx?$/,
@@ -70,30 +73,17 @@ let withMDX = mdx({
   },
 })
 
-/** @type {import('next-with-linaria').LinariaConfig} */
-const config = {
+const config: NextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   experimental: {
     serverActions: {
-      allowedOrigins: ['docs.teodev.io', 'docs.teodevgroup.io', 'docker-teo-docs']
+      allowedOrigins: ['docs.teodev.io', 'docker-teo-docs']
     }
+  },
+  webpack: (config) => {
+    config.externals.push('@teocloud/teo-docs-search-engine')
+    return config
   }
-  // webpack: (
-  //   config,
-  //   { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
-  // ) => {
-  //   if (!config.module) {
-  //     config.module = {}
-  //   }
-  //   if (!config.module.rules) {
-  //     config.module.rules = []
-  //   }
-  //   config.module.rules.push({
-  //     test: /\.node$/,
-  //     loader: "native-ext-loader"
-  //   })
-  //   return config
-  // }
 }
 
 export default withMDX(withLinaria(config) as any)
