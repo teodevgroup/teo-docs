@@ -12,7 +12,7 @@ const pipeline = unified().use(remarkParse).use(remarkMdx).use(remarkRehype).use
 
 const records: Record[] = []
 
-const searchIndex = new SearchIndex()
+const searchIndex = new SearchIndex(".fulltextcache")
 
 let isFullTextIndexGenerated = false
 

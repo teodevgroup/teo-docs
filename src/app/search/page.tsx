@@ -47,7 +47,7 @@ const SearchPage = async ({ searchParams: searchParamsPromise }) => {
     const items = await fetchSearchResult(original)
     return <div style={{ width: '100%' }}>
         <FullWidthSearchInput defaultValue={original as string | undefined} />
-        {items.map((item) => <SearchRecordView key={item.urlPath}>
+        {items.map((item, index) => <SearchRecordView key={`${item.urlPath}${index}`}>
             {item.breadcrumb ? <SearchRecordBreadcrumbContainer>
                 {item.breadcrumb.map((data, index) => {
                     if (index !== item.breadcrumb.length - 1) {
