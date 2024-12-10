@@ -1,12 +1,12 @@
 import { visit } from 'unist-util-visit'
-import fixWindowsPath from '../scripts/fixWindowsPath.mjs'
+import fixWindowsPath from '../scripts/fixWindowsPath'
+import { fetchPrevNext } from '../scripts/generateToc'
 
-/** @type {import('unified').Plugin<[], import('hast').Root>} */
-const prevNext = () => {
-  return (tree, vfile) => {
-    visit(tree, (node) => node.type == "mdxJsxFlowElement" && node.name === "PrevNext", (node) => {
+const prevNext: any = () => {
+  return (tree: any, vfile: any) => {
+    visit(tree, (node: any) => node.type == "mdxJsxFlowElement" && node.name === "PrevNext", (node) => {
         const urlPath = fixWindowsPath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
-        const prevNextData = global.docFetchPrevNext(urlPath)
+        const prevNextData = fetchPrevNext(urlPath)
         if (!prevNextData) {
             return
         }

@@ -1,5 +1,8 @@
 'use server'
 
+import { search } from '@teocloud/teo-docs-search-engine'
+import { fetchToc } from '../../scripts/generateToc'
+import { fetchBreadcrumb } from '../../scripts/generateBreadcrumb'
 export interface SearchRecord {
     title: string
     urlPath: string
@@ -7,13 +10,14 @@ export interface SearchRecord {
 }
 
 export default async function fetchSearchResult(query: string): Promise<SearchRecord[]> {
-    const items = global.docSearch(`"${query}"`)
+    
+    const items = search(`"${query}"`)
     const result = items.map((item: any) => {
-        const tocItem = global.docFetchToc(item.urlPath)
+        const tocItem = fetchToc(item.urlPath)
         if (!tocItem) {
             return undefined
         }
-        const breadcrumb = global.docFetchBreadcrumb(item.urlPath)
+        const breadcrumb = fetchBreadcrumb(item.urlPath)
         if (!breadcrumb || breadcrumb.length === 0) {
             return undefined
         }

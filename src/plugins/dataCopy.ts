@@ -1,8 +1,9 @@
 import { visit } from 'unist-util-visit'
 import { toString } from 'hast-util-to-string'
+import { Plugin } from 'unified'
+import { Root } from 'hast'
 
-/** @type {import('unified').Plugin<[], import('hast').Root>} */
-const dataCopy = () => {
+const dataCopy: Plugin<[], Root> = () => {
   return (tree) => {
     visit(tree, 'element', (node) => {
       if (node.tagName == "pre") {

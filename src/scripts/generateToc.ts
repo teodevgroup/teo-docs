@@ -1,10 +1,10 @@
-import extractFrontmatter from './extractFrontmatter.mjs'
+import extractFrontmatter from './extractFrontmatter'
 import { globSync } from 'glob'
-import fixWindowsPath from './fixWindowsPath.mjs'
+import fixWindowsPath from './fixWindowsPath'
 
 const tocCaches = {}
 
-export function generateToc(fileLocation) {
+export function generateToc(fileLocation: string) {
     const urlPath = fileLocation.replace(/^src[\/\\]app/, "").replace(/[\/\\]page.mdx$/, "")
     if (tocCaches[urlPath]) {
         return tocCaches[urlPath]
@@ -21,11 +21,20 @@ export function generateToc(fileLocation) {
     }
 }
 
-export function fetchToc(urlPath) {
+export interface TocItem {
+    title: string
+    author: string
+    urlPath: string
+    orderHint: number
+    children: TocItem[]
+    time?: string
+}
+
+export function fetchToc(urlPath: string): TocItem {
     return tocCaches[urlPath.replace(/[\/\\]$/, "")]
 }
 
-export function fetchPrevNext(urlPath) {
+export function fetchPrevNext(urlPath: string) {
     const pureUrlPath = urlPath.replace(/[\/\\]$/, "")
     const components = pureUrlPath.indexOf("\\") > -1 ? pureUrlPath.split('\\') : pureUrlPath.split('/')
     components.pop()

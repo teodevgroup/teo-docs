@@ -8,7 +8,7 @@ import { load } from 'js-yaml'
 
 const pipeline = unified().use(remarkParse).use(remarkMdx).use(remarkRehype).use(remarkFrontmatter)
 
-export default function extractFrontmatter(fileLocation, urlPath) {
+export default function extractFrontmatter(fileLocation: string, urlPath: string) {
     if (!existsSync(fileLocation)) {
         return undefined
     }

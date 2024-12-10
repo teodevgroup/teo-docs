@@ -2,8 +2,8 @@ import withLinaria from 'next-with-linaria'
 import mdx from '@next/mdx'
 import remarkToc from 'remark-toc'
 import rehypeSlug from 'rehype-slug'
-import onThisPage from './plugins/onThisPage.mjs'
-import dataCopy from './plugins/dataCopy.mjs'
+import onThisPage from './src/plugins/onThisPage'
+import dataCopy from './src/plugins/dataCopy'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeMdxTitle from 'rehype-mdx-title'
 import recmaNextjsStaticProps from 'recma-nextjs-static-props'
@@ -11,32 +11,13 @@ import remarkGfm from 'remark-gfm'
 import remarkFrontmatter from 'remark-frontmatter'
 import { getSingletonHighlighter, bundledLanguagesInfo } from 'shiki'
 import { createCssVariablesTheme } from 'shiki/core'
-import generateCaches from './scripts/generateCaches.mjs'
-import { search } from '@teocloud/teo-docs-search-engine'
-import { fetchPrevNext, fetchToc } from './scripts/generateToc.mjs'
-import breadcrumb from './plugins/breadcrumb.mjs'
-import { fetchBreadcrumb } from './scripts/generateBreadcrumb.mjs'
-import tableOfContents from './plugins/tableOfContents.mjs'
-import prevNext from './plugins/prevNext.mjs'
+import generateCaches from './src/scripts/generateCaches'
+import breadcrumb from './src/plugins/breadcrumb'
+import tableOfContents from './src/plugins/tableOfContents'
+import prevNext from './src/plugins/prevNext'
 import { readFileSync } from 'fs'
 
 generateCaches()
-
-global.docSearch = (text) => {
-  return search(text)
-}
-
-global.docFetchToc = (urlPath) => {
-  return fetchToc(urlPath)
-}
-
-global.docFetchBreadcrumb = (urlPath) => {
-  return fetchBreadcrumb(urlPath)
-}
-
-global.docFetchPrevNext = (urlPath) => {
-  return fetchPrevNext(urlPath)
-}
 
 let withMDX = mdx({
   extension: /\.mdx?$/,
@@ -118,4 +99,4 @@ const config = {
   // }
 }
 
-export default withMDX(withLinaria(config))
+export default withMDX(withLinaria(config) as any)

@@ -1,8 +1,8 @@
-import extractFrontmatter from './extractFrontmatter.mjs'
+import extractFrontmatter from './extractFrontmatter'
 
 const breadcrumbCaches = {}
 
-export function generateBreadcrumb(fileLocation) {
+export function generateBreadcrumb(fileLocation: string) {
     const urlPath = fileLocation.replace(/^src[\/\\]app/, "").replace(/[\/\\]page.mdx$/, "")
     if (breadcrumbCaches[urlPath]) {
         return breadcrumbCaches[urlPath]
@@ -30,6 +30,6 @@ export function generateBreadcrumb(fileLocation) {
     }
 }
 
-export function fetchBreadcrumb(urlPath) {
+export function fetchBreadcrumb(urlPath: string) {
     return breadcrumbCaches[urlPath.replace(/[\/\\]$/, "")]
 }

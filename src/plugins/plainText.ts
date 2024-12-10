@@ -1,6 +1,8 @@
 import { visit } from 'unist-util-visit'
+import { Plugin } from 'unified'
+import { Root } from 'hast'
 
-const compiler = (tree) => {
+const compiler = (tree: any) => {
     const parts = []
     visit(tree, 'text', function (node) {
         parts.push(node.value)
@@ -8,8 +10,7 @@ const compiler = (tree) => {
     return parts.join('')
 }
 
-/** @type {import('unified').Plugin<[], import('hast').Root>} */
-const plainText = function (options) {
+const plainText: Plugin<[], Root> = function () {
     this.compiler = compiler
 }
   

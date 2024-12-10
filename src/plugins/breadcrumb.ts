@@ -1,12 +1,14 @@
-import fixWindowsPath from '../scripts/fixWindowsPath.mjs'
+import fixWindowsPath from '../scripts/fixWindowsPath'
+import { Plugin } from 'unified'
+import { Root } from 'hast'
+import { fetchBreadcrumb } from '../scripts/generateBreadcrumb'
 
-/** @type {import('unified').Plugin<[], import('hast').Root>} */
-const breadcrumb = () => {
+const breadcrumb: Plugin<[], Root> = () => {
   return (tree, vfile) => {
     let index = tree.children.findIndex((child) => child.type !== 'mdxjsEsm')
     if (index !== undefined) {
         const urlPath = fixWindowsPath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
-        const breadcrumbData = global.docFetchBreadcrumb(urlPath)
+        const breadcrumbData = fetchBreadcrumb(urlPath)
         if (breadcrumbData) {
             let breadcrumbsNode = {
                 type: "element",
@@ -52,7 +54,7 @@ const breadcrumb = () => {
                     })
                 }
             })
-            tree.children.splice(index, 0, breadcrumbsNode)
+            tree.children.splice(index, 0, breadcrumbsNode as any)
         }
     }
   }

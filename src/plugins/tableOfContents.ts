@@ -1,8 +1,9 @@
 import { visit } from 'unist-util-visit'
-import fixWindowsPath from '../scripts/fixWindowsPath.mjs'
+import fixWindowsPath from '../scripts/fixWindowsPath'
+import { fetchToc } from '../scripts/generateToc'
 
-const childrenItems = (children) => {
-    return children.map((child) => {
+const childrenItems = (children: any) => {
+    return children.map((child: any) => {
         const result = {
             "type": "element",
             "tagName": "li",
@@ -27,7 +28,7 @@ const childrenItems = (children) => {
                 "type": "element",
                 "tagName": "ul",
                 "children": childrenItems(child.children)
-            })
+            } as any)
         }
         return result
     })
@@ -35,10 +36,10 @@ const childrenItems = (children) => {
 
 /** @type {import('unified').Plugin<[], import('hast').Root>} */
 const tableOfContents = () => {
-  return (tree, vfile) => {
-    visit(tree, (node) => node.type == "mdxJsxFlowElement" && node.name === "TableOfContents", (node) => {
+  return (tree: any, vfile: any) => {
+    visit(tree, (node: any) => node.type == "mdxJsxFlowElement" && node.name === "TableOfContents", (node) => {
         const urlPath = fixWindowsPath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
-        const toc = global.docFetchToc(urlPath)
+        const toc = fetchToc(urlPath)
 
         for (const member in node) {
             delete node[member]

@@ -1,7 +1,8 @@
 import { visit } from 'unist-util-visit'
+import { Plugin } from 'unified'
+import { Root } from 'hast'
 
-/** @type {import('unified').Plugin<[], import('hast').Root>} */
-const onThisPage = () => {
+const onThisPage: Plugin<[], Root> = () => {
   return (tree) => {
     let h2H3List = {
       type: "element",
@@ -62,7 +63,7 @@ const onThisPage = () => {
         }
       ]
     };
-    tree.children = [original, onThisPage]
+    tree.children = [original as any, onThisPage]
   }
 }
 
