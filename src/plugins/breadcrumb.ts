@@ -1,14 +1,14 @@
-import fixWindowsPath from '../scripts/fixWindowsPath'
 import { Plugin } from 'unified'
 import { Root } from 'hast'
-import { fetchBreadcrumb } from '../scripts/generateBreadcrumb'
+import fixWindowsPath from '../shared/lib/outline/fixWindowsPath'
+import { outlineCachesFetcher } from '../shared/lib/outline/outlineCachesFetcher'
 
 const breadcrumb: Plugin<[], Root> = () => {
   return (tree, vfile) => {
     let index = tree.children.findIndex((child) => child.type !== 'mdxjsEsm')
     if (index !== undefined) {
         const urlPath = fixWindowsPath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
-        const breadcrumbData = fetchBreadcrumb(urlPath)
+        const breadcrumbData = outlineCachesFetcher.breadcrumbs(urlPath)
         if (breadcrumbData) {
             let breadcrumbsNode = {
                 type: "element",

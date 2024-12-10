@@ -1,6 +1,6 @@
 import { visit } from 'unist-util-visit'
-import fixWindowsPath from '../scripts/fixWindowsPath'
-import { fetchToc } from '../scripts/generateToc'
+import fixWindowsPath from '../shared/lib/outline/fixWindowsPath'
+import { outlineCachesFetcher } from '../shared/lib/outline/outlineCachesFetcher'
 
 const childrenItems = (children: any) => {
     return children.map((child: any) => {
@@ -39,8 +39,7 @@ const tableOfContents = () => {
   return (tree: any, vfile: any) => {
     visit(tree, (node: any) => node.type == "mdxJsxFlowElement" && node.name === "TableOfContents", (node) => {
         const urlPath = fixWindowsPath(vfile.path.replace(vfile.cwd, '')).replace(/^\/src\/app/, '').replace(/\/page.mdx$/, '')
-        const toc = fetchToc(urlPath)
-
+        const toc = outlineCachesFetcher.tableOfContents(urlPath)
         for (const member in node) {
             delete node[member]
         }

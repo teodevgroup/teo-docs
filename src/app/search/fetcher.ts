@@ -1,8 +1,8 @@
 'use server'
+import 'server-only'
+import { searchFullTextIndex } from '../../shared/lib/outline/fullTextIndex'
+import { outlineCachesFetcher } from '../../shared/lib/outline/outlineCachesFetcher'
 
-import { search } from '@teocloud/teo-docs-search-engine'
-import { fetchToc } from '../../scripts/generateToc'
-import { fetchBreadcrumb } from '../../scripts/generateBreadcrumb'
 export interface SearchRecord {
     title: string
     urlPath: string
@@ -10,14 +10,13 @@ export interface SearchRecord {
 }
 
 export default async function fetchSearchResult(query: string): Promise<SearchRecord[]> {
-    
-    const items = search(`"${query}"`)
+    const items = searchFullTextIndex(`"${query}"`)
     const result = items.map((item: any) => {
-        const tocItem = fetchToc(item.urlPath)
+        const tocItem = outlineCachesFetcher.tableOfContents(item.urlPath)
         if (!tocItem) {
             return undefined
         }
-        const breadcrumb = fetchBreadcrumb(item.urlPath)
+        const breadcrumb = outlineCachesFetcher.breadcrumbs(item.urlPath)
         if (!breadcrumb || breadcrumb.length === 0) {
             return undefined
         }

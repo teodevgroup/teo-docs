@@ -1,9 +1,9 @@
 'use server'
 
 import React from 'react'
-import fetchToc from '../../shared/lib/fetchToc'
 import { ClientDocumentationSidebar, DocSidebarContainer } from './DocumentationSidebarClient'
 import { headers } from 'next/headers'
+import { fetchToc } from '../../scripts/generateToc'
 
 export const DocumentationSidebar = async () => {
   const headersList = await headers()

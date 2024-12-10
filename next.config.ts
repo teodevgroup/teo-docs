@@ -11,13 +11,10 @@ import remarkGfm from 'remark-gfm'
 import remarkFrontmatter from 'remark-frontmatter'
 import { getSingletonHighlighter, bundledLanguagesInfo } from 'shiki'
 import { createCssVariablesTheme } from 'shiki/core'
-import generateCaches from './src/scripts/generateCaches'
 import breadcrumb from './src/plugins/breadcrumb'
 import tableOfContents from './src/plugins/tableOfContents'
 import prevNext from './src/plugins/prevNext'
 import { readFileSync } from 'fs'
-
-generateCaches()
 
 let withMDX = mdx({
   extension: /\.mdx?$/,

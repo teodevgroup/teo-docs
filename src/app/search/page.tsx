@@ -1,5 +1,7 @@
 'use server'
 
+import 'server-only'
+
 import { FullWidthSearchInput } from "../../shared/components/Search"
 import fetchSearchResult from "./fetcher"
 import { styled } from "@linaria/react"

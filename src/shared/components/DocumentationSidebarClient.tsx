@@ -2,11 +2,11 @@
 
 import { ReactElement, ReactNode, useState } from "react"
 import { dark, darkHeadingBackgroundColor, docFontFamily, docTagBackgroundColor, docTagBackgroundColorDark, docTagColor, docTagColorDark, docTextColor, docTextColorDark, docTextSelectedColor, docTextUnselectedColor, exceptPhone, flexColumn, flexRow, light, margin, phone, spacing, tintColor } from '../styles/theme'
-import { TocItem } from "../lib/fetchToc"
 import { styled } from "@linaria/react"
 import BookIcon from './BookIcon'
 import { css } from "@linaria/core"
 import { SearchIcon, SearchIconContainer, SearchInput } from "./Search"
+import type { TableOfContentNode } from "../lib/outline/tableOfContents"
 
 const DocSideBarInputContainer = styled.div`
   position: relative;
@@ -89,7 +89,7 @@ const DocSidebarItemTitleLine = styled.div`
   cursor: pointer;
 `
 
-const DocSidebarItemTitleTime = styled.div`
+const DocSidebarItemTitleReadingTime = styled.div`
   ${light} {
     color: ${docTagColor};
     background-color: ${docTagBackgroundColor};
@@ -138,14 +138,14 @@ const DocSidebarItemIndicator: (props: DocSidebarItemIndicatorProps) => ReactEle
 
 export type DocSidebarItemProps = {
   children?: ReactNode,
-  time?: string,
+  readingTime?: string,
   link: string,
   title: string,
   path?: string,
   setSidebarVisible: (v: boolean) => void,
 }
 
-export const DocSidebarItem: (props: DocSidebarItemProps) => ReactElement = ({ link, children, time, title, path, setSidebarVisible }) => {
+export const DocSidebarItem: (props: DocSidebarItemProps) => ReactElement = ({ link, children, readingTime, title, path, setSidebarVisible }) => {
   let open: boolean;
   if (children && path) {
     open = path.startsWith(link)
@@ -172,7 +172,7 @@ export const DocSidebarItem: (props: DocSidebarItemProps) => ReactElement = ({ l
         `}>
           {children ? <DocSidebarItemIndicator open={open} /> : null}
           <div>{title}</div>
-          {time ? <DocSidebarItemTitleTime>{time}</DocSidebarItemTitleTime> : null}
+          {readingTime ? <DocSidebarItemTitleReadingTime>{readingTime}</DocSidebarItemTitleReadingTime> : null}
         </DocSidebarItemTitleLine>
       </a>
     </DocSidebarItemTitleContainer>
@@ -242,14 +242,14 @@ const DocSidebarSectionTitle = styled.div`
   font-weight: 600;
 `
 
-const renderChildren = (children: TocItem[], path: string, setSidebarVisible: (v: boolean) => void) => {
-  return children.map((child) => child.children.length ? <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} time={child.time} setSidebarVisible={setSidebarVisible}>
+const renderChildren = (children: TableOfContentNode[], path: string, setSidebarVisible: (v: boolean) => void) => {
+  return children.map((child) => child.children.length ? <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} readingTime={child.readingTime} setSidebarVisible={setSidebarVisible}>
     {renderChildren(child.children, path, setSidebarVisible)}
-  </DocSidebarItem> : <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} time={child.time} setSidebarVisible={setSidebarVisible} />)
+  </DocSidebarItem> : <DocSidebarItem key={child.urlPath} path={path} link={child.urlPath} title={child.title} readingTime={child.readingTime} setSidebarVisible={setSidebarVisible} />)
 }
 
 
-const SidebarWithToc: (props: { item: TocItem, path: string, phoneOpen?: boolean, setSidebarVisible: (v: boolean) => void }) => ReactElement = (props) => {
+const SidebarWithToc: (props: { item: TableOfContentNode, path: string, phoneOpen?: boolean, setSidebarVisible: (v: boolean) => void }) => ReactElement = (props) => {
   return <DocSidebarContainer style={{'display': props.phoneOpen ? "block" : "none"}}>
     <DocSideBarSearchInput />
     <DocSidebarTitle>{props.item.title}</DocSidebarTitle>
@@ -260,7 +260,7 @@ const SidebarWithToc: (props: { item: TocItem, path: string, phoneOpen?: boolean
           ...renderChildren(child.children, props.path, props.setSidebarVisible)
         ]
       } else {
-        return <DocSidebarItem key={child.urlPath} path={props.path} link={child.urlPath} title={child.title} time={child.time} setSidebarVisible={props.setSidebarVisible} />
+        return <DocSidebarItem key={child.urlPath} path={props.path} link={child.urlPath} title={child.title} readingTime={child.readingTime} setSidebarVisible={props.setSidebarVisible} />
       }
     })}
   </DocSidebarContainer>
@@ -268,7 +268,7 @@ const SidebarWithToc: (props: { item: TocItem, path: string, phoneOpen?: boolean
 
 
 type ClientDocumentationSidebarProps = {
-  sidebarToc: TocItem
+  sidebarToc: TableOfContentNode
   path: string
 }
 

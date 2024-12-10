@@ -1,9 +1,15 @@
-import extractFrontmatter from './extractFrontmatter'
+import { join } from 'path'
+import fileLocationToUrlPath from './fileLocationToUrlPath'
+import { extractFrontmatter, Frontmatter } from './frontmatter'
 
-const breadcrumbCaches = {}
+export type Breadcrumbs = Frontmatter[]
 
-export function generateBreadcrumb(fileLocation: string) {
-    const urlPath = fileLocation.replace(/^src[\/\\]app/, "").replace(/[\/\\]page.mdx$/, "")
+export type BreadcrumbsMap = { [key: string]: Breadcrumbs }
+
+const breadcrumbCaches: BreadcrumbsMap = { }
+
+export function generateBreadcrumb(fileLocation: string): Breadcrumbs | undefined {
+    const urlPath = fileLocationToUrlPath(fileLocation)
     if (breadcrumbCaches[urlPath]) {
         return breadcrumbCaches[urlPath]
     }
@@ -13,9 +19,8 @@ export function generateBreadcrumb(fileLocation: string) {
         fileLocationTokens.pop()
         fileLocationTokens.pop()
         fileLocationTokens.push('page.mdx')
-        let prevFileLocation = fileLocationTokens.join('/')
-        let prevUrlPath = prevFileLocation.replace(/^src[\/\\]app/, "").replace(/[\/\\]page.mdx$/, "")
-        let data = extractFrontmatter(prevFileLocation, prevUrlPath)
+        let prevFileLocation = join(...fileLocationTokens)
+        let data = extractFrontmatter(prevFileLocation)
         if (data) {
             result.unshift(data)
         } else {
@@ -28,8 +33,4 @@ export function generateBreadcrumb(fileLocation: string) {
     } else {
         return undefined
     }
-}
-
-export function fetchBreadcrumb(urlPath: string) {
-    return breadcrumbCaches[urlPath.replace(/[\/\\]$/, "")]
 }
