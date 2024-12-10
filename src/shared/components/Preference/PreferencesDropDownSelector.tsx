@@ -73,6 +73,7 @@ const FastSelectorItem = styled.div<FastSelectorItemProps>`
   padding: 4px 8px;
   font-size: 14px;
   opacity: ${(props) => props.disabled ? 0.5 : 1};
+  cursor: pointer;
 `
 
 const FastSelectorIconContainer = styled.div`
@@ -81,7 +82,7 @@ const FastSelectorIconContainer = styled.div`
 `
 
 const FastSelectorTitle = styled.div`
-  cursor: default;
+  cursor: pointer;
 `
 
 type FastSelectorProps<T extends PreferencesKey, V extends Preferences[T]> = {
