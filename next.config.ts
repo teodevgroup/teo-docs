@@ -81,7 +81,7 @@ const config: NextConfig = {
     }
   },
   webpack: (config) => {
-    config.externals.push('@teocloud/teo-docs-search-engine')
+    config.externals.push('@teodevgroup/teo-docs-search-engine')
     return config
   }
 }

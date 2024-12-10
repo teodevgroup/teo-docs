@@ -4,22 +4,27 @@ import remarkParse from 'remark-parse'
 import remarkMdx from 'remark-mdx'
 import remarkRehype from 'remark-rehype'
 import plainText from '../../../plugins/plainText'
-import { buildCommit, buildInsertRecord, Record, search } from '@teocloud/teo-docs-search-engine'
+import { Record, SearchIndex } from '@teodevgroup/teo-docs-search-engine'
 import fileLocationToUrlPath from './fileLocationToUrlPath'
 
 const pipeline = unified().use(remarkParse).use(remarkMdx).use(remarkRehype).use(plainText)
 
-export function generateFullTextIndex(filepath: string) {
-  const content = readFileSync(filepath).toString()
+const records: Record[] = []
+
+const searchIndex = new SearchIndex()
+
+export function generateFullTextIndex(fileLocation: string) {
+  const content = readFileSync(fileLocation).toString()
   const plainTextValue = pipeline.processSync(content).value as string
-  const urlPath = fileLocationToUrlPath(filepath)
-  buildInsertRecord(filepath, urlPath, plainTextValue)
+  const urlPath = fileLocationToUrlPath(fileLocation)
+  records.push({ urlPath, content: plainTextValue, fileLocation })
 }
 
 export function commitFullTextIndex() {
-  buildCommit()
+  searchIndex.clear()
+  searchIndex.insert(records)
 }
 
 export function searchFullTextIndex(text: string): Record[] {
-  return search(text)
+  return searchIndex.search(text)
 }
