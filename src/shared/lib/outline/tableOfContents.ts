@@ -1,5 +1,5 @@
 import { extractFrontmatter, Frontmatter } from './frontmatter'
-import { globSync } from 'glob'
+import { globSync } from 'fs'
 import fixWindowsPath from './fixWindowsPath'
 import fileLocationToUrlPath from './fileLocationToUrlPath'
 
